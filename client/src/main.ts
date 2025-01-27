@@ -10,4 +10,4 @@ window.addEventListener("keyup", (event) => {
     }
 }, true);
 
-import "../build/game_client.js"
+import "../public/game_client.js"

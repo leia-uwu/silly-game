@@ -6,9 +6,7 @@ settings:
 
 importers:
 
-  .: {}
-
-  client:
+  .:
     devDependencies:
       typescript:
         specifier: ^5.7.3

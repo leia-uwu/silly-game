@@ -2,4 +2,6 @@
 build*/
 dist/
 node_modules/
+compile_commands.json
 *.wasm
+client/public/*.js

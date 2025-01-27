@@ -1,9 +1,0 @@
-{
-    "name": "silly-game",
-    "version": "1.0.0",
-    "scripts": {
-        "build_wasm": "emcmake cmake -B client/build && cmake --build client/build",
-        "build_native": "cmake -B build && cmake --build build"
-    },
-    "author": "A silly cat :3333"
-}
