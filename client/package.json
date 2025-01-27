@@ -1,0 +1,14 @@
+{
+    "name": "client",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite dev",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.3",
+        "vite": "^6.0.11"
+    }
+}
