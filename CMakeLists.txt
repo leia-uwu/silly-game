@@ -24,4 +24,6 @@ endif()
 
 add_subdirectory(common)
 add_subdirectory(client)
-add_subdirectory(server)
+if (NOT DEFINED EMSCRIPTEN)
+    add_subdirectory(server)
+endif()
