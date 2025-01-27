@@ -22,11 +22,11 @@ public:
     Vec2* rotate(const float& rad);
     Vec2* neg();
     Vec2* normalize();
-    Vec2* normalizeSafe(const Vec2& v = {1.0, 0.0});
+    Vec2* normalize_safe(const Vec2& v = {1.0, 0.0});
 
-    float lengthSqr();
+    float length_sqr();
     float length();
-    float distanceTo(const Vec2& a);
+    float distance_to(const Vec2& a);
     float dot(const Vec2& a);
 
     bool equals(const Vec2& a, float epsilon = 0.0001);

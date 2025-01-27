@@ -13,11 +13,11 @@ private:
     Vec2 m_mousePos;
 
 public:
-    void onKeyDown(const char* key);
-    void onKeyUp(const char* key);
-    bool isKeyDown(const char* key);
+    void on_key_down(const char* key);
+    void on_key_up(const char* key);
+    bool is_key_down(const char* key);
 
-    void onMotionEvent(SDL_MouseMotionEvent event);
+    void on_motion_event(const SDL_MouseMotionEvent& event);
 
-    Vec2 getMousePos();
+    Vec2 get_mouse_pos();
 };

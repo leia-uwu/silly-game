@@ -11,22 +11,22 @@ private:
     size_t m_index = 0;
 
 public:
-    inline constexpr size_t size() const noexcept
+    inline constexpr size_t get_size() const noexcept
     {
         return m_size;
     }
 
-    inline constexpr size_t getIndex() const noexcept
+    inline constexpr size_t get_index() const noexcept
     {
         return m_index;
     }
 
-    inline constexpr ByteStream* setIndex(size_t index)
+    inline constexpr ByteStream* set_index(size_t index)
     {
-        if (index >= size() || index < 0)
+        if (index >= this->m_size || this->m_index < 0)
             throw new std::out_of_range("Index out of stream bounds");
 
-        m_index = index;
+        this->m_index = index;
         return this;
     }
 

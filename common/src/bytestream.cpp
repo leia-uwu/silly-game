@@ -20,7 +20,7 @@ ByteStream::~ByteStream()
 
 ByteStream* ByteStream::write_uint8(const uint8_t& val)
 {
-    if (this->m_index == size())
+    if (this->m_index == m_size)
         throw new std::out_of_range("Trying to write past the end of the stream");
     this->m_buffer[this->m_index++] = val;
     return this;
@@ -28,7 +28,7 @@ ByteStream* ByteStream::write_uint8(const uint8_t& val)
 
 uint8_t ByteStream::read_uint8()
 {
-    if (this->m_index == size())
+    if (this->m_index == m_size)
         throw new std::out_of_range("Trying to read past the end of the stream");
     return this->m_buffer[this->m_index++];
 }

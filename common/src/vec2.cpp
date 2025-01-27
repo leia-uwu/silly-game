@@ -115,7 +115,7 @@ Vec2* Vec2::normalize()
     return this;
 };
 
-Vec2* Vec2::normalizeSafe(const Vec2& v)
+Vec2* Vec2::normalize_safe(const Vec2& v)
 {
     float eps = 0.000001;
     float len = length();
@@ -126,17 +126,17 @@ Vec2* Vec2::normalizeSafe(const Vec2& v)
     return this;
 }
 
-float Vec2::lengthSqr()
+float Vec2::length_sqr()
 {
     return x * x + y * y;
 }
 
 float Vec2::length()
 {
-    return sqrt(lengthSqr());
+    return sqrt(length_sqr());
 }
 
-float Vec2::distanceTo(const Vec2& a)
+float Vec2::distance_to(const Vec2& a)
 {
     return clone().sub(a)->length();
 }

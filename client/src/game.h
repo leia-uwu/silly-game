@@ -22,7 +22,7 @@ public:
 
     SDL_AppResult update();
 
-    SDL_AppResult processEvent(SDL_Event* event);
+    SDL_AppResult process_event(SDL_Event* event);
 
     void shutdown();
 };
