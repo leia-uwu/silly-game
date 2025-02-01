@@ -7,13 +7,13 @@ Vec2::Vec2()
     y = 0;
 }
 
-Vec2::Vec2(float xPos)
+Vec2::Vec2(const float xPos)
 {
     x = xPos;
     y = xPos;
 }
 
-Vec2::Vec2(float xPos, float yPos)
+Vec2::Vec2(const float xPos, const float yPos)
 {
     x = xPos;
     y = yPos;
@@ -24,7 +24,7 @@ Vec2 Vec2::clone()
     return {x, y};
 }
 
-Vec2* Vec2::add(const float& value)
+Vec2* Vec2::add(const float value)
 {
     x += value;
     y += value;
@@ -40,7 +40,7 @@ Vec2* Vec2::add(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::sub(const float& value)
+Vec2* Vec2::sub(const float value)
 {
     x -= value;
     y -= value;
@@ -56,7 +56,7 @@ Vec2* Vec2::sub(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::mul(const float& value)
+Vec2* Vec2::mul(const float value)
 {
     x *= value;
     y *= value;
@@ -72,7 +72,7 @@ Vec2* Vec2::mul(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::div(const float& value)
+Vec2* Vec2::div(const float value)
 {
     x /= value;
     y /= value;
@@ -88,7 +88,7 @@ Vec2* Vec2::div(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::rotate(const float& rad)
+Vec2* Vec2::rotate(const float rad)
 {
     float cosr = cos(rad);
     float sinr = sin(rad);
@@ -156,7 +156,7 @@ Vec2 Vec2::add(const Vec2& a, const Vec2& b)
     return {a.x + b.x, a.y + b.y};
 }
 
-Vec2 Vec2::add(const Vec2& a, const float& value)
+Vec2 Vec2::add(const Vec2& a, const float value)
 {
     return {a.x + value, a.y + value};
 }
@@ -166,7 +166,7 @@ Vec2 Vec2::sub(const Vec2& a, const Vec2& b)
     return {a.x - b.x, a.y - b.y};
 }
 
-Vec2 Vec2::sub(const Vec2& a, const float& value)
+Vec2 Vec2::sub(const Vec2& a, const float value)
 {
     return {a.x - value, a.y - value};
 }
@@ -176,7 +176,7 @@ Vec2 Vec2::mul(const Vec2& a, const Vec2& b)
     return {a.x * b.x, a.y * b.y};
 }
 
-Vec2 Vec2::mul(const Vec2& a, const float& scale)
+Vec2 Vec2::mul(const Vec2& a, const float scale)
 {
     return {a.x * scale, a.y * scale};
 }
@@ -186,7 +186,7 @@ Vec2 Vec2::div(const Vec2& a, const Vec2& b)
     return {a.x / b.x, a.y / b.y};
 }
 
-Vec2 Vec2::div(const Vec2& a, const float& scale)
+Vec2 Vec2::div(const Vec2& a, const float scale)
 {
     return {a.x / scale, a.y / scale};
 }

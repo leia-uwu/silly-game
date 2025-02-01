@@ -20,15 +20,15 @@ public:
 
     Vec2 clone();
 
-    Vec2* add(const float& value);
+    Vec2* add(const float value);
     Vec2* add(const Vec2& a);
-    Vec2* sub(const float& value);
+    Vec2* sub(const float value);
     Vec2* sub(const Vec2& a);
-    Vec2* mul(const float& scale);
+    Vec2* mul(const float scale);
     Vec2* mul(const Vec2& a);
-    Vec2* div(const float& scale);
+    Vec2* div(const float scale);
     Vec2* div(const Vec2& b);
-    Vec2* rotate(const float& rad);
+    Vec2* rotate(const float rad);
     Vec2* neg();
     Vec2* normalize();
     Vec2* normalize_safe(const Vec2& v = {1.0, 0.0});
@@ -41,11 +41,11 @@ public:
     bool equals(const Vec2& a, float epsilon = 0.0001);
 
     static Vec2 add(const Vec2& a, const Vec2& b);
-    static Vec2 add(const Vec2& a, const float& value);
+    static Vec2 add(const Vec2& a, const float value);
     static Vec2 sub(const Vec2& a, const Vec2& b);
-    static Vec2 sub(const Vec2& a, const float& value);
+    static Vec2 sub(const Vec2& a, const float value);
     static Vec2 mul(const Vec2& a, const Vec2& b);
-    static Vec2 mul(const Vec2& a, const float& scale);
+    static Vec2 mul(const Vec2& a, const float scale);
     static Vec2 div(const Vec2& a, const Vec2& b);
-    static Vec2 div(const Vec2& a, const float& scale);
+    static Vec2 div(const Vec2& a, const float scale);
 };

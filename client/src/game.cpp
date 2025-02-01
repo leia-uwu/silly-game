@@ -1,6 +1,5 @@
 #include <SDL3/SDL.h>
 #include <chrono>
-#include <cmath>
 
 #include "game.h"
 
@@ -10,12 +9,12 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
 {
 }
 
-int roundUpToMultipleOfEight(const int& v)
+int roundUpToMultipleOfEight(const int v)
 {
     return (v + (8 - 1)) & -8;
 }
 
-void DrawCircle(SDL_Renderer* renderer, const Vec2& center, const float& radius)
+void DrawCircle(SDL_Renderer* renderer, const Vec2& center, const float radius)
 {
     const int arrSize = roundUpToMultipleOfEight(radius * 8 * M_SQRT1_2);
     Vec2 points[arrSize];

@@ -6,7 +6,7 @@
 
 #include "bytestream.h"
 
-ByteStream::ByteStream(size_t size)
+ByteStream::ByteStream(const size_t size)
     : m_size(size)
 {
     m_buffer = (uint8_t*)malloc(size);
@@ -18,7 +18,7 @@ ByteStream::~ByteStream()
     free(m_buffer);
 }
 
-ByteStream* ByteStream::write_uint8(const uint8_t& val)
+ByteStream* ByteStream::write_uint8(const uint8_t val)
 {
     if (this->m_index == m_size)
         throw new std::out_of_range("Trying to write past the end of the stream");
@@ -33,7 +33,7 @@ uint8_t ByteStream::read_uint8()
     return this->m_buffer[this->m_index++];
 }
 
-ByteStream* ByteStream::write_uint16(const uint16_t& val)
+ByteStream* ByteStream::write_uint16(const uint16_t val)
 {
     this->write_uint8(val)
         ->write_uint8(val >> 8);
@@ -46,7 +46,7 @@ uint16_t ByteStream::read_uint16()
         | (this->read_uint8() << 8);
 }
 
-ByteStream* ByteStream::write_uint24(const uint32_t& val)
+ByteStream* ByteStream::write_uint24(const uint32_t val)
 {
     this->write_uint8(val)
         ->write_uint8(val >> 8)
@@ -61,7 +61,7 @@ uint32_t ByteStream::read_uint24()
         | (this->read_uint8() << 16);
 }
 
-ByteStream* ByteStream::write_uint32(const uint32_t& val)
+ByteStream* ByteStream::write_uint32(const uint32_t val)
 {
     this->write_uint16(val)
         ->write_uint16(val >> 16);
@@ -74,7 +74,7 @@ uint32_t ByteStream::read_uint32()
         | (this->read_uint16() << 16);
 }
 
-ByteStream* ByteStream::write_uint64(const uint64_t& val)
+ByteStream* ByteStream::write_uint64(const uint64_t val)
 {
     this->write_uint32(val)
         ->write_uint32(val >> 32);
@@ -87,7 +87,7 @@ uint64_t ByteStream::read_uint64()
         | ((uint64_t)this->read_uint32() << 32);
 }
 
-ByteStream* ByteStream::write_int8(const int8_t& val)
+ByteStream* ByteStream::write_int8(const int8_t val)
 {
     return this->write_uint8(val);
 }
@@ -97,7 +97,7 @@ int8_t ByteStream::read_int8()
     return (uint8_t)this->read_uint8();
 }
 
-ByteStream* ByteStream::write_int16(const int16_t& val)
+ByteStream* ByteStream::write_int16(const int16_t val)
 {
     return this->write_uint16(val);
 }
@@ -107,7 +107,7 @@ int16_t ByteStream::read_int16()
     return (uint16_t)this->read_uint16();
 }
 
-ByteStream* ByteStream::write_int32(const int32_t& val)
+ByteStream* ByteStream::write_int32(const int32_t val)
 {
     return this->write_uint32(val);
 }
@@ -117,7 +117,7 @@ int32_t ByteStream::read_int32()
     return (uint32_t)this->read_uint32();
 }
 
-ByteStream* ByteStream::write_int64(const int64_t& val)
+ByteStream* ByteStream::write_int64(const int64_t val)
 {
     return this->write_uint64(val);
 }
@@ -127,7 +127,7 @@ int64_t ByteStream::read_int64()
     return (uint64_t)this->read_uint64();
 }
 
-ByteStream* ByteStream::write_float32(const float_t& val)
+ByteStream* ByteStream::write_float32(const float_t val)
 {
     return this->write_uint32(std::bit_cast<uint32_t>(val));
 }
@@ -137,7 +137,7 @@ float_t ByteStream::read_float32()
     return std::bit_cast<float_t>(this->read_uint32());
 }
 
-ByteStream* ByteStream::write_float64(const double_t& val)
+ByteStream* ByteStream::write_float64(const double_t val)
 {
     return this->write_uint64(std::bit_cast<uint64_t>(val));
 }
@@ -164,7 +164,7 @@ ByteStream* ByteStream::write_string(const size_t& bytes, const std::string& val
     return this;
 }
 
-std::string ByteStream::read_string(const size_t& bytes)
+std::string ByteStream::read_string(const size_t bytes)
 {
     if (bytes == 0)
         return "";
@@ -184,10 +184,10 @@ std::string ByteStream::read_string(const size_t& bytes)
 }
 
 ByteStream* ByteStream::write_float(
-    const double_t& value,
-    const double_t& min,
-    const double_t& max,
-    const uint8_t& byte_count
+    const double_t value,
+    const double_t min,
+    const double_t max,
+    const uint8_t byte_count
 )
 {
     const uint64_t range = (1L << (8L * byte_count)) - 1L;
@@ -218,9 +218,9 @@ ByteStream* ByteStream::write_float(
 }
 
 double_t ByteStream::read_float(
-    const double_t& min,
-    const double_t& max,
-    const uint8_t& byte_count
+    const double_t min,
+    const double_t max,
+    const uint8_t byte_count
 )
 {
     const uint64_t range = (1L << (8L * byte_count)) - 1L;
