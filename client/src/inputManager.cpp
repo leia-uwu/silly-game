@@ -1,18 +1,18 @@
 #include "inputManager.h"
 
-void InputManager::on_key_down(const char* key)
+void InputManager::on_key_down(const std::string& key)
 {
-    m_keys[key] = true;
+    m_keys.insert_or_assign(key, true);
 }
 
-void InputManager::on_key_up(const char* key)
+void InputManager::on_key_up(const std::string& key)
 {
-    m_keys[key] = false;
+    m_keys.insert_or_assign(key, false);
 }
 
-bool InputManager::is_key_down(const char* key)
+bool InputManager::is_key_down(const std::string& key)
 {
-    return m_keys[key] ? true : false;
+    return m_keys[key];
 }
 
 void InputManager::on_motion_event(const SDL_MouseMotionEvent& event)
