@@ -1,9 +1,18 @@
 #pragma once
 
+// server doesn't need to link to SDL
+// so only make Vec2 extend SDL_FPoint if SDL is defined
+#ifdef SDL
 #include <SDL3/SDL_rect.h>
-
 class Vec2 : public SDL_FPoint
 {
+#else
+class Vec2
+{
+public:
+    float x;
+    float y;
+#endif
 public:
     Vec2();
     Vec2(float xPos);
