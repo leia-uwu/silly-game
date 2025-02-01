@@ -24,11 +24,9 @@ SDL_AppResult Game::update()
     SDL_SetRenderDrawColor(m_SDLRenderer, 90, 137, 57, 255);
     SDL_RenderClear(m_SDLRenderer);
 
-
     static Vec2 player = {0, 0};
 
     static Vec2 obstacle = {40, 50};
-
 
     if (m_inputManager.is_key_down("W")) {
         player.y -= 20 * dt;

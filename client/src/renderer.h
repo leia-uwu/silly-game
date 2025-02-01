@@ -16,7 +16,6 @@ private:
     void update_transform();
 
 public:
-
     Renderer(SDL_Renderer* renderer);
 
     void set_position(const Vec2& position);

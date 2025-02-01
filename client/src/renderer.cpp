@@ -37,11 +37,6 @@ void Renderer::set_scale(const float scale)
     update_transform();
 }
 
-int roundUpToMultipleOfEight(int v)
-{
-    return (v + (8 - 1)) & -8;
-}
-
 void Renderer::draw_circle(const Vec2& position, const float radius)
 {
     draw_ellipse(position, radius, radius);
