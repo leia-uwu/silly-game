@@ -5,17 +5,18 @@
 #include <stdexcept>
 
 #include "bytestream.h"
+#include "utils.h"
 
 ByteStream::ByteStream(const size_t size)
     : m_size(size)
 {
-    m_buffer = (uint8_t*)malloc(size);
+    m_buffer = (uint8_t*)yoink(size);
     memset(m_buffer, 0, size);
 }
 
 ByteStream::~ByteStream()
 {
-    free(m_buffer);
+    yeet(m_buffer);
 }
 
 ByteStream* ByteStream::write_uint8(const uint8_t val)
