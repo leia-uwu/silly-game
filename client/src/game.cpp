@@ -1,60 +1,18 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_video.h>
 #include <chrono>
 
 #include "game.h"
 
 Game::Game(SDL_Window* window, SDL_Renderer* renderer)
     : m_window(window)
+    , m_SDLRenderer(renderer)
     , m_renderer(renderer)
 {
-}
-
-int roundUpToMultipleOfEight(const int v)
-{
-    return (v + (8 - 1)) & -8;
-}
-
-void DrawCircle(SDL_Renderer* renderer, const Vec2& center, const float radius)
-{
-    const int arrSize = roundUpToMultipleOfEight(radius * 8 * M_SQRT1_2);
-    Vec2 points[arrSize];
-    int drawCount = 0;
-
-    const float diameter = (radius * 2);
-
-    float x = (radius - 1);
-    float y = 0;
-    float tx = 1;
-    float ty = 1;
-    float error = (tx - diameter);
-
-    while (x >= y) {
-        // Each of the following renders an octant of the circle
-        points[drawCount + 0] = {center.x + x, center.y - y};
-        points[drawCount + 1] = {center.x + x, center.y + y};
-        points[drawCount + 2] = {center.x - x, center.y - y};
-        points[drawCount + 3] = {center.x - x, center.y + y};
-        points[drawCount + 4] = {center.x + y, center.y - x};
-        points[drawCount + 5] = {center.x + y, center.y + x};
-        points[drawCount + 7] = {center.x - y, center.y + x};
-        points[drawCount + 6] = {center.x - y, center.y - x};
-
-        drawCount += 8;
-
-        if (error <= 0) {
-            ++y;
-            error += ty;
-            ty += 2;
-        }
-
-        if (error > 0) {
-            --x;
-            tx += 2;
-            error += (tx - diameter);
-        }
-    }
-
-    SDL_RenderPoints(renderer, points, drawCount);
+    int w;
+    int h;
+    SDL_GetWindowSize(m_window, &w, &h);
+    m_renderer.set_size(w, h);
 }
 
 SDL_AppResult Game::update()
@@ -63,14 +21,42 @@ SDL_AppResult Game::update()
     double dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
     m_lastNow = newNow;
 
-    SDL_SetRenderDrawColor(m_renderer, 90, 137, 57, 255);
-    SDL_RenderClear(m_renderer);
+    SDL_SetRenderDrawColor(m_SDLRenderer, 90, 137, 57, 255);
+    SDL_RenderClear(m_SDLRenderer);
 
-    SDL_SetRenderDrawColor(m_renderer, 255, 170, 127, 255);
-    DrawCircle(m_renderer, m_inputManager.get_mouse_pos(), 40);
 
-    SDL_RenderPresent(m_renderer);
+    static Vec2 player = {0, 0};
 
+    static Vec2 obstacle = {40, 50};
+
+
+    if (m_inputManager.is_key_down("W")) {
+        player.y -= 20 * dt;
+    }
+    if (m_inputManager.is_key_down("S")) {
+        player.y += 20 * dt;
+    }
+    if (m_inputManager.is_key_down("D")) {
+        player.x += 20 * dt;
+    }
+    if (m_inputManager.is_key_down("A")) {
+        player.x -= 20 * dt;
+    }
+
+    if (m_inputManager.is_key_down("O")) {
+        m_renderer.set_scale(m_renderer.get_scale() + 1 * dt);
+    }
+    if (m_inputManager.is_key_down("I")) {
+        m_renderer.set_scale(m_renderer.get_scale() - 1 * dt);
+    }
+
+    m_renderer.set_position(player);
+
+    SDL_SetRenderDrawColor(m_SDLRenderer, 255, 170, 127, 255);
+    m_renderer.draw_circle(player, 80);
+    m_renderer.draw_rect(obstacle, 20, 20);
+
+    SDL_RenderPresent(m_SDLRenderer);
     return SDL_APP_CONTINUE;
 };
 
@@ -79,6 +65,11 @@ SDL_AppResult Game::process_event(SDL_Event* event)
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
+    case SDL_EVENT_WINDOW_RESIZED:
+        int w;
+        int h;
+        SDL_GetWindowSize(m_window, &w, &h);
+        m_renderer.set_size(w, h);
     case SDL_EVENT_KEY_DOWN:
         m_inputManager.on_key_down(SDL_GetKeyName(event->key.key));
         break;
@@ -96,6 +87,6 @@ SDL_AppResult Game::process_event(SDL_Event* event)
 
 void Game::shutdown()
 {
-    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyRenderer(m_SDLRenderer);
     SDL_DestroyWindow(m_window);
 }

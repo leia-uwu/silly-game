@@ -41,8 +41,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
     SDL_Window* window = SDL_CreateWindow(
         "Game",
         800,
-        400,
-        SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+        450,
+        SDL_WINDOW_RESIZABLE
     );
 
     if (!window) {
