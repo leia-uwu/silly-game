@@ -24,14 +24,14 @@ float Renderer::get_scale()
     return m_scale;
 }
 
-void Renderer::set_size(const float& width, const float& height)
+void Renderer::set_size(const float width, const float height)
 {
     m_width = width;
     m_height = height;
     update_transform();
 }
 
-void Renderer::set_scale(const float& scale)
+void Renderer::set_scale(const float scale)
 {
     m_scale = scale;
     update_transform();
@@ -42,13 +42,13 @@ int roundUpToMultipleOfEight(int v)
     return (v + (8 - 1)) & -8;
 }
 
-void Renderer::draw_circle(const Vec2& position, const float& radius)
+void Renderer::draw_circle(const Vec2& position, const float radius)
 {
     draw_ellipse(position, radius, radius);
 }
 
 // https://stackoverflow.com/a/47766167
-void Renderer::draw_ellipse(const Vec2& position, const float& radiusX, const float& radiusY)
+void Renderer::draw_ellipse(const Vec2& position, const float radiusX, const float radiusY)
 {
     const float rx = radiusX * m_scale;
     const float ry = radiusY * m_scale;
@@ -95,7 +95,7 @@ void Renderer::draw_ellipse(const Vec2& position, const float& radiusX, const fl
     }
 }
 
-void Renderer::draw_rect(const Vec2& position, const float& width, const float& height)
+void Renderer::draw_rect(const Vec2& position, const float width, const float height)
 {
     const float w = width * m_scale;
     const float h = height * m_scale;
