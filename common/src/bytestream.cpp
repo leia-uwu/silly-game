@@ -252,14 +252,14 @@ double_t ByteStream::read_float(
 }
 
 ByteStream* ByteStream::write_boolean_group(
-    const bool& b0,
-    const bool& b1,
-    const bool& b2,
-    const bool& b3,
-    const bool& b4,
-    const bool& b5,
-    const bool& b6,
-    const bool& b7
+    const bool b0,
+    const bool b1,
+    const bool b2,
+    const bool b3,
+    const bool b4,
+    const bool b5,
+    const bool b6,
+    const bool b7
 )
 {
     this->write_uint8(
@@ -292,14 +292,14 @@ ByteStream::read_boolean_group()
 }
 
 ByteStream* ByteStream::write_boolean_group2(
-    const bool& b0, const bool& b1,
-    const bool& b2, const bool& b3,
-    const bool& b4, const bool& b5,
-    const bool& b6, const bool& b7,
-    const bool& b8, const bool& b9,
-    const bool& bA, const bool& bB,
-    const bool& bC, const bool& bD,
-    const bool& bE, const bool& bF
+    const bool b0, const bool b1,
+    const bool b2, const bool b3,
+    const bool b4, const bool b5,
+    const bool b6, const bool b7,
+    const bool b8, const bool b9,
+    const bool bA, const bool bB,
+    const bool bC, const bool bD,
+    const bool bE, const bool bF
 )
 {
     this->write_uint8(

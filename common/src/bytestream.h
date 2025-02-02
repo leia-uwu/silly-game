@@ -82,26 +82,26 @@ public:
     );
 
     ByteStream* write_boolean_group(
-        const bool& b0 = false,
-        const bool& b1 = false,
-        const bool& b2 = false,
-        const bool& b3 = false,
-        const bool& b4 = false,
-        const bool& b5 = false,
-        const bool& b6 = false,
-        const bool& b7 = false
+        const bool b0 = false,
+        const bool b1 = false,
+        const bool b2 = false,
+        const bool b3 = false,
+        const bool b4 = false,
+        const bool b5 = false,
+        const bool b6 = false,
+        const bool b7 = false
     );
     std::tuple<bool, bool, bool, bool, bool, bool, bool, bool> read_boolean_group();
 
     ByteStream* write_boolean_group2(
-        const bool& b0 = false, const bool& b1 = false,
-        const bool& b2 = false, const bool& b3 = false,
-        const bool& b4 = false, const bool& b5 = false,
-        const bool& b6 = false, const bool& b7 = false,
-        const bool& b8 = false, const bool& b9 = false,
-        const bool& bA = false, const bool& bB = false,
-        const bool& bC = false, const bool& bD = false,
-        const bool& bE = false, const bool& bF = false
+        const bool b0 = false, const bool b1 = false,
+        const bool b2 = false, const bool b3 = false,
+        const bool b4 = false, const bool b5 = false,
+        const bool b6 = false, const bool b7 = false,
+        const bool b8 = false, const bool b9 = false,
+        const bool bA = false, const bool bB = false,
+        const bool bC = false, const bool bD = false,
+        const bool bE = false, const bool bF = false
     );
     std::tuple<
         bool, bool, bool, bool,
