@@ -95,7 +95,7 @@ ByteStream* ByteStream::write_int8(const int8_t val)
 
 int8_t ByteStream::read_int8()
 {
-    return (uint8_t)this->read_uint8();
+    return this->read_uint8();
 }
 
 ByteStream* ByteStream::write_int16(const int16_t val)
@@ -105,7 +105,7 @@ ByteStream* ByteStream::write_int16(const int16_t val)
 
 int16_t ByteStream::read_int16()
 {
-    return (uint16_t)this->read_uint16();
+    return this->read_uint16();
 }
 
 ByteStream* ByteStream::write_int32(const int32_t val)
@@ -115,7 +115,7 @@ ByteStream* ByteStream::write_int32(const int32_t val)
 
 int32_t ByteStream::read_int32()
 {
-    return (uint32_t)this->read_uint32();
+    return this->read_uint32();
 }
 
 ByteStream* ByteStream::write_int64(const int64_t val)
@@ -125,7 +125,7 @@ ByteStream* ByteStream::write_int64(const int64_t val)
 
 int64_t ByteStream::read_int64()
 {
-    return (uint64_t)this->read_uint64();
+    return this->read_uint64();
 }
 
 ByteStream* ByteStream::write_float32(const float_t val)

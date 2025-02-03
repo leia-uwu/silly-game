@@ -19,7 +19,7 @@ void Renderer::set_position(const Vec2& position)
     update_transform();
 }
 
-float Renderer::get_scale()
+float Renderer::get_scale() const
 {
     return m_scale;
 }
@@ -55,8 +55,8 @@ void Renderer::draw_ellipse(const Vec2& position, const float radiusX, const flo
     float theta = 0; // angle that will be increased each loop
 
     // starting point
-    int x = (float)rx * cos(theta); // start point
-    int y = (float)ry * sin(theta); // start point
+    int x = (float)rx * std::cos(theta); // start point
+    int y = (float)ry * std::sin(theta); // start point
     int x1 = x;
     int y1 = y;
 
@@ -65,8 +65,8 @@ void Renderer::draw_ellipse(const Vec2& position, const float radiusX, const flo
     for (theta = step; theta <= M_PI_2; theta += step) // step through only a 90 arc (1 quadrant)
     {
         // get new point location
-        x1 = (float)rx * cosf(theta) + 0.5; // new point (+.5 is a quick rounding method)
-        y1 = (float)ry * sinf(theta) + 0.5; // new point (+.5 is a quick rounding method)
+        x1 = lround((rx * cosf(theta)) + 0.5); // new point (+.5 is a quick rounding method)
+        y1 = lround((ry * sinf(theta)) + 0.5); // new point (+.5 is a quick rounding method)
 
         // draw line from previous point to new point, ONLY if point incremented
         if ((x != x1) || (y != y1)) // only draw if coordinate changed

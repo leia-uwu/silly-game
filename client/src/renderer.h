@@ -19,12 +19,12 @@ public:
     Renderer(SDL_Renderer* renderer);
 
     void set_position(const Vec2& position);
-    void set_size(const float width, const float height);
-    float get_scale();
-    void set_scale(const float scale);
+    void set_size(float width, float height);
+    [[nodiscard]] float get_scale() const;
+    void set_scale(float scale);
 
-    void draw_circle(const Vec2& position, const float radius);
-    void draw_ellipse(const Vec2& position, const float radiusX, const float radiusY);
+    void draw_circle(const Vec2& position, float radius);
+    void draw_ellipse(const Vec2& position, float radiusX, float radiusY);
 
-    void draw_rect(const Vec2& position, const float width, const float height);
+    void draw_rect(const Vec2& position, float width, float height);
 };

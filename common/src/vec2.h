@@ -6,6 +6,7 @@
 #include <SDL3/SDL_rect.h>
 class Vec2 : public SDL_FPoint
 {
+public:
 #else
 class Vec2
 {
@@ -13,39 +14,38 @@ public:
     float x;
     float y;
 #endif
-public:
     Vec2();
     Vec2(float xPos);
     Vec2(float xPos, float yPos);
 
-    Vec2 clone();
+    [[nodiscard]] Vec2 clone() const;
 
-    Vec2* add(const float value);
+    Vec2* add(float value);
     Vec2* add(const Vec2& a);
-    Vec2* sub(const float value);
+    Vec2* sub(float value);
     Vec2* sub(const Vec2& a);
-    Vec2* mul(const float scale);
+    Vec2* mul(float scale);
     Vec2* mul(const Vec2& a);
-    Vec2* div(const float scale);
-    Vec2* div(const Vec2& b);
-    Vec2* rotate(const float rad);
+    Vec2* div(float scale);
+    Vec2* div(const Vec2& a);
+    Vec2* rotate(float rad);
     Vec2* neg();
     Vec2* normalize();
     Vec2* normalize_safe(const Vec2& v = {1.0, 0.0});
 
-    float length_sqr();
-    float length();
-    float distance_to(const Vec2& a);
-    float dot(const Vec2& a);
+    [[nodiscard]] float length_sqr() const;
+    [[nodiscard]] float length() const;
+    [[nodiscard]] float distance_to(const Vec2& a) const;
+    [[nodiscard]] float dot(const Vec2& a) const;
 
-    bool equals(const Vec2& a, float epsilon = 0.0001);
+    [[nodiscard]] bool equals(const Vec2& a, float epsilon = 0.0001) const;
 
     static Vec2 add(const Vec2& a, const Vec2& b);
-    static Vec2 add(const Vec2& a, const float value);
+    static Vec2 add(const Vec2& a, float value);
     static Vec2 sub(const Vec2& a, const Vec2& b);
-    static Vec2 sub(const Vec2& a, const float value);
+    static Vec2 sub(const Vec2& a, float value);
     static Vec2 mul(const Vec2& a, const Vec2& b);
-    static Vec2 mul(const Vec2& a, const float scale);
+    static Vec2 mul(const Vec2& a, float scale);
     static Vec2 div(const Vec2& a, const Vec2& b);
-    static Vec2 div(const Vec2& a, const float scale);
+    static Vec2 div(const Vec2& a, float scale);
 };

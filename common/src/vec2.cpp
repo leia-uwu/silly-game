@@ -19,7 +19,7 @@ Vec2::Vec2(const float xPos, const float yPos)
     y = yPos;
 }
 
-Vec2 Vec2::clone()
+Vec2 Vec2::clone() const
 {
     return {x, y};
 }
@@ -56,10 +56,10 @@ Vec2* Vec2::sub(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::mul(const float value)
+Vec2* Vec2::mul(const float scale)
 {
-    x *= value;
-    y *= value;
+    x *= scale;
+    y *= scale;
 
     return this;
 }
@@ -72,10 +72,10 @@ Vec2* Vec2::mul(const Vec2& a)
     return this;
 }
 
-Vec2* Vec2::div(const float value)
+Vec2* Vec2::div(const float scale)
 {
-    x /= value;
-    y /= value;
+    x /= scale;
+    y /= scale;
 
     return this;
 };
@@ -90,8 +90,8 @@ Vec2* Vec2::div(const Vec2& a)
 
 Vec2* Vec2::rotate(const float rad)
 {
-    float cosr = cos(rad);
-    float sinr = sin(rad);
+    float cosr = std::cos(rad);
+    float sinr = std::sin(rad);
 
     x = x * cosr - y * sinr;
     y = x * sinr + y * cosr;
@@ -101,7 +101,9 @@ Vec2* Vec2::rotate(const float rad)
 
 Vec2* Vec2::neg()
 {
-    return new Vec2(-x, -y);
+    x = -x;
+    y = -y;
+    return this;
 }
 
 Vec2* Vec2::normalize()
@@ -126,29 +128,29 @@ Vec2* Vec2::normalize_safe(const Vec2& v)
     return this;
 }
 
-float Vec2::length_sqr()
+float Vec2::length_sqr() const
 {
     return x * x + y * y;
 }
 
-float Vec2::length()
+float Vec2::length() const
 {
-    return sqrt(length_sqr());
+    return std::sqrt(length_sqr());
 }
 
-float Vec2::distance_to(const Vec2& a)
+float Vec2::distance_to(const Vec2& a) const
 {
     return clone().sub(a)->length();
 }
 
-float Vec2::dot(const Vec2& a)
+float Vec2::dot(const Vec2& a) const
 {
     return x * a.x + y * a.y;
 }
 
-bool Vec2::equals(const Vec2& a, float epsilon)
+bool Vec2::equals(const Vec2& a, float epsilon) const
 {
-    return fabs(x - a.x) <= epsilon && fabs(y - a.y) <= epsilon;
+    return std::fabs(x - a.x) <= epsilon && std::fabs(y - a.y) <= epsilon;
 }
 
 Vec2 Vec2::add(const Vec2& a, const Vec2& b)

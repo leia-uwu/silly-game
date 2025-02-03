@@ -32,7 +32,7 @@ static bool resizeCanvas(int eventType, const EmscriptenUiEvent* event, void* us
 };
 #endif
 
-SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
+SDL_AppResult SDL_AppInit(void** appstate, int /*argc*/, char** /*argv*/)
 {
     if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         std::cerr << "SDL_InitSubSystem error: " << SDL_GetError() << "\n";
@@ -45,13 +45,13 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
         SDL_WINDOW_RESIZABLE
     );
 
-    if (!window) {
+    if (window == nullptr) {
         std::cerr << "SDL_CreateWindow error: " << SDL_GetError() << "\n";
         return SDL_APP_FAILURE;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, 0);
-    if (!renderer) {
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
+    if (renderer == nullptr) {
         std::cerr << "SDL_CreateRenderer error: " << SDL_GetError() << "\n";
         return SDL_APP_FAILURE;
     }
@@ -61,7 +61,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
     resizeCanvas(0, nullptr, window);
 #endif
 
-    SDL_SetRenderVSync(renderer, true);
+    SDL_SetRenderVSync(renderer, 1);
 
     *appstate = new Game(window, renderer);
 
@@ -70,18 +70,18 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
 
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
-    auto game = static_cast<Game*>(appstate);
+    auto* game = static_cast<Game*>(appstate);
     return game->update();
 };
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
-    auto game = static_cast<Game*>(appstate);
+    auto* game = static_cast<Game*>(appstate);
     return game->process_event(event);
 };
 
-void SDL_AppQuit(void* appstate, SDL_AppResult result)
+void SDL_AppQuit(void* appstate, SDL_AppResult /*result*/)
 {
-    auto game = static_cast<Game*>(appstate);
+    auto* game = static_cast<Game*>(appstate);
     game->shutdown();
 };

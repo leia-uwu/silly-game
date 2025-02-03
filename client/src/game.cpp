@@ -18,7 +18,7 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
 SDL_AppResult Game::update()
 {
     std::chrono::duration<double> newNow = std::chrono::system_clock::now().time_since_epoch();
-    double dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
+    float dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
     m_lastNow = newNow;
 
     SDL_SetRenderDrawColor(m_SDLRenderer, 90, 137, 57, 255);
