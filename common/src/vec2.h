@@ -20,18 +20,18 @@ public:
 
     [[nodiscard]] Vec2 clone() const;
 
-    Vec2* add(float value);
-    Vec2* add(const Vec2& a);
-    Vec2* sub(float value);
-    Vec2* sub(const Vec2& a);
-    Vec2* mul(float scale);
-    Vec2* mul(const Vec2& a);
-    Vec2* div(float scale);
-    Vec2* div(const Vec2& a);
-    Vec2* rotate(float rad);
-    Vec2* neg();
-    Vec2* normalize();
-    Vec2* normalize_safe(const Vec2& v = {1.0, 0.0});
+    Vec2& add(float value);
+    Vec2& add(const Vec2& a);
+    Vec2& sub(float value);
+    Vec2& sub(const Vec2& a);
+    Vec2& mul(float scale);
+    Vec2& mul(const Vec2& a);
+    Vec2& div(float scale);
+    Vec2& div(const Vec2& a);
+    Vec2& rotate(float rad);
+    Vec2& neg();
+    Vec2& normalize();
+    Vec2& normalize_safe(const Vec2& v = {1.0, 0.0});
 
     [[nodiscard]] float length_sqr() const;
     [[nodiscard]] float length() const;

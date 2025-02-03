@@ -24,71 +24,71 @@ Vec2 Vec2::clone() const
     return {x, y};
 }
 
-Vec2* Vec2::add(const float value)
+Vec2& Vec2::add(const float value)
 {
     x += value;
     y += value;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::add(const Vec2& a)
+Vec2& Vec2::add(const Vec2& a)
 {
     x += a.x;
     y += a.y;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::sub(const float value)
+Vec2& Vec2::sub(const float value)
 {
     x -= value;
     y -= value;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::sub(const Vec2& a)
+Vec2& Vec2::sub(const Vec2& a)
 {
     x -= a.x;
     y -= a.y;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::mul(const float scale)
+Vec2& Vec2::mul(const float scale)
 {
     x *= scale;
     y *= scale;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::mul(const Vec2& a)
+Vec2& Vec2::mul(const Vec2& a)
 {
     x *= a.x;
     y *= a.y;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::div(const float scale)
+Vec2& Vec2::div(const float scale)
 {
     x /= scale;
     y /= scale;
 
-    return this;
+    return *this;
 };
 
-Vec2* Vec2::div(const Vec2& a)
+Vec2& Vec2::div(const Vec2& a)
 {
     x /= a.x;
     y /= a.y;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::rotate(const float rad)
+Vec2& Vec2::rotate(const float rad)
 {
     float cosr = std::cos(rad);
     float sinr = std::sin(rad);
@@ -96,17 +96,17 @@ Vec2* Vec2::rotate(const float rad)
     x = x * cosr - y * sinr;
     y = x * sinr + y * cosr;
 
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::neg()
+Vec2& Vec2::neg()
 {
     x = -x;
     y = -y;
-    return this;
+    return *this;
 }
 
-Vec2* Vec2::normalize()
+Vec2& Vec2::normalize()
 {
     float eps = 0.000001;
     float len = length();
@@ -114,10 +114,10 @@ Vec2* Vec2::normalize()
     x = len > eps ? x / len : x;
     y = len > eps ? y / len : y;
 
-    return this;
+    return *this;
 };
 
-Vec2* Vec2::normalize_safe(const Vec2& v)
+Vec2& Vec2::normalize_safe(const Vec2& v)
 {
     float eps = 0.000001;
     float len = length();
@@ -125,7 +125,7 @@ Vec2* Vec2::normalize_safe(const Vec2& v)
     x = len > eps ? x / len : v.x;
     y = len > eps ? y / len : v.y;
 
-    return this;
+    return *this;
 }
 
 float Vec2::length_sqr() const
@@ -140,7 +140,7 @@ float Vec2::length() const
 
 float Vec2::distance_to(const Vec2& a) const
 {
-    return clone().sub(a)->length();
+    return clone().sub(a).length();
 }
 
 float Vec2::dot(const Vec2& a) const

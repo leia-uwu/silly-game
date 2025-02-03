@@ -19,150 +19,150 @@ ByteStream::~ByteStream()
     yeet(m_buffer);
 }
 
-ByteStream* ByteStream::write_uint8(const uint8_t val)
+ByteStream& ByteStream::write_uint8(const uint8_t val)
 {
-    if (this->m_index == m_size)
+    if (m_index == m_size)
         throw new std::out_of_range("Trying to write past the end of the stream");
-    this->m_buffer[this->m_index++] = val;
-    return this;
+    m_buffer[m_index++] = val;
+    return *this;
 }
 
 uint8_t ByteStream::read_uint8()
 {
-    if (this->m_index == m_size)
+    if (m_index == m_size)
         throw new std::out_of_range("Trying to read past the end of the stream");
-    return this->m_buffer[this->m_index++];
+    return m_buffer[m_index++];
 }
 
-ByteStream* ByteStream::write_uint16(const uint16_t val)
+ByteStream& ByteStream::write_uint16(const uint16_t val)
 {
-    this->write_uint8(val)
-        ->write_uint8(val >> 8);
-    return this;
+    write_uint8(val);
+    write_uint8(val >> 8);
+    return *this;
 }
 
 uint16_t ByteStream::read_uint16()
 {
-    return this->read_uint8()
-        | (this->read_uint8() << 8);
+    return read_uint8()
+        | (read_uint8() << 8);
 }
 
-ByteStream* ByteStream::write_uint24(const uint32_t val)
+ByteStream& ByteStream::write_uint24(const uint32_t val)
 {
-    this->write_uint8(val)
-        ->write_uint8(val >> 8)
-        ->write_uint8(val >> 16);
-    return this;
+    write_uint8(val);
+    write_uint8(val >> 8);
+    write_uint8(val >> 16);
+    return *this;
 }
 
 uint32_t ByteStream::read_uint24()
 {
-    return this->read_uint8()
-        | (this->read_uint8() << 8)
-        | (this->read_uint8() << 16);
+    return read_uint8()
+        | (read_uint8() << 8)
+        | (read_uint8() << 16);
 }
 
-ByteStream* ByteStream::write_uint32(const uint32_t val)
+ByteStream& ByteStream::write_uint32(const uint32_t val)
 {
-    this->write_uint16(val)
-        ->write_uint16(val >> 16);
-    return this;
+    write_uint16(val);
+    write_uint16(val >> 16);
+    return *this;
 }
 
 uint32_t ByteStream::read_uint32()
 {
-    return this->read_uint16()
-        | (this->read_uint16() << 16);
+    return read_uint16()
+        | (read_uint16() << 16);
 }
 
-ByteStream* ByteStream::write_uint64(const uint64_t val)
+ByteStream& ByteStream::write_uint64(const uint64_t val)
 {
-    this->write_uint32(val)
-        ->write_uint32(val >> 32);
-    return this;
+    write_uint32(val);
+    write_uint32(val >> 32);
+    return *this;
 }
 
 uint64_t ByteStream::read_uint64()
 {
-    return this->read_uint32()
-        | ((uint64_t)this->read_uint32() << 32);
+    return read_uint32()
+        | ((uint64_t)read_uint32() << 32);
 }
 
-ByteStream* ByteStream::write_int8(const int8_t val)
+ByteStream& ByteStream::write_int8(const int8_t val)
 {
-    return this->write_uint8(val);
+    return write_uint8(val);
 }
 
 int8_t ByteStream::read_int8()
 {
-    return this->read_uint8();
+    return read_uint8();
 }
 
-ByteStream* ByteStream::write_int16(const int16_t val)
+ByteStream& ByteStream::write_int16(const int16_t val)
 {
-    return this->write_uint16(val);
+    return write_uint16(val);
 }
 
 int16_t ByteStream::read_int16()
 {
-    return this->read_uint16();
+    return read_uint16();
 }
 
-ByteStream* ByteStream::write_int32(const int32_t val)
+ByteStream& ByteStream::write_int32(const int32_t val)
 {
-    return this->write_uint32(val);
+    return write_uint32(val);
 }
 
 int32_t ByteStream::read_int32()
 {
-    return this->read_uint32();
+    return read_uint32();
 }
 
-ByteStream* ByteStream::write_int64(const int64_t val)
+ByteStream& ByteStream::write_int64(const int64_t val)
 {
-    return this->write_uint64(val);
+    return write_uint64(val);
 }
 
 int64_t ByteStream::read_int64()
 {
-    return this->read_uint64();
+    return read_uint64();
 }
 
-ByteStream* ByteStream::write_float32(const float_t val)
+ByteStream& ByteStream::write_float32(const float_t val)
 {
-    return this->write_uint32(std::bit_cast<uint32_t>(val));
+    return write_uint32(std::bit_cast<uint32_t>(val));
 }
 
 float_t ByteStream::read_float32()
 {
-    return std::bit_cast<float_t>(this->read_uint32());
+    return std::bit_cast<float_t>(read_uint32());
 }
 
-ByteStream* ByteStream::write_float64(const double_t val)
+ByteStream& ByteStream::write_float64(const double_t val)
 {
-    return this->write_uint64(std::bit_cast<uint64_t>(val));
+    return write_uint64(std::bit_cast<uint64_t>(val));
 }
 
 double_t ByteStream::read_float64()
 {
-    return std::bit_cast<double_t>(this->read_uint64());
+    return std::bit_cast<double_t>(read_uint64());
 }
 
-ByteStream* ByteStream::write_string(const size_t& bytes, const std::string& val)
+ByteStream& ByteStream::write_string(const size_t& bytes, const std::string& val)
 {
     if (bytes == 0)
-        return this;
+        return *this;
     const char* const c_str = val.c_str();
 
     for (int i = 0; i < bytes; i++) {
         const char c = c_str[i];
-        this->write_uint8(c);
+        write_uint8(c);
 
         if (c == 0)
             break;
     }
 
-    return this;
+    return *this;
 }
 
 std::string ByteStream::read_string(const size_t bytes)
@@ -175,7 +175,7 @@ std::string ByteStream::read_string(const size_t bytes)
     size_t i = 0;
 
     do {
-        if ((c = this->read_uint8()) == 0)
+        if ((c = read_uint8()) == 0)
             break;
 
         s += c;
@@ -184,7 +184,7 @@ std::string ByteStream::read_string(const size_t bytes)
     return s;
 }
 
-ByteStream* ByteStream::write_float(
+ByteStream& ByteStream::write_float(
     const double_t value,
     const double_t min,
     const double_t max,
@@ -196,26 +196,26 @@ ByteStream* ByteStream::write_float(
 
     switch (byte_count) {
     case 1:
-        this->write_uint8(val);
+        write_uint8(val);
         break;
     case 2:
-        this->write_uint16(val);
+        write_uint16(val);
         break;
     case 3:
-        this->write_uint24(val);
+        write_uint24(val);
         break;
     case 4:
-        this->write_uint32(val);
+        write_uint32(val);
         break;
     case 8:
-        this->write_uint64(val);
+        write_uint64(val);
         break;
     default:
         throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
         break;
     }
 
-    return this;
+    return *this;
 }
 
 double_t ByteStream::read_float(
@@ -229,19 +229,19 @@ double_t ByteStream::read_float(
 
     switch (byte_count) {
     case 1:
-        value = this->read_uint8();
+        value = read_uint8();
         break;
     case 2:
-        value = this->read_uint16();
+        value = read_uint16();
         break;
     case 3:
-        value = this->read_uint24();
+        value = read_uint24();
         break;
     case 4:
-        value = this->read_uint32();
+        value = read_uint32();
         break;
     case 8:
-        value = this->read_uint64();
+        value = read_uint64();
         break;
     default:
         throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
@@ -251,7 +251,7 @@ double_t ByteStream::read_float(
     return min + (max - min) * value / range;
 }
 
-ByteStream* ByteStream::write_boolean_group(
+ByteStream& ByteStream::write_boolean_group(
     const bool b0,
     const bool b1,
     const bool b2,
@@ -262,7 +262,7 @@ ByteStream* ByteStream::write_boolean_group(
     const bool b7
 )
 {
-    this->write_uint8(
+    write_uint8(
         (b0 ? 1 : 0)
         + (b1 ? 2 : 0)
         + (b2 ? 4 : 0)
@@ -272,13 +272,13 @@ ByteStream* ByteStream::write_boolean_group(
         + (b6 ? 64 : 0)
         + (b7 ? 128 : 0)
     );
-    return this;
+    return *this;
 }
 
 std::tuple<bool, bool, bool, bool, bool, bool, bool, bool>
 ByteStream::read_boolean_group()
 {
-    const uint8_t packed_group = this->read_uint8();
+    const uint8_t packed_group = read_uint8();
     return {
         (packed_group & 1) != 0,
         (packed_group & 2) != 0,
@@ -291,7 +291,7 @@ ByteStream::read_boolean_group()
     };
 }
 
-ByteStream* ByteStream::write_boolean_group2(
+ByteStream& ByteStream::write_boolean_group2(
     const bool b0, const bool b1,
     const bool b2, const bool b3,
     const bool b4, const bool b5,
@@ -302,7 +302,7 @@ ByteStream* ByteStream::write_boolean_group2(
     const bool bE, const bool bF
 )
 {
-    this->write_uint8(
+    write_uint8(
         (b0 ? 1 : 0)
         + (b1 ? 2 : 0)
         + (b2 ? 4 : 0)
@@ -320,7 +320,7 @@ ByteStream* ByteStream::write_boolean_group2(
         + (bE ? 16384 : 0)
         + (bF ? 32768 : 0)
     );
-    return this;
+    return *this;
 }
 
 std::tuple<
@@ -330,7 +330,7 @@ std::tuple<
     bool, bool, bool, bool>
 ByteStream::read_boolean_group2()
 {
-    const uint8_t packed_group = this->read_uint16();
+    const uint8_t packed_group = read_uint16();
     return {
         (packed_group & 1) != 0,
         (packed_group & 2) != 0,
