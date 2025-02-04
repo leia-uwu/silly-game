@@ -90,8 +90,8 @@ Vec2& Vec2::div(const Vec2& a)
 
 Vec2& Vec2::rotate(const float rad)
 {
-    float cosr = std::cos(rad);
-    float sinr = std::sin(rad);
+    const float cosr = std::cos(rad);
+    const float sinr = std::sin(rad);
 
     x = x * cosr - y * sinr;
     y = x * sinr + y * cosr;
@@ -108,8 +108,8 @@ Vec2& Vec2::neg()
 
 Vec2& Vec2::normalize()
 {
-    float eps = 0.000001;
-    float len = length();
+    static constexpr float eps = 0.000001;
+    const float len = length();
 
     x = len > eps ? x / len : x;
     y = len > eps ? y / len : y;
@@ -119,8 +119,8 @@ Vec2& Vec2::normalize()
 
 Vec2& Vec2::normalize_safe(const Vec2& v)
 {
-    float eps = 0.000001;
-    float len = length();
+    static constexpr float eps = 0.000001;
+    const float len = length();
 
     x = len > eps ? x / len : v.x;
     y = len > eps ? y / len : v.y;
