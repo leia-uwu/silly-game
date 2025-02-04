@@ -148,7 +148,7 @@ double_t ByteStream::read_float64()
     return std::bit_cast<double_t>(read_uint64());
 }
 
-ByteStream& ByteStream::write_string(const size_t& bytes, const std::string& val)
+ByteStream& ByteStream::write_string(size_t bytes, const std::string& val)
 {
     if (bytes == 0)
         return *this;

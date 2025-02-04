@@ -66,7 +66,7 @@ public:
     ByteStream& write_float64(double_t val);
     double_t read_float64();
 
-    ByteStream& write_string(const size_t& bytes, const std::string& val);
+    ByteStream& write_string(size_t bytes, const std::string& val);
     std::string read_string(size_t bytes);
 
     ByteStream& write_float(
