@@ -14,11 +14,11 @@ public:
     float x;
     float y;
 #endif
-    Vec2();
-    Vec2(float xPos);
-    Vec2(float xPos, float yPos);
+    Vec2() noexcept;
+    Vec2(float xPos) noexcept;
+    Vec2(float xPos, float yPos) noexcept;
 
-    [[nodiscard]] Vec2 clone() const;
+    [[nodiscard]] Vec2 clone() const noexcept;
 
     Vec2& add(float value);
     Vec2& add(const Vec2& a);

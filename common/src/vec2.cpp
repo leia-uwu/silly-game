@@ -1,25 +1,25 @@
 #include "vec2.h"
 #include <cmath>
 
-Vec2::Vec2()
+Vec2::Vec2() noexcept
 {
     x = 0;
     y = 0;
 }
 
-Vec2::Vec2(const float xPos)
+Vec2::Vec2(const float xPos) noexcept
 {
     x = xPos;
     y = xPos;
 }
 
-Vec2::Vec2(const float xPos, const float yPos)
+Vec2::Vec2(const float xPos, const float yPos) noexcept
 {
     x = xPos;
     y = yPos;
 }
 
-Vec2 Vec2::clone() const
+Vec2 Vec2::clone() const noexcept
 {
     return {x, y};
 }
