@@ -1,0 +1,112 @@
+#pragma once
+
+// reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+// inspired by https://github.com/chalk/chalk
+
+#include <memory>
+#include <string>
+
+#include "utils.h"
+
+#define MAKE_STYLE(name, open, close)                                                     \
+private:                                                                                  \
+    /* cache instances */                                                                 \
+    mutable std::unique_ptr<Chalk> m_cached_##name{nullptr};                              \
+                                                                                          \
+public:                                                                                   \
+    [[nodiscard]] inline Chalk& name() const                                              \
+    {                                                                                     \
+        if (this->m_cached_##name == nullptr) {                                           \
+            this->m_cached_##name = std::unique_ptr<Chalk>(new Chalk(open, close, this)); \
+        }                                                                                 \
+        return *this->m_cached_##name;                                                    \
+    }                                                                                     \
+    [[nodiscard]] inline std::string name(const std::string& text) const                  \
+    {                                                                                     \
+        return this->name()(text);                                                        \
+    }
+
+struct Chalk
+{
+private:
+    const ushort m_opening_code;
+    const ushort m_closing_code;
+    const Chalk* const m_parent;
+
+protected:
+    friend consteval Chalk CREATE_INSTANCE(
+        ushort m_opening_code,
+        ushort m_closing_code,
+        const Chalk* m_parent
+    ) noexcept;
+
+    inline constexpr Chalk(
+        const ushort m_opening_code,
+        const ushort m_closing_code,
+        const Chalk* const m_parent
+    ) noexcept
+        : m_opening_code(m_opening_code)
+        , m_closing_code(m_closing_code)
+        , m_parent(m_parent)
+    {
+    }
+
+public:
+    MAKE_STYLE(reset, 0, 0)
+
+    MAKE_STYLE(black, 30, 39)
+    MAKE_STYLE(red, 31, 39)
+    MAKE_STYLE(green, 32, 39)
+    MAKE_STYLE(yellow, 33, 39)
+    MAKE_STYLE(blue, 34, 39)
+    MAKE_STYLE(magenta, 35, 39)
+    MAKE_STYLE(cyan, 36, 39)
+    MAKE_STYLE(white, 37, 39)
+    MAKE_STYLE(normal, 39, 39)
+
+    MAKE_STYLE(black_bright, 90, 39)
+    MAKE_STYLE(red_bright, 91, 39)
+    MAKE_STYLE(green_bright, 92, 39)
+    MAKE_STYLE(yellow_bright, 93, 39)
+    MAKE_STYLE(blue_bright, 94, 39)
+    MAKE_STYLE(magenta_bright, 95, 39)
+    MAKE_STYLE(cyan_bright, 96, 39)
+    MAKE_STYLE(white_bright, 97, 39)
+    MAKE_STYLE(normal_bright, 39, 39)
+
+    MAKE_STYLE(bg_black, 40, 49)
+    MAKE_STYLE(bg_red, 41, 49)
+    MAKE_STYLE(bg_green, 42, 49)
+    MAKE_STYLE(bg_yellow, 43, 49)
+    MAKE_STYLE(bg_blue, 44, 49)
+    MAKE_STYLE(bg_magenta, 45, 49)
+    MAKE_STYLE(bg_cyan, 46, 49)
+    MAKE_STYLE(bg_white, 47, 49)
+    MAKE_STYLE(bg_normal, 49, 49)
+
+    MAKE_STYLE(bg_black_bright, 100, 49)
+    MAKE_STYLE(bg_red_bright, 101, 49)
+    MAKE_STYLE(bg_green_bright, 102, 49)
+    MAKE_STYLE(bg_yellow_bright, 103, 49)
+    MAKE_STYLE(bg_blue_bright, 104, 49)
+    MAKE_STYLE(bg_magenta_bright, 105, 49)
+    MAKE_STYLE(bg_cyan_bright, 106, 49)
+    MAKE_STYLE(bg_white_bright, 107, 49)
+    MAKE_STYLE(bg_normal_bright, 49, 49)
+
+    MAKE_STYLE(bold, 1, 22)
+    MAKE_STYLE(faint, 2, 22)
+    MAKE_STYLE(italic, 3, 23)
+    MAKE_STYLE(underline, 4, 24)
+    MAKE_STYLE(dbl_underline, 21, 24)
+    MAKE_STYLE(blink_slow, 5, 25)
+    MAKE_STYLE(blink_fast, 6, 25)
+    MAKE_STYLE(invert, 7, 27)
+    MAKE_STYLE(conceal, 8, 28)
+    MAKE_STYLE(strikethrough, 9, 29)
+    MAKE_STYLE(overline, 53, 55)
+
+    std::string operator()(const std::string& text) const;
+};
+
+extern const Chalk CHALK;
