@@ -1,8 +1,13 @@
 .vscode/
+# kdevelop
+.kdev4/
+silly-game.kdev4
+
 .cache/
 build*/
 dist/
-node_modules/
 compile_commands.json
+
+node_modules/
 *.wasm
 client/public/*.js
