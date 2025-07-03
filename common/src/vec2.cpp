@@ -1,5 +1,6 @@
 #include "vec2.h"
 #include <cmath>
+#include <format>
 
 Vec2::Vec2() noexcept
 {
@@ -19,9 +20,18 @@ Vec2::Vec2(const float xPos, const float yPos) noexcept
     y = yPos;
 }
 
+void Vec2::set(const float xPos, const float yPos) {
+    x = xPos;
+    y = yPos;
+}
+
 Vec2 Vec2::clone() const noexcept
 {
     return {x, y};
+}
+
+bool Vec2::is_valid() const {
+    return std::isfinite(x) && std::isfinite(y);
 }
 
 Vec2& Vec2::add(const float value)
@@ -99,31 +109,44 @@ Vec2& Vec2::rotate(const float rad)
     return *this;
 }
 
-Vec2& Vec2::neg()
+Vec2& Vec2::invert()
 {
     x = -x;
     y = -y;
     return *this;
 }
 
+Vec2& Vec2::perp()
+{
+    float oldX = x;
+    x = -y;
+    y = oldX;
+    return *this;
+}
+
 Vec2& Vec2::normalize()
 {
-    static constexpr float eps = 0.000001;
     const float len = length();
 
-    x = len > eps ? x / len : x;
-    y = len > eps ? y / len : y;
+    if (len > VEC2_EPSILON) {
+        x /= len;
+        y /= len;
+    }
 
     return *this;
 };
 
 Vec2& Vec2::normalize_safe(const Vec2& v)
 {
-    static constexpr float eps = 0.000001;
     const float len = length();
 
-    x = len > eps ? x / len : v.x;
-    y = len > eps ? y / len : v.y;
+    if (len > VEC2_EPSILON) {
+        x /= len;
+        y /= len;
+    } else {
+        x = v.x;
+        y = v.y;
+    }
 
     return *this;
 }
@@ -140,7 +163,7 @@ float Vec2::length() const
 
 float Vec2::distance_to(const Vec2& a) const
 {
-    return clone().sub(a).length();
+    return Vec2::sub(*this, a).length();
 }
 
 float Vec2::dot(const Vec2& a) const
@@ -151,6 +174,111 @@ float Vec2::dot(const Vec2& a) const
 bool Vec2::equals(const Vec2& a, float epsilon) const
 {
     return std::fabs(x - a.x) <= epsilon && std::fabs(y - a.y) <= epsilon;
+}
+
+bool Vec2::equals(const Vec2& a) const
+{
+    return x == a.x && y == a.y;
+}
+
+bool Vec2::operator==(const Vec2& a) const
+{
+    return equals(a);
+}
+
+bool Vec2::operator!=(const Vec2& a) const
+{
+    return !equals(a);
+}
+
+float Vec2::operator[](int index) const
+{
+    return (&x)[index];
+}
+
+float& Vec2::operator[](int index)
+{
+    return (&x)[index];
+}
+
+Vec2 Vec2::operator-() const
+{
+    return {-x, -y};
+}
+
+Vec2 Vec2::operator-(const Vec2& a) const
+{
+    return {x - a.x, y - a.y};
+}
+
+float Vec2::operator*(const Vec2& a) const
+{
+    return x * a.x + y * a.y;
+}
+
+Vec2 Vec2::operator*(const float a) const
+{
+    return {x * a, y * a};
+}
+
+Vec2 Vec2::operator/(const float a) const
+{
+    return {x / a, y / a};
+}
+
+Vec2 operator*(const float a, const Vec2 b)
+{
+    return {b.x * a, b.y * a};
+}
+
+Vec2 Vec2::operator+(const Vec2& a) const
+{
+    return {x + a.x, y + a.y};
+}
+
+Vec2& Vec2::operator+=(const Vec2& a)
+{
+    x += a.x;
+    y += a.y;
+
+    return *this;
+}
+
+Vec2& Vec2::operator/=(const Vec2& a)
+{
+    x /= a.x;
+    y /= a.y;
+
+    return *this;
+}
+
+Vec2& Vec2::operator/=(const float a)
+{
+    x /= a;
+    y /= a;
+
+    return *this;
+}
+
+Vec2& Vec2::operator-=(const Vec2& a)
+{
+    x -= a.x;
+    y -= a.y;
+
+    return *this;
+}
+
+Vec2& Vec2::operator*=(const float a)
+{
+    x *= a;
+    y *= a;
+
+    return *this;
+}
+
+std::string Vec2::to_string()
+{
+    return std::format("X: {0:.4f}, Y: {1:.4f}", x, y);
 }
 
 Vec2 Vec2::add(const Vec2& a, const Vec2& b)

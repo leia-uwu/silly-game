@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+#define VEC2_EPSILON 0.001F
+
 // server doesn't need to link to SDL
 // so only make Vec2 extend SDL_FPoint if SDL is defined
 #ifdef SDL
@@ -20,6 +24,10 @@ public:
 
     [[nodiscard]] Vec2 clone() const noexcept;
 
+    void set(float xPos, float yPos);
+
+    [[nodiscard]] bool is_valid() const;
+
     Vec2& add(float value);
     Vec2& add(const Vec2& a);
     Vec2& sub(float value);
@@ -29,7 +37,8 @@ public:
     Vec2& div(float scale);
     Vec2& div(const Vec2& a);
     Vec2& rotate(float rad);
-    Vec2& neg();
+    Vec2& invert();
+    Vec2& perp();
     Vec2& normalize();
     Vec2& normalize_safe(const Vec2& v = {1.0, 0.0});
 
@@ -38,7 +47,26 @@ public:
     [[nodiscard]] float distance_to(const Vec2& a) const;
     [[nodiscard]] float dot(const Vec2& a) const;
 
-    [[nodiscard]] bool equals(const Vec2& a, float epsilon = 0.0001) const;
+    [[nodiscard]] bool equals(const Vec2& a) const;
+    [[nodiscard]] bool equals(const Vec2& a, float epsilon) const;
+    bool operator==(const Vec2& a) const;
+    bool operator!=(const Vec2& a) const;
+
+    float operator[](int index) const;
+    float& operator[](int index);
+    Vec2 operator-() const;
+    float operator*(const Vec2& a) const;
+    Vec2 operator*(float a) const;
+    Vec2 operator/(float a) const;
+    Vec2 operator+(const Vec2& a) const;
+    Vec2 operator-(const Vec2& a) const;
+    Vec2& operator+=(const Vec2& a);
+    Vec2& operator-=(const Vec2& a);
+    Vec2& operator/=(const Vec2& a);
+    Vec2& operator/=(float a);
+    Vec2& operator*=(float a);
+
+    std::string to_string();
 
     static Vec2 add(const Vec2& a, const Vec2& b);
     static Vec2 add(const Vec2& a, float value);
