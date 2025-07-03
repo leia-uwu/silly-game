@@ -2,19 +2,19 @@
     "compilerOptions": {
         "lib": [
             "DOM",
-            "ESNext"
+            "ES2022"
         ],
-        "target": "ESNext",
-        "module": "ESNext",
+        "target": "ES2022",
+        "module": "ES2022",
         "moduleResolution": "Bundler",
-        "outDir": "./dist",
         "newLine": "lf",
         "allowSyntheticDefaultImports": true,
         "useDefineForClassFields": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "allowJs": true,
-        "checkJs": true,
+        "checkJs": false,
+        "noEmit": true,
         "strict": true,
         "skipLibCheck": true,
         "types": [
@@ -22,6 +22,7 @@
         ]
     },
     "include": [
-        "src"
+        "src",
+        "vite.config.ts"
     ]
 }

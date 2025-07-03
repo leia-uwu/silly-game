@@ -10,5 +10,5 @@ window.addEventListener("keyup", (event) => {
     }
 }, true);
 
-import init from "../public/game_client.js";
+import init from "../wasm/game_client.js";
 await init()

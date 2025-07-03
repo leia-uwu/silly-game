@@ -9,5 +9,4 @@ dist/
 compile_commands.json
 
 node_modules/
-*.wasm
-client/public/*.js
+client/wasm/
