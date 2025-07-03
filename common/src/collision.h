@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/src/vec2.h"
+#include "vec2.h"
 #include <vector>
 
 namespace Collision

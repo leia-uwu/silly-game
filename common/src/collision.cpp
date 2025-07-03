@@ -148,7 +148,7 @@ bool Collision::CirclePolygon(
 
     Vec2 direction = polyCenter - circlePos;
 
-    if ((direction * resNormal) < 0) {
+    if ((direction * resNormal) > 0) {
         resNormal.invert();
     }
 

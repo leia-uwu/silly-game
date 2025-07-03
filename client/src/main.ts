@@ -10,4 +10,5 @@ window.addEventListener("keyup", (event) => {
     }
 }, true);
 
-import "../public/game_client.js"
+import init from "../public/game_client.js";
+await init()
