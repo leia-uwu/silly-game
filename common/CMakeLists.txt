@@ -3,7 +3,7 @@ set(
     src/vec2.cpp
     src/bytestream.cpp
     src/collision.cpp
-    src/chalk.cpp
+    src/formatter.cpp
 )
 
 add_library(common STATIC ${COMMON_SRC})

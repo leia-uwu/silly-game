@@ -11,13 +11,13 @@
 #define MAKE_STYLE(name, open, close)                                                     \
 private:                                                                                  \
     /* cache instances */                                                                 \
-    mutable std::unique_ptr<Chalk> m_cached_##name{nullptr};                              \
+    mutable std::unique_ptr<Formatter> m_cached_##name{nullptr};                              \
                                                                                           \
 public:                                                                                   \
-    [[nodiscard]] inline Chalk& name() const                                              \
+    [[nodiscard]] inline Formatter& name() const                                              \
     {                                                                                     \
         if (this->m_cached_##name == nullptr) {                                           \
-            this->m_cached_##name = std::unique_ptr<Chalk>(new Chalk(open, close, this)); \
+            this->m_cached_##name = std::unique_ptr<Formatter>(new Formatter(open, close, this)); \
         }                                                                                 \
         return *this->m_cached_##name;                                                    \
     }                                                                                     \
@@ -26,24 +26,24 @@ public:                                                                         
         return this->name()(text);                                                        \
     }
 
-struct Chalk
+struct Formatter
 {
 private:
     const ushort m_opening_code;
     const ushort m_closing_code;
-    const Chalk* const m_parent;
+    const Formatter* const m_parent;
 
 protected:
-    friend consteval Chalk CREATE_INSTANCE(
+    friend consteval Formatter CREATE_INSTANCE(
         ushort m_opening_code,
         ushort m_closing_code,
-        const Chalk* m_parent
+        const Formatter* m_parent
     ) noexcept;
 
-    inline constexpr Chalk(
+    constexpr Formatter(
         const ushort m_opening_code,
         const ushort m_closing_code,
-        const Chalk* const m_parent
+        const Formatter* const m_parent
     ) noexcept
         : m_opening_code(m_opening_code)
         , m_closing_code(m_closing_code)
@@ -109,4 +109,4 @@ public:
     std::string operator()(const std::string& text) const;
 };
 
-extern const Chalk CHALK;
+extern const Formatter FORMATTER;

@@ -1,4 +1,4 @@
-#include "chalk.h"
+#include "formatter.h"
 #include <regex>
 #include <string>
 
@@ -6,9 +6,9 @@ inline constexpr char CSI = '\x1b';
 inline constexpr std::string CODE_START{CSI, '['};
 inline constexpr std::string CODE_REGEX_START{CSI, '\\', '['};
 
-std::string Chalk::operator()(const std::string& text) const
+std::string Formatter::operator()(const std::string& text) const
 {
-    if (this == &CHALK)
+    if (this == &FORMATTER)
         return text;
 
     const std::string opening{CODE_START + std::to_string(this->m_opening_code) + 'm'};
@@ -21,13 +21,13 @@ std::string Chalk::operator()(const std::string& text) const
     return opening + body + closing;
 }
 
-consteval Chalk CREATE_INSTANCE(
+consteval Formatter CREATE_INSTANCE(
     const unsigned short m_opening_code,
     const unsigned short m_closing_code,
-    const Chalk* const m_parent
+    const Formatter* const m_parent
 ) noexcept
 {
     return {m_opening_code, m_closing_code, m_parent};
 }
 
-const Chalk CHALK{CREATE_INSTANCE(0, 0, nullptr)};
+const Formatter FORMATTER{CREATE_INSTANCE(0, 0, nullptr)};
