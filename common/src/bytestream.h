@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -26,7 +27,9 @@ public:
     constexpr ByteStream& set_index(const size_t index)
     {
         if (index >= m_size || m_index < 0)
-            throw new std::out_of_range("Index out of stream bounds");
+            throw new std::out_of_range(
+                std::format("Index out of stream bounds, index: {}, size: {}", index, m_size)
+            );
 
         m_index = index;
         return *this;

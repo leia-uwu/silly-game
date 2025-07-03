@@ -1,18 +1,9 @@
-#include <bit>
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-#include <stdexcept>
-
 #include "bytestream.h"
 
 ByteStream::ByteStream(const size_t size)
     : m_size(size)
 {
-    m_buffer = new uint8_t[size];
-
-    // fill the buffer with 0's to avoid leaking random memory on it
-    memset(m_buffer, 0, size);
+    m_buffer = new uint8_t[size]();
 }
 
 ByteStream::~ByteStream()
@@ -22,7 +13,7 @@ ByteStream::~ByteStream()
 
 ByteStream& ByteStream::write_uint8(const uint8_t val)
 {
-    if (m_index == m_size)
+    if (m_index >= m_size)
         throw new std::out_of_range("Trying to write past the end of the stream");
     m_buffer[m_index++] = val;
     return *this;
@@ -30,7 +21,7 @@ ByteStream& ByteStream::write_uint8(const uint8_t val)
 
 uint8_t ByteStream::read_uint8()
 {
-    if (m_index == m_size)
+    if (m_index >= m_size)
         throw new std::out_of_range("Trying to read past the end of the stream");
     return m_buffer[m_index++];
 }
