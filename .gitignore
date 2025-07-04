@@ -8,5 +8,7 @@ build*/
 dist/
 compile_commands.json
 
+_deps/
+
 node_modules/
 client/wasm/
