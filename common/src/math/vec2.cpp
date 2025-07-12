@@ -2,35 +2,37 @@
 #include <cmath>
 #include <format>
 
-Vec2::Vec2() noexcept
+Vec2::Vec2()
 {
     x = 0;
     y = 0;
 }
 
-Vec2::Vec2(const float xPos) noexcept
+Vec2::Vec2(const float xPos)
 {
     x = xPos;
     y = xPos;
 }
 
-Vec2::Vec2(const float xPos, const float yPos) noexcept
+Vec2::Vec2(const float xPos, const float yPos)
 {
     x = xPos;
     y = yPos;
 }
 
-void Vec2::set(const float xPos, const float yPos) {
+void Vec2::set(const float xPos, const float yPos)
+{
     x = xPos;
     y = yPos;
 }
 
-Vec2 Vec2::clone() const noexcept
+Vec2 Vec2::clone() const
 {
     return {x, y};
 }
 
-bool Vec2::is_valid() const {
+bool Vec2::is_valid() const
+{
     return std::isfinite(x) && std::isfinite(y);
 }
 
@@ -66,7 +68,7 @@ Vec2& Vec2::sub(const Vec2& a)
     return *this;
 }
 
-Vec2& Vec2::mul(const float scale)
+Vec2& Vec2::scale(const float scale)
 {
     x *= scale;
     y *= scale;
@@ -74,7 +76,7 @@ Vec2& Vec2::mul(const float scale)
     return *this;
 }
 
-Vec2& Vec2::mul(const Vec2& a)
+Vec2& Vec2::scale(const Vec2& a)
 {
     x *= a.x;
     y *= a.y;
@@ -131,6 +133,16 @@ Vec2& Vec2::normalize()
     if (len > VEC2_EPSILON) {
         x /= len;
         y /= len;
+    }
+
+    return *this;
+};
+
+Vec2& Vec2::normalize(const float length)
+{
+    if (length > VEC2_EPSILON) {
+        x /= length;
+        y /= length;
     }
 
     return *this;
@@ -276,7 +288,7 @@ Vec2& Vec2::operator*=(const float a)
     return *this;
 }
 
-std::string Vec2::to_string()
+std::string Vec2::to_string() const
 {
     return std::format("X: {0:.4f}, Y: {1:.4f}", x, y);
 }
@@ -319,4 +331,10 @@ Vec2 Vec2::div(const Vec2& a, const Vec2& b)
 Vec2 Vec2::div(const Vec2& a, const float scale)
 {
     return {a.x / scale, a.y / scale};
+}
+
+std::ostream& operator<<(std::ostream& os, const Vec2& vec)
+{
+    os << vec.to_string();
+    return os;
 }

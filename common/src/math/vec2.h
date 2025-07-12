@@ -18,11 +18,11 @@ public:
     float x;
     float y;
 #endif
-    Vec2() noexcept;
-    Vec2(float xPos) noexcept;
-    Vec2(float xPos, float yPos) noexcept;
+    Vec2();
+    Vec2(float xPos);
+    Vec2(float xPos, float yPos);
 
-    [[nodiscard]] Vec2 clone() const noexcept;
+    [[nodiscard]] Vec2 clone() const;
 
     void set(float xPos, float yPos);
 
@@ -32,14 +32,15 @@ public:
     Vec2& add(const Vec2& a);
     Vec2& sub(float value);
     Vec2& sub(const Vec2& a);
-    Vec2& mul(float scale);
-    Vec2& mul(const Vec2& a);
+    Vec2& scale(float scale);
+    Vec2& scale(const Vec2& a);
     Vec2& div(float scale);
     Vec2& div(const Vec2& a);
     Vec2& rotate(float rad);
     Vec2& invert();
     Vec2& perp();
     Vec2& normalize();
+    Vec2& normalize(float length);
     Vec2& normalize_safe(const Vec2& v = {1.0, 0.0});
 
     [[nodiscard]] float length_sqr() const;
@@ -66,7 +67,7 @@ public:
     Vec2& operator/=(float a);
     Vec2& operator*=(float a);
 
-    std::string to_string();
+    [[nodiscard]] std::string to_string() const;
 
     static Vec2 add(const Vec2& a, const Vec2& b);
     static Vec2 add(const Vec2& a, float value);
@@ -76,4 +77,6 @@ public:
     static Vec2 mul(const Vec2& a, float scale);
     static Vec2 div(const Vec2& a, const Vec2& b);
     static Vec2 div(const Vec2& a, float scale);
+
+    friend std::ostream& operator<<(std::ostream& os, const Vec2& vec);
 };

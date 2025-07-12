@@ -1,8 +1,10 @@
 set(
     COMMON_SRC
-    src/vec2.cpp
+    src/math/gmath.h
+    src/math/vec2.cpp
+    src/math/collision.cpp
+    src/math/shape.cpp
     src/bytestream.cpp
-    src/collision.cpp
     src/formatter.cpp
 )
 
