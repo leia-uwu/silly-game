@@ -1,4 +1,5 @@
 #include "bytestream.h"
+#include <cstdint>
 
 ByteStream::ByteStream(const size_t size)
     : m_size(size)
@@ -186,36 +187,53 @@ std::string ByteStream::readString(const size_t bytes)
     return s;
 }
 
+ByteStream& ByteStream::writeBytes(uint64_t value, uint8_t byteCount)
+{
+    switch (byteCount) {
+    case 1:
+        return writeUint8(value);
+    case 2:
+        return writeUint16(value);
+    case 3:
+        return writeUint24(value);
+    case 4:
+        return writeUint32(value);
+    case 8:
+        return writeUint64(value);
+    default:
+        throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
+    }
+};
+
+uint64_t ByteStream::readBytes(uint8_t byteCount)
+{
+    switch (byteCount) {
+    case 1:
+        return readUint8();
+    case 2:
+        return readUint16();
+    case 3:
+        return readUint24();
+    case 4:
+        return readUint32();
+    case 8:
+        return readUint64();
+    default:
+        throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
+    }
+};
+
 ByteStream& ByteStream::writeFloat(
     const double_t value,
     const double_t min,
     const double_t max,
-    const uint8_t byte_count
+    const uint8_t byteCount
 )
 {
-    const uint64_t range = (1L << (8L * byte_count)) - 1L;
+    const uint64_t range = (1L << (8L * byteCount)) - 1L;
     const double_t val = ((value - min) / (max - min)) * range + 0.5;
 
-    switch (byte_count) {
-    case 1:
-        writeUint8(val);
-        break;
-    case 2:
-        writeUint16(val);
-        break;
-    case 3:
-        writeUint24(val);
-        break;
-    case 4:
-        writeUint32(val);
-        break;
-    case 8:
-        writeUint64(val);
-        break;
-    default:
-        throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
-        break;
-    }
+    writeBytes(val, byteCount);
 
     return *this;
 }
@@ -223,132 +241,47 @@ ByteStream& ByteStream::writeFloat(
 double_t ByteStream::readFloat(
     const double_t min,
     const double_t max,
-    const uint8_t byte_count
+    const uint8_t byteCount
 )
 {
-    const uint64_t range = (1L << (8L * byte_count)) - 1L;
-    uint64_t value;
-
-    switch (byte_count) {
-    case 1:
-        value = readUint8();
-        break;
-    case 2:
-        value = readUint16();
-        break;
-    case 3:
-        value = readUint24();
-        break;
-    case 4:
-        value = readUint32();
-        break;
-    case 8:
-        value = readUint64();
-        break;
-    default:
-        throw new std::invalid_argument("Invalid byte count (must be either 1, 2, 3, 4, or 8)");
-        break;
-    }
+    const uint64_t range = (1L << (8L * byteCount)) - 1L;
+    uint64_t value = readBytes(byteCount);
 
     return min + (max - min) * value / range;
 }
 
-ByteStream& ByteStream::writeBooleanGroup(
-    const bool b0,
-    const bool b1,
-    const bool b2,
-    const bool b3,
-    const bool b4,
-    const bool b5,
-    const bool b6,
-    const bool b7
-)
+ByteStream& ByteStream::writeBooleans(uint8_t byteCount, std::vector<bool> bools)
 {
-    writeUint8(
-        (b0 ? 1 : 0)
-        + (b1 ? 2 : 0)
-        + (b2 ? 4 : 0)
-        + (b3 ? 8 : 0)
-        + (b4 ? 16 : 0)
-        + (b5 ? 32 : 0)
-        + (b6 ? 64 : 0)
-        + (b7 ? 128 : 0)
-    );
+    const uint64_t size = byteCount * 8L;
+    if (bools.size() > size) {
+        throw new std::out_of_range(std::format("Can only write {} booleans, received {}", size, bools.size()));
+    }
+
+    uint64_t val = 0;
+
+    for (size_t i = 0; i < bools.size(); i++) {
+        if (bools[i]) {
+            val |= 1 << i;
+        }
+    }
+
+    writeBytes(val, byteCount);
+
     return *this;
-}
+};
 
-std::tuple<bool, bool, bool, bool, bool, bool, bool, bool>
-ByteStream::readBooleanGroup()
+std::vector<bool> ByteStream::readBooleans(uint8_t byteCount)
 {
-    const uint8_t packed_group = readUint8();
-    return {
-        (packed_group & 1) != 0,
-        (packed_group & 2) != 0,
-        (packed_group & 4) != 0,
-        (packed_group & 8) != 0,
-        (packed_group & 16) != 0,
-        (packed_group & 32) != 0,
-        (packed_group & 64) != 0,
-        (packed_group & 128) != 0
-    };
-}
+    const uint64_t size = byteCount * 8L;
 
-ByteStream& ByteStream::writeBooleanGroup2(
-    const bool b0, const bool b1,
-    const bool b2, const bool b3,
-    const bool b4, const bool b5,
-    const bool b6, const bool b7,
-    const bool b8, const bool b9,
-    const bool bA, const bool bB,
-    const bool bC, const bool bD,
-    const bool bE, const bool bF
-)
-{
-    writeUint8(
-        (b0 ? 1 : 0)
-        + (b1 ? 2 : 0)
-        + (b2 ? 4 : 0)
-        + (b3 ? 8 : 0)
-        + (b4 ? 16 : 0)
-        + (b5 ? 32 : 0)
-        + (b6 ? 64 : 0)
-        + (b7 ? 128 : 0)
-        + (b8 ? 256 : 0)
-        + (b9 ? 512 : 0)
-        + (bA ? 1024 : 0)
-        + (bB ? 2048 : 0)
-        + (bC ? 4096 : 0)
-        + (bD ? 8192 : 0)
-        + (bE ? 16384 : 0)
-        + (bF ? 32768 : 0)
-    );
-    return *this;
-}
+    std::vector<bool> bools{};
+    bools.resize(size);
 
-std::tuple<
-    bool, bool, bool, bool,
-    bool, bool, bool, bool,
-    bool, bool, bool, bool,
-    bool, bool, bool, bool>
-ByteStream::readBooleanGroup2()
-{
-    const uint8_t packed_group = readUint16();
-    return {
-        (packed_group & 1) != 0,
-        (packed_group & 2) != 0,
-        (packed_group & 4) != 0,
-        (packed_group & 8) != 0,
-        (packed_group & 16) != 0,
-        (packed_group & 32) != 0,
-        (packed_group & 64) != 0,
-        (packed_group & 128) != 0,
-        (packed_group & 256) != 0,
-        (packed_group & 512) != 0,
-        (packed_group & 1024) != 0,
-        (packed_group & 2048) != 0,
-        (packed_group & 4096) != 0,
-        (packed_group & 8192) != 0,
-        (packed_group & 16384) != 0,
-        (packed_group & 32768) != 0
-    };
-}
+    const uint64_t value = readBytes(byteCount);
+
+    for (size_t i = 0; i < size; i++) {
+        bools[i] = (value & (1 << i)) != 0;
+    }
+
+    return bools;
+};

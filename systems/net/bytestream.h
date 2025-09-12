@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cmath>
-#include <cstdint>
 #include <format>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class ByteStream
 {
@@ -77,44 +77,28 @@ public:
     ByteStream& writeString(size_t bytes, const std::string& val);
     std::string readString(size_t bytes);
 
+    ByteStream& writeBytes(
+        uint64_t value,
+        uint8_t byteCount
+    );
+
+    uint64_t readBytes(
+        uint8_t byteCount
+    );
+
     ByteStream& writeFloat(
         double_t value,
         double_t min,
         double_t max,
-        uint8_t byte_count
+        uint8_t byteCount
     );
     double_t readFloat(
         double_t min,
         double_t max,
-        uint8_t byte_count
+        uint8_t byteCount
     );
 
-    ByteStream& writeBooleanGroup(
-        bool b0 = false,
-        bool b1 = false,
-        bool b2 = false,
-        bool b3 = false,
-        bool b4 = false,
-        bool b5 = false,
-        bool b6 = false,
-        bool b7 = false
-    );
-    std::tuple<bool, bool, bool, bool, bool, bool, bool, bool> readBooleanGroup();
+    ByteStream& writeBooleans(uint8_t byteCount, std::vector<bool> bools);
 
-    ByteStream& writeBooleanGroup2(
-        bool b0 = false, bool b1 = false,
-        bool b2 = false, bool b3 = false,
-        bool b4 = false, bool b5 = false,
-        bool b6 = false, bool b7 = false,
-        bool b8 = false, bool b9 = false,
-        bool bA = false, bool bB = false,
-        bool bC = false, bool bD = false,
-        bool bE = false, bool bF = false
-    );
-    std::tuple<
-        bool, bool, bool, bool,
-        bool, bool, bool, bool,
-        bool, bool, bool, bool,
-        bool, bool, bool, bool>
-    readBooleanGroup2();
+    std::vector<bool> readBooleans(uint8_t byteCount);
 };
