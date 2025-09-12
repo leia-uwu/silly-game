@@ -6,8 +6,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FindPkgConfig)
+if (BUILD_TESTING)
+    include(CTest)
+    enable_testing()
+endif()
 
+include(FindPkgConfig)
 include(FetchContent)
 # cmake not printing anything for what could take more than a minute is cringe
 # idk why its quiet by default...
