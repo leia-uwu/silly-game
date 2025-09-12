@@ -34,8 +34,7 @@ endif()
 add_subdirectory(systems)
 add_subdirectory(client)
 
-# TODO: make server build on windows, currently it fails to find libuv headers
-if (NOT DEFINED EMSCRIPTEN AND NOT DEFINED WIN32)
-    add_subdirectory(server)
-endif()
+# if (NOT DEFINED EMSCRIPTEN AND NOT DEFINED WIN32)
+    # add_subdirectory(server)
+# endif()
 

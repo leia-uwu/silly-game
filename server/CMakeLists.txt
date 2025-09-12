@@ -1,17 +1,13 @@
 pkg_check_modules(libuv QUIET IMPORTED_TARGET libuv)
 
-if (libuv_FOUND)
-    add_library(libuv ALIAS PkgConfig::libuv)
-else()
-    FetchContent_Declare(
-        libuv
-        GIT_REPOSITORY https://github.com/libuv/libuv
-        GIT_TAG        v1.51.0
-        GIT_SHALLOW ON
-    )
-    FetchContent_MakeAvailable(libuv)
-    add_library(libuv ALIAS uv_a)
-endif()
+FetchContent_Declare(
+    libuv
+    GIT_REPOSITORY https://github.com/libuv/libuv
+    GIT_TAG        v1.51.0
+    GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(libuv)
+add_library(libuv ALIAS uv_a)
 
 find_package(ZLIB QUIET)
 if (NOT ZLIB_FOUND)

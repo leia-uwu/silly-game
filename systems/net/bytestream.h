@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstdint>
 #include <format>
 #include <stdexcept>
 #include <string>

@@ -1,6 +1,7 @@
 #include "../bytestream.h"
 #include "systems/math/gmath.h"
 #include <cassert>
+#include <numbers>
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main()
@@ -19,7 +20,7 @@ int main()
     bs.writeInt32(-42069);
     bs.writeInt64(-42069999);
 
-    bs.writeFloat64(M_PI);
+    bs.writeFloat64(std::numbers::pi);
 
     bs.writeFloat(-5, -10, 10, 2);
     bs.writeFloat(5, 0, 10, 2);
@@ -52,7 +53,7 @@ int main()
     assert(bs.readInt32() == -42069);
     assert(bs.readInt64() == -42069999);
 
-    assert(bs.readFloat64() == M_PI);
+    assert(bs.readFloat64() == std::numbers::pi);
 
     assert(GMath::EqAbs(bs.readFloat(-10, 10, 2), -5, 0.01));
     assert(GMath::EqAbs(bs.readFloat(0, 10, 2), 5, 0.01));

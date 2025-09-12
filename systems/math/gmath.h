@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdlib>
+#include <numbers>
 
 // you might think this means "Game Math" since this is inside a game engine code
 //
@@ -19,4 +20,7 @@ inline bool EqAbs(double a, double b, double eps = 0.000001)
 {
     return std::abs(a - b) < eps;
 }
+
+// MSCV is stupid and doesn't have this on cmath?????
+inline constexpr double PI_2 = std::numbers::pi / 2.0;
 };

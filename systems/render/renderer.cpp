@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "systems/math/gmath.h"
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_rect.h>
 #include <cmath>
@@ -31,8 +32,8 @@ void Renderer::drawEllipse(const Vec2& position, const float radiusX, const floa
     int y1 = y;
 
     // repeat until theta >= 90;
-    float step = M_PI_2 / (float)prec; // amount to add to theta each time (degrees)
-    for (theta = step; theta <= M_PI_2; theta += step) // step through only a 90 arc (1 quadrant)
+    float step = GMath::PI_2 / (float)prec; // amount to add to theta each time (degrees)
+    for (theta = step; theta <= GMath::PI_2; theta += step) // step through only a 90 arc (1 quadrant)
     {
         // get new point location
         x1 = std::round((rx * std::cos(theta)) + 0.5); // new point (+.5 is a quick rounding method)

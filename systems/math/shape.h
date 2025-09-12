@@ -3,10 +3,12 @@
 #include "collision.h"
 #include "vec2.h"
 
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <format>
 #include <functional>
+#include <string>
 
 #include <numeric>
 #include <vector>

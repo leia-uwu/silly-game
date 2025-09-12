@@ -3,6 +3,7 @@
 #include <cmath>
 #include <format>
 #include <string>
+#include <ostream>
 
 #define VEC2_EPSILON 0.001F
 

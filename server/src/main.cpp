@@ -1,18 +1,13 @@
 #include "Loop.h"
 #include "WebSocket.h"
-#include "systems/math/collision.h"
-#include "systems/math/shape.h"
-#include "systems/math/vec2.h"
 #include "systems/net/bytestream.h"
 #include "systems/util/formatter.h"
 
 #include <chrono>
-#include <cmath>
 #include <iostream>
 
-#include <uv.h>
-
 #include <App.h>
+#include "uv.h"
 
 static std::chrono::duration<double> LAST_NOW = std::chrono::system_clock::now().time_since_epoch();
 
