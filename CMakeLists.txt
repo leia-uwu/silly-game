@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(silly-game CXX)
+project(silly-game C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
@@ -20,10 +20,11 @@ set(FETCHCONTENT_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
-add_subdirectory(common)
+add_subdirectory(systems)
 add_subdirectory(client)
 
-if (NOT DEFINED EMSCRIPTEN)
+# TODO: make server build on windows, currently it fails to find libuv headers
+if (NOT DEFINED EMSCRIPTEN AND NOT DEFINED WIN32)
     add_subdirectory(server)
 endif()
 

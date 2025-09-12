@@ -1,3 +1,5 @@
+#pragma once
+
 // you might think this means "Game Math" since this is inside a game engine code
 //
 // WRONG!

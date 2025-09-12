@@ -23,8 +23,8 @@ public:
 
     const Type type;
 
-    [[nodiscard]] virtual std::string to_string() const = 0;
-    [[nodiscard]] virtual bool point_inside(const Vec2& point) const = 0;
+    [[nodiscard]] virtual std::string toString() const = 0;
+    [[nodiscard]] virtual bool pointInside(const Vec2& point) const = 0;
     virtual Shape& translate(const Vec2& posToAdd) = 0;
     virtual Shape& scale(float scale) = 0;
 
@@ -51,12 +51,12 @@ public:
         assert(rad >= 0);
     }
 
-    [[nodiscard]] std::string to_string() const override
+    [[nodiscard]] std::string toString() const override
     {
         return std::format("Circle (X: {0:.4f}, Y: {1:.4f}, Rad: {2:.4f})", pos.x, pos.y, rad);
     }
 
-    [[nodiscard]] bool point_inside(const Vec2& point) const override
+    [[nodiscard]] bool pointInside(const Vec2& point) const override
     {
         return Collision::PointCircle(point, pos, rad);
     }
@@ -105,12 +105,12 @@ public:
         return min + ((max - min) / 2);
     }
 
-    [[nodiscard]] std::string to_string() const override
+    [[nodiscard]] std::string toString() const override
     {
-        return std::format("Rect(Min ({}) Max ({}))", min.to_string(), max.to_string());
+        return std::format("Rect(Min ({}) Max ({}))", min.toString(), max.toString());
     }
 
-    [[nodiscard]] bool point_inside(const Vec2& point) const override
+    [[nodiscard]] bool pointInside(const Vec2& point) const override
     {
         return Collision::PointRect(point, min, max);
     }
@@ -138,13 +138,16 @@ class Polygon : public Shape
 {
 public:
     std::vector<Vec2> points;
-    std::vector<Vec2> normals;
-    Vec2 center;
 
+private:
+    std::vector<Vec2> m_normals;
+    Vec2 m_center;
+
+public:
     Polygon(const std::vector<Vec2>& points)
         : Shape(POLYGON)
         , points(points)
-        , normals(points.size())
+        , m_normals(points.size())
     {
         assert(points.size() >= 3);
 
@@ -159,33 +162,43 @@ public:
             Vec2 pointB = points[(i + 1) % points.size()];
             Vec2 edge = pointB - pointA;
 
-            normals[i] = edge.perp().normalize();
+            m_normals[i] = edge.perp().normalize();
         }
     }
 
     void calculate_center()
     {
-        center = {0, 0};
+        m_center = {0, 0};
         for (auto point : points) {
-            center += point;
+            m_center += point;
         }
-        center *= 1.F / points.size();
+        m_center *= 1.F / points.size();
     }
 
-    [[nodiscard]] std::string to_string() const override
+    [[nodiscard]] const Vec2& center() const
+    {
+        return m_center;
+    }
+
+    [[nodiscard]] const std::vector<Vec2>& normals() const
+    {
+        return m_normals;
+    }
+
+    [[nodiscard]] std::string toString() const override
     {
         std::string formated = std::accumulate(
             points.cbegin(),
             points.cend(),
             std::string(),
             [](std::string a, const Vec2& b) {
-                return std::format("{} ({}),", a, b.to_string());
+                return std::format("{} ({}),", a, b.toString());
             }
         );
         return std::format("Polygon [{}]", formated);
     }
 
-    [[nodiscard]] bool point_inside(const Vec2& point) const override
+    [[nodiscard]] bool pointInside(const Vec2& point) const override
     {
         return Collision::PointPolygon(point, points);
     }
@@ -195,7 +208,7 @@ public:
         for (auto& point : points) {
             point += posToAdd;
         }
-        center += posToAdd;
+        m_center += posToAdd;
 
         return *this;
     }
@@ -203,18 +216,18 @@ public:
     Polygon& scale(const float scale) override
     {
         for (auto& pt : points) {
-            Vec2 toCenter = center - pt;
+            Vec2 toCenter = m_center - pt;
             float length = toCenter.length();
             Vec2 dir = toCenter.normalize(length);
 
-            pt = center - (dir * (length * scale));
+            pt = m_center - (dir * (length * scale));
         }
 
         return *this;
     }
 };
 
-using CollisionFn = std::function<bool(const Shape&, const Shape&, Collision::CollisionResponse*)>;
+using CollisionFn = std::function<bool(const Shape&, const Shape&, Collision::CollRes*)>;
 
 struct CollisionFnData
 {
@@ -226,7 +239,7 @@ class CollisionFns
 {
     std::array<std::array<CollisionFnData, Shape::COUNT>, Shape::COUNT> m_fns;
 
-    void register_fn(Shape::Type typeA, Shape::Type typeB, const CollisionFn& fn)
+    void registerFn(Shape::Type typeA, Shape::Type typeB, const CollisionFn& fn)
     {
         m_fns[typeA][typeB] = {
             .fn = fn,
@@ -260,14 +273,14 @@ public:
      * ```
      *  Rect rect({10, 10}, {20, 20});
      *  Circle circle({10, 15}, 1);
-     *  Collision::CollisionResponse res;
+     *  Collision::CollRes res;
      *  if (COLLISION_FNS.check(rect, circle, &res)) {
      *      // this will separate the circle from the rectangle
      *      circle.translate(res.normal * res.depth);
      *  }
      * ```
      */
-    bool check(const Shape& shapeA, const Shape& shapeB, Collision::CollisionResponse* res) const;
+    bool check(const Shape& shapeA, const Shape& shapeB, Collision::CollRes* res) const;
 };
 
 inline CollisionFns COLLISION_FNS;

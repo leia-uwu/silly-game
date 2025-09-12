@@ -10,7 +10,7 @@ namespace Collision
  *
  *  To separate them you can move them by the normal multiplied by the depth
  */
-struct CollisionResponse
+struct CollRes
 {
     /**
      * The direction to move the shapes so they separate
@@ -29,7 +29,7 @@ bool CircleCircle(
     const Vec2& posB,
     float radB,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool CircleRect(
@@ -39,7 +39,7 @@ bool CircleRect(
     const Vec2& rectMin,
     const Vec2& rectMax,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool CirclePolygon(
@@ -50,7 +50,7 @@ bool CirclePolygon(
     const std::vector<Vec2>& polyNormals,
     const Vec2& polyCenter,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool RectRect(
@@ -60,7 +60,7 @@ bool RectRect(
     const Vec2& rectBMin,
     const Vec2& rectBMax,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool RectPolygon(
@@ -71,7 +71,7 @@ bool RectPolygon(
     const std::vector<Vec2>& polyNormals,
     const Vec2& polyCenter,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool PolygonPolygon(
@@ -83,11 +83,13 @@ bool PolygonPolygon(
     const std::vector<Vec2>& normalsB,
     const Vec2& centerB,
 
-    CollisionResponse* res
+    CollRes* res
 );
 
 bool PointCircle(const Vec2& point, const Vec2& circlePos, float circleRad);
+
 bool PointRect(const Vec2& point, const Vec2& rectMin, const Vec2& rectMax);
-bool PointPolygon(const Vec2& point, const std::vector<Vec2>& pointsA);
+
+bool PointPolygon(const Vec2& point, const std::vector<Vec2>& points);
 
 };

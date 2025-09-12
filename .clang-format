@@ -82,6 +82,3 @@ AllowShortLambdasOnASingleLine: Empty
 
 # We do not want clang-format to put all arguments on a new line
 AllowAllArgumentsOnNextLine: false
-
-# Indent lambdas to the start of the line, not to the start of the lambda
-LambdaBodyIndentation: OuterScope

@@ -13,18 +13,20 @@ private:
     uint8_t* m_buffer;
     size_t m_index = 0;
 
+    bool m_owns_data;
+
 public:
-    [[nodiscard]] constexpr size_t get_size() const noexcept
+    [[nodiscard]] constexpr size_t size() const noexcept
     {
         return m_size;
     }
 
-    [[nodiscard]] constexpr size_t get_index() const noexcept
+    [[nodiscard]] constexpr size_t index() const noexcept
     {
         return m_index;
     }
 
-    constexpr ByteStream& set_index(const size_t index)
+    constexpr ByteStream& setIndex(const size_t index)
     {
         if (index >= m_size || m_index < 0)
             throw new std::out_of_range(
@@ -36,57 +38,58 @@ public:
     }
 
     ByteStream(size_t size);
+    ByteStream(uint8_t* buff, size_t size);
     ~ByteStream();
 
-    ByteStream& write_uint8(uint8_t val);
-    uint8_t read_uint8();
+    ByteStream& writeUint8(uint8_t val);
+    uint8_t readUint8();
 
-    ByteStream& write_uint16(uint16_t val);
-    uint16_t read_uint16();
+    ByteStream& writeUint16(uint16_t val);
+    uint16_t readUint16();
 
-    ByteStream& write_uint24(uint32_t val);
-    uint32_t read_uint24();
+    ByteStream& writeUint24(uint32_t val);
+    uint32_t readUint24();
 
-    ByteStream& write_uint32(uint32_t val);
-    uint32_t read_uint32();
+    ByteStream& writeUint32(uint32_t val);
+    uint32_t readUint32();
 
-    ByteStream& write_uint64(uint64_t val);
-    uint64_t read_uint64();
+    ByteStream& writeUint64(uint64_t val);
+    uint64_t readUint64();
 
-    ByteStream& write_int8(int8_t val);
-    int8_t read_int8();
+    ByteStream& writeInt8(int8_t val);
+    int8_t readInt8();
 
-    ByteStream& write_int16(int16_t val);
-    int16_t read_int16();
+    ByteStream& writeInt16(int16_t val);
+    int16_t readInt16();
 
-    ByteStream& write_int32(int32_t val);
-    int32_t read_int32();
+    ByteStream& writeInt32(int32_t val);
+    int32_t readInt32();
 
-    ByteStream& write_int64(int64_t val);
-    int64_t read_int64();
+    ByteStream& writeInt64(int64_t val);
+    int64_t readInt64();
 
-    ByteStream& write_float32(float_t val);
-    float_t read_float32();
+    ByteStream& writeFloat32(float_t val);
+    float_t readFloat32();
 
-    ByteStream& write_float64(double_t val);
-    double_t read_float64();
+    ByteStream& writeFloat64(double_t val);
+    double_t readFloat64();
 
-    ByteStream& write_string(size_t bytes, const std::string& val);
-    std::string read_string(size_t bytes);
+    ByteStream& writeString(size_t bytes, const std::string& val);
+    std::string readString(size_t bytes);
 
-    ByteStream& write_float(
+    ByteStream& writeFloat(
         double_t value,
         double_t min,
         double_t max,
         uint8_t byte_count
     );
-    double_t read_float(
+    double_t readFloat(
         double_t min,
         double_t max,
         uint8_t byte_count
     );
 
-    ByteStream& write_boolean_group(
+    ByteStream& writeBooleanGroup(
         bool b0 = false,
         bool b1 = false,
         bool b2 = false,
@@ -96,9 +99,9 @@ public:
         bool b6 = false,
         bool b7 = false
     );
-    std::tuple<bool, bool, bool, bool, bool, bool, bool, bool> read_boolean_group();
+    std::tuple<bool, bool, bool, bool, bool, bool, bool, bool> readBooleanGroup();
 
-    ByteStream& write_boolean_group2(
+    ByteStream& writeBooleanGroup2(
         bool b0 = false, bool b1 = false,
         bool b2 = false, bool b3 = false,
         bool b4 = false, bool b5 = false,
@@ -113,5 +116,5 @@ public:
         bool, bool, bool, bool,
         bool, bool, bool, bool,
         bool, bool, bool, bool>
-    read_boolean_group2();
+    readBooleanGroup2();
 };

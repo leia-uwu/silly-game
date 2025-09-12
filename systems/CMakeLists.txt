@@ -1,0 +1,5 @@
+add_subdirectory(util)
+add_subdirectory(math)
+add_subdirectory(render)
+add_subdirectory(input)
+add_subdirectory(net)

@@ -77,7 +77,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
     auto* game = static_cast<Game*>(appstate);
-    return game->process_event(event);
+    return game->processEvent(event);
 };
 
 void SDL_AppQuit(void* appstate, SDL_AppResult /*result*/)

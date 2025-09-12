@@ -8,45 +8,45 @@
 
 #include "utils.h"
 
-#define MAKE_STYLE(name, open, close)                                                     \
-private:                                                                                  \
-    /* cache instances */                                                                 \
-    mutable std::unique_ptr<Formatter> m_cached_##name{nullptr};                              \
-                                                                                          \
-public:                                                                                   \
-    [[nodiscard]] inline Formatter& name() const                                              \
-    {                                                                                     \
-        if (this->m_cached_##name == nullptr) {                                           \
+#define MAKE_STYLE(name, open, close)                                                             \
+private:                                                                                          \
+    /* cache instances */                                                                         \
+    mutable std::unique_ptr<Formatter> m_cached_##name{nullptr};                                  \
+                                                                                                  \
+public:                                                                                           \
+    [[nodiscard]] inline Formatter& name() const                                                  \
+    {                                                                                             \
+        if (this->m_cached_##name == nullptr) {                                                   \
             this->m_cached_##name = std::unique_ptr<Formatter>(new Formatter(open, close, this)); \
-        }                                                                                 \
-        return *this->m_cached_##name;                                                    \
-    }                                                                                     \
-    [[nodiscard]] inline std::string name(const std::string& text) const                  \
-    {                                                                                     \
-        return this->name()(text);                                                        \
+        }                                                                                         \
+        return *this->m_cached_##name;                                                            \
+    }                                                                                             \
+    [[nodiscard]] inline std::string name(const std::string& text) const                          \
+    {                                                                                             \
+        return this->name()(text);                                                                \
     }
 
 struct Formatter
 {
 private:
-    const ushort m_opening_code;
-    const ushort m_closing_code;
+    const ushort m_openingCode;
+    const ushort m_closingCode;
     const Formatter* const m_parent;
 
 protected:
-    friend consteval Formatter CREATE_INSTANCE(
-        ushort m_opening_code,
-        ushort m_closing_code,
+    friend consteval Formatter CreateInstance(
+        ushort m_openingCode,
+        ushort m_closingCode,
         const Formatter* m_parent
     ) noexcept;
 
     constexpr Formatter(
-        const ushort m_opening_code,
-        const ushort m_closing_code,
+        const ushort m_openingCode,
+        const ushort m_closingCode,
         const Formatter* const m_parent
     ) noexcept
-        : m_opening_code(m_opening_code)
-        , m_closing_code(m_closing_code)
+        : m_openingCode(m_openingCode)
+        , m_closingCode(m_closingCode)
         , m_parent(m_parent)
     {
     }

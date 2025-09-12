@@ -1,6 +1,10 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_video.h>
 #include <chrono>
+#include <cmath>
+
+#include "systems/render/renderItem.h"
 
 #include "game.h"
 
@@ -12,7 +16,45 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
     int w;
     int h;
     SDL_GetWindowSize(m_window, &w, &h);
-    m_renderer.set_size(w, h);
+
+    // root.pos.x = 100;
+    // root.pos.y = 100;
+    auto* texture = m_renderer.loadTexture("../client/assets/circle.bmp");
+
+    auto* parent = new RenderItem();
+    parent->scale.set(5, 5);
+    parent->pos.set(-500, -500);
+    root.addChild(parent);
+    for (int i = 0; i < 100; i++) {
+        auto* circle = new SpriteItem();
+        circle->setTexture(texture);
+        // circle->rad = 100;
+        circle->pos.set(100, 100);
+        circle->tint = 0xff0000;
+        circle->scale.set(0.9, 0.9);
+        circle->rot = 0.6;
+        parent->addChild(circle);
+        parent = circle;
+    }
+
+    // parent = &root;
+    // for (int i = 0; i < 100; i++) {
+    //     auto* circle = new CircleItem();
+    //     // circle->setTexture(texture);
+    //     circle->rad = 50;
+    //     circle->pos.set(100, 100);
+    //     circle->color = 0x00ff00;
+    //     circle->scale.set(0.9, 0.9);
+    //     circle->rot = 0.6;
+    //     parent->addChild(circle);
+    //     parent = circle;
+    // }
+
+    player.body.setTexture(texture);
+    player.handL.setTexture(texture);
+    player.handR.setTexture(texture);
+
+    root.addChild(&player.container);
 }
 
 SDL_AppResult Game::update()
@@ -21,45 +63,52 @@ SDL_AppResult Game::update()
     float dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
     m_lastNow = newNow;
 
-    SDL_SetRenderDrawColor(m_SDLRenderer, 90, 137, 57, 255);
+    SDL_SetRenderDrawColor(m_SDLRenderer, 0, 0, 0, 255);
     SDL_RenderClear(m_SDLRenderer);
 
-    static Vec2 player = {0, 0};
+    int w;
+    int h;
+    SDL_GetWindowSize(m_window, &w, &h);
 
-    static Vec2 obstacle = {40, 50};
-
-    if (m_inputManager.is_key_down("W")) {
-        player.y -= 20 * dt;
+    float speed = 240 * dt;
+    if (m_inputManager.isKeyDown("A")) {
+        player.container.pos.x -= speed;
     }
-    if (m_inputManager.is_key_down("S")) {
-        player.y += 20 * dt;
+    if (m_inputManager.isKeyDown("D")) {
+        player.container.pos.x += speed;
     }
-    if (m_inputManager.is_key_down("D")) {
-        player.x += 20 * dt;
-    }
-    if (m_inputManager.is_key_down("A")) {
-        player.x -= 20 * dt;
-    }
-
-    if (m_inputManager.is_key_down("O")) {
-        m_renderer.set_scale(m_renderer.get_scale() + 1 * dt);
-    }
-    if (m_inputManager.is_key_down("I")) {
-        m_renderer.set_scale(m_renderer.get_scale() - 1 * dt);
+    if (m_inputManager.isKeyDown("W")) {
+        player.container.pos.y -= speed;
+    } else if (m_inputManager.isKeyDown("S")) {
+        player.container.pos.y += speed;
     }
 
-    m_renderer.set_position(player);
+    if (m_inputManager.getWheelDelta().y > 0) {
+        root.scale *= 1.1;
+    } else if (m_inputManager.getWheelDelta().y < 0) {
+        root.scale *= 0.9;
+        root.scale.x = std::fmax(root.scale.x, 0.001);
+        root.scale.y = std::fmax(root.scale.y, 0.001);
+    }
 
-    SDL_SetRenderDrawColor(m_SDLRenderer, 255, 170, 127, 255);
-    m_renderer.draw_circle(player, 80);
-    m_renderer.draw_rect(obstacle, 20, 20);
+    Vec2 windowSize{(float)w, (float)h};
+    Vec2 halfSize = windowSize / 2.F;
+
+    auto sub = m_inputManager.getMousePos() - halfSize;
+    player.container.rot = std::atan2(sub.y, sub.x);
+
+    root.pos = -(player.container.pos * root.scale.x) + halfSize;
+    root.renderChildren(root.getMatrix(), m_renderer);
 
     SDL_RenderPresent(m_SDLRenderer);
+    m_inputManager.flush();
     return SDL_APP_CONTINUE;
 };
 
-SDL_AppResult Game::process_event(SDL_Event* event)
+SDL_AppResult Game::processEvent(SDL_Event* event)
 {
+    m_inputManager.processSDLEvent(event);
+
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
@@ -67,19 +116,7 @@ SDL_AppResult Game::process_event(SDL_Event* event)
         int w;
         int h;
         SDL_GetWindowSize(m_window, &w, &h);
-        m_renderer.set_size(w, h);
-    case SDL_EVENT_KEY_DOWN:
-        m_inputManager.on_key_down(SDL_GetKeyName(event->key.key));
-        break;
-    case SDL_EVENT_KEY_UP:
-        m_inputManager.on_key_up(SDL_GetKeyName(event->key.key));
-        break;
-    case SDL_EVENT_MOUSE_MOTION:
-    case SDL_EVENT_FINGER_MOTION:
-        m_inputManager.on_motion_event(event->motion);
-        break;
     }
-
     return SDL_APP_CONTINUE;
 }
 

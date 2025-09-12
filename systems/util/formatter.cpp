@@ -11,8 +11,8 @@ std::string Formatter::operator()(const std::string& text) const
     if (this == &FORMATTER)
         return text;
 
-    const std::string opening{CODE_START + std::to_string(this->m_opening_code) + 'm'};
-    const std::string closing_code = std::to_string(this->m_closing_code) + 'm';
+    const std::string opening{CODE_START + std::to_string(this->m_openingCode) + 'm'};
+    const std::string closing_code = std::to_string(this->m_closingCode) + 'm';
     const std::string closing{CODE_START + closing_code};
     const std::regex closing_regex{CODE_REGEX_START + closing_code};
 
@@ -21,13 +21,13 @@ std::string Formatter::operator()(const std::string& text) const
     return opening + body + closing;
 }
 
-consteval Formatter CREATE_INSTANCE(
-    const unsigned short m_opening_code,
-    const unsigned short m_closing_code,
+consteval Formatter CreateInstance(
+    const unsigned short m_openingCode,
+    const unsigned short m_closingCode,
     const Formatter* const m_parent
 ) noexcept
 {
-    return {m_opening_code, m_closing_code, m_parent};
+    return {m_openingCode, m_closingCode, m_parent};
 }
 
-const Formatter FORMATTER{CREATE_INSTANCE(0, 0, nullptr)};
+const Formatter FORMATTER{CreateInstance(0, 0, nullptr)};
