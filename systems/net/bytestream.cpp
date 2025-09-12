@@ -230,9 +230,15 @@ ByteStream& ByteStream::writeFloat(
     const uint8_t byteCount
 )
 {
-    const uint64_t range = (1L << (8L * byteCount)) - 1L;
-    const double_t val = ((value - min) / (max - min)) * range + 0.5;
+    if (value < min || value > max) {
+        throw new std::out_of_range(
+            std::format("writeFloat: Value out of range, received {}, range: [{}, {}]", value, min, max)
+        );
+    }
+    const uint64_t range = (1 << (8 * byteCount)) - 1;
 
+    const double_t t = (value - min) / (max - min);
+    const double_t val = t * range + 0.5;
     writeBytes(val, byteCount);
 
     return *this;
@@ -244,8 +250,8 @@ double_t ByteStream::readFloat(
     const uint8_t byteCount
 )
 {
-    const uint64_t range = (1L << (8L * byteCount)) - 1L;
-    uint64_t value = readBytes(byteCount);
+    const uint64_t range = (1 << (8 * byteCount)) - 1;
+    double_t value = readBytes(byteCount);
 
     return min + (max - min) * value / range;
 }
