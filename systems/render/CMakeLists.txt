@@ -8,4 +8,4 @@ set_target_properties(
     render
     PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}"
 )
-target_link_libraries(render math)
+target_link_libraries(render math SDL3::SDL3)

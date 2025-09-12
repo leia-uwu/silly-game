@@ -8,5 +8,5 @@ set_target_properties(
     input
     PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}"
 )
-target_link_libraries(input math)
+target_link_libraries(input math SDL3::SDL3)
 

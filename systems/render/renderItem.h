@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
+#include <utility>
 #include <vector>
 
 class RenderItem
@@ -241,7 +242,9 @@ public:
             renderer.drawPoly(poly.points);
             break;
         }
-        case Shape::COUNT:
+        default: {
+            std::unreachable();
+        }
         }
     }
 };
