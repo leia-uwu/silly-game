@@ -5,13 +5,15 @@
 
 #include <SDL3/SDL_filesystem.h>
 #include <SDL3/SDL_render.h>
-#include <iostream>
+#include <unordered_map>
 #include <vector>
 
 class Renderer
 {
 private:
     SDL_Renderer* m_renderer;
+
+    std::unordered_map<std::string, SDL_Texture*> m_textures;
 
 public:
     float m_width = 0;
@@ -34,26 +36,13 @@ public:
     void drawRect(const Vec2& position, float width, float height);
     void drawPoly(const std::vector<Vec2>& points);
 
-    SDL_Texture* loadTexture(const char* path)
+    void loadTexture(const std::string& id, const std::string& path);
+
+    SDL_Texture* getTexture(const std::string& id) const
     {
-        std::string filePath = SDL_GetBasePath();
-        filePath += "../";
-        filePath += path;
-
-        std::cout << "Loading " << filePath << "\n";
-
-        SDL_Surface* surf = SDL_LoadBMP(filePath.c_str());
-        if (surf == nullptr) {
-            std::cerr << "Couldn't load bitmap: " << SDL_GetError() << "\n";
+        if (!m_textures.contains(id)) {
+            return nullptr;
         }
-
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surf);
-        if (texture == nullptr) {
-            std::cerr << "Couldn't create texture: " << SDL_GetError() << "\n";
-        }
-        SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR);
-        SDL_DestroySurface(surf);
-
-        return texture;
+        return m_textures.at(id);
     }
 };

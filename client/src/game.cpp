@@ -19,7 +19,7 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
 
     // root.pos.x = 100;
     // root.pos.y = 100;
-    auto* texture = m_renderer.loadTexture("../client/assets/circle.bmp");
+    m_renderer.loadTexture("circle", "../client/assets/circle.bmp");
 
     auto* parent = new RenderItem();
     parent->scale.set(5, 5);
@@ -27,7 +27,7 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
     root.addChild(parent);
     for (int i = 0; i < 100; i++) {
         auto* circle = new SpriteItem();
-        circle->setTexture(texture);
+        circle->setTexture("circle");
         // circle->rad = 100;
         circle->pos.set(100, 100);
         circle->tint = 0xff0000;
@@ -50,9 +50,9 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer)
     //     parent = circle;
     // }
 
-    player.body.setTexture(texture);
-    player.handL.setTexture(texture);
-    player.handR.setTexture(texture);
+    player.body.setTexture("circle");
+    player.handL.setTexture("circle");
+    player.handR.setTexture("circle");
 
     root.addChild(&player.container);
 }

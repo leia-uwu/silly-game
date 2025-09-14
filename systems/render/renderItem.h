@@ -142,7 +142,7 @@ public:
 class SpriteItem : public RenderItem
 {
 public:
-    SDL_Texture* texture;
+    std::string textureId;
 
     float width;
     float height;
@@ -150,28 +150,30 @@ public:
     Vec2 center = {0.5, 0.5};
 
     Vec2 framePos;
-    float frameWidth;
-    float frameHeight;
+    // float frameWidth;
+    // float frameHeight;
 
     Color tint = 0xffffff;
 
     float alpha = 1;
 
-    void setTexture(SDL_Texture* tex)
+    void setTexture(const std::string& id)
     {
-        texture = tex;
-        SDL_GetTextureSize(texture, &width, &height);
-        frameWidth = width;
-        frameHeight = height;
+        textureId = id;
     }
 
     void render(const Matrix3x3& transform, Renderer& renderer) const override
     {
+        SDL_Texture* texture = renderer.getTexture(textureId);
+
+        float srcWidth, srcHeight;
+        SDL_GetTextureSize(texture, &srcWidth, &srcHeight);
+
         SDL_FRect srcRect = {
             .x = framePos.x,
             .y = framePos.y,
-            .w = frameWidth,
-            .h = frameHeight,
+            .w = srcWidth,
+            .h = srcHeight,
         };
 
         Vec2 scale = transform.scale();

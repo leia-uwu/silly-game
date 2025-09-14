@@ -4,6 +4,8 @@
 #include <SDL3/SDL_rect.h>
 #include <cmath>
 
+#include <iostream>
+
 Renderer::Renderer(SDL_Renderer* renderer)
     : m_renderer(renderer)
 {
@@ -83,4 +85,27 @@ void Renderer::drawPoly(const std::vector<Vec2>& points)
 
         SDL_RenderLine(m_renderer, a.x, a.y, b.x, b.y);
     }
+}
+
+void Renderer::loadTexture(const std::string& id, const std::string& path)
+{
+    std::string filePath = SDL_GetBasePath();
+    filePath += "../";
+    filePath += path;
+
+    std::cout << "Loading " << filePath << "\n";
+
+    SDL_Surface* surf = SDL_LoadBMP(filePath.c_str());
+    if (surf == nullptr) {
+        std::cerr << "Couldn't load bitmap: " << SDL_GetError() << "\n";
+    }
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surf);
+    if (texture == nullptr) {
+        std::cerr << "Couldn't create texture: " << SDL_GetError() << "\n";
+    }
+    SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR);
+    SDL_DestroySurface(surf);
+
+    m_textures[id] = texture;
 }
