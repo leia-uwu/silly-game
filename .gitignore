@@ -7,8 +7,12 @@ silly-game.kdev4
 build*/
 dist/
 compile_commands.json
+Testing/
 
 _deps/
 
 node_modules/
 client/wasm/
+
+# temp files ending with ~
+*~

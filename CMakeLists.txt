@@ -38,6 +38,8 @@ endif()
 add_subdirectory(systems)
 add_subdirectory(client)
 
+add_subdirectory(examples)
+
 # if (NOT DEFINED EMSCRIPTEN AND NOT DEFINED WIN32)
     # add_subdirectory(server)
 # endif()
