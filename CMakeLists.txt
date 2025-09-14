@@ -36,7 +36,6 @@ if (NOT SDL3_FOUND)
 endif()
 
 add_subdirectory(systems)
-add_subdirectory(client)
 
 add_subdirectory(examples)
 
