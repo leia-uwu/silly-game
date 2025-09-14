@@ -91,6 +91,13 @@ public:
         assert(min.y < max.y);
     }
 
+    static Rect fromDims(float width, float height, Vec2 center = {0, 0})
+    {
+        Vec2 size{width / 2, height / 2};
+
+        return Rect{center - size, center + size};
+    }
+
     [[nodiscard]] float width() const
     {
         return max.x - min.x;
@@ -104,6 +111,16 @@ public:
     [[nodiscard]] Vec2 center() const
     {
         return min + ((max - min) / 2);
+    }
+
+    [[nodiscard]] std::vector<Vec2> getPoints() const
+    {
+        return {
+            min,
+            {min.x, max.y},
+            max,
+            {max.x, min.y}
+        };
     }
 
     [[nodiscard]] std::string toString() const override
