@@ -30,4 +30,8 @@ include(findSDL)
 findSDL()
 
 add_subdirectory(systems)
-add_subdirectory(examples)
+
+option(BUILD_EXAMPLES "Build example games" ON)
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
