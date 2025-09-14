@@ -5,17 +5,13 @@
 #include <cmath>
 
 #include "systems/render/renderItem.h"
+#include "systems/render/renderer.h"
 
 #include "game.h"
 
-Game::Game(SDL_Window* window, SDL_Renderer* renderer)
-    : m_window(window)
-    , m_SDLRenderer(renderer)
-    , m_renderer(renderer)
+Game::Game(Renderer& renderer)
+    : m_renderer(renderer)
 {
-    int w;
-    int h;
-    SDL_GetWindowSize(m_window, &w, &h);
 
     // root.pos.x = 100;
     // root.pos.y = 100;
@@ -63,12 +59,8 @@ SDL_AppResult Game::update()
     float dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
     m_lastNow = newNow;
 
-    SDL_SetRenderDrawColor(m_SDLRenderer, 0, 0, 0, 255);
-    SDL_RenderClear(m_SDLRenderer);
-
-    int w;
-    int h;
-    SDL_GetWindowSize(m_window, &w, &h);
+    SDL_SetRenderDrawColor(m_renderer.renderer(), 0, 0, 0, 255);
+    SDL_RenderClear(m_renderer.renderer());
 
     float speed = 240 * dt;
     if (m_inputManager.isKeyDown("A")) {
@@ -91,7 +83,7 @@ SDL_AppResult Game::update()
         root.scale.y = std::fmax(root.scale.y, 0.001);
     }
 
-    Vec2 windowSize{(float)w, (float)h};
+    Vec2 windowSize{(float)m_renderer.windowWidth(), (float)m_renderer.windowHeight()};
     Vec2 halfSize = windowSize / 2.F;
 
     auto sub = m_inputManager.getMousePos() - halfSize;
@@ -100,28 +92,20 @@ SDL_AppResult Game::update()
     root.pos = -(player.container.pos * root.scale.x) + halfSize;
     root.renderChildren(root.getMatrix(), m_renderer);
 
-    SDL_RenderPresent(m_SDLRenderer);
+    SDL_RenderPresent(m_renderer.renderer());
     m_inputManager.flush();
     return SDL_APP_CONTINUE;
 };
 
 SDL_AppResult Game::processEvent(SDL_Event* event)
 {
+    m_renderer.processSDLEvent(event);
     m_inputManager.processSDLEvent(event);
 
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
-    case SDL_EVENT_WINDOW_RESIZED:
-        int w;
-        int h;
-        SDL_GetWindowSize(m_window, &w, &h);
+        break;
     }
     return SDL_APP_CONTINUE;
-}
-
-void Game::shutdown()
-{
-    SDL_DestroyRenderer(m_SDLRenderer);
-    SDL_DestroyWindow(m_window);
 }

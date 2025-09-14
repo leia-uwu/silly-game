@@ -33,16 +33,17 @@ class Game
 {
 
 private:
-    SDL_Window* m_window;
-    SDL_Renderer* m_SDLRenderer;
     std::chrono::duration<double> m_lastNow = std::chrono::system_clock::now().time_since_epoch();
+    Renderer& m_renderer;
+    InputManager m_inputManager;
 
 public:
-    Game(SDL_Window* window, SDL_Renderer* renderer);
+    Game(Renderer& renderer);
 
-    Renderer m_renderer;
-
-    InputManager m_inputManager;
+    [[nodiscard]] Renderer& renderer()
+    {
+        return m_renderer;
+    };
 
     RenderItem root;
 
@@ -51,6 +52,4 @@ public:
     SDL_AppResult update();
 
     SDL_AppResult processEvent(SDL_Event* event);
-
-    void shutdown();
 };

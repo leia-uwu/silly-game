@@ -1,14 +1,148 @@
 #include "renderer.h"
 #include "systems/math/gmath.h"
-#include <SDL3/SDL_oldnames.h>
+#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_rect.h>
 #include <cmath>
 
 #include <iostream>
 
-Renderer::Renderer(SDL_Renderer* renderer)
-    : m_renderer(renderer)
+// emscripten helpers
+// to make the canvas properly cover the entire web page
+// TODO: Make this under a fullscreen flag in Renderer
+// Currently we are just always forcing it to be the size of the browser tab window
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+
+EM_JS(int, getWindowWidth, (), {
+    return window.innerWidth;
+});
+
+EM_JS(int, getWindowHeight, (), {
+    return window.innerHeight;
+});
+
+static bool resizeCanvas(int eventType, const EmscriptenUiEvent* event, void* userData)
 {
+    auto window = static_cast<SDL_Window*>(userData);
+
+    int width = getWindowWidth();
+    int height = getWindowHeight();
+
+    if (!SDL_SetWindowSize(window, width, height)) {
+        std::cout << "SDL_SetWindowSize error: " << SDL_GetError() << "\n";
+    }
+    return 0;
+};
+#endif
+
+Renderer::Renderer()
+    : m_windowTitle("Game")
+    , m_windowWidth(800)
+    , m_windowHeight(400) { };
+
+Renderer::Renderer(std::string title, int width, int height)
+    : m_windowTitle(std::move(title))
+    , m_windowWidth(width)
+    , m_windowHeight(height) { };
+
+Renderer::~Renderer()
+{
+    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyWindow(m_window);
+}
+
+SDL_AppResult Renderer::init()
+{
+    m_window = SDL_CreateWindow(
+        "Game",
+        800,
+        450,
+        SDL_WINDOW_RESIZABLE
+    );
+
+    if (m_window == nullptr) {
+        std::cerr << "SDL_CreateWindow error: " << SDL_GetError() << "\n";
+        return SDL_APP_FAILURE;
+    }
+
+    m_renderer = SDL_CreateRenderer(m_window, nullptr);
+    if (m_renderer == nullptr) {
+        std::cerr << "SDL_CreateRenderer error: " << SDL_GetError() << "\n";
+        return SDL_APP_FAILURE;
+    }
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, m_window, 0, resizeCanvas);
+    resizeCanvas(0, nullptr, m_window);
+#endif
+
+    SDL_SetRenderVSync(m_renderer, 1);
+
+    return SDL_APP_CONTINUE;
+}
+
+void Renderer::processSDLEvent(SDL_Event* event)
+{
+    switch (event->type) {
+    case SDL_EVENT_WINDOW_RESIZED:
+        m_windowWidth = event->window.data1;
+        m_windowHeight = event->window.data2;
+        break;
+    }
+}
+
+SDL_Renderer* Renderer::renderer() const
+{
+    return m_renderer;
+}
+
+SDL_Window* Renderer::window() const
+{
+    return m_window;
+}
+
+bool Renderer::setWindowTitle(const std::string& title)
+{
+    m_windowTitle = title;
+    return SDL_SetWindowTitle(m_window, title.c_str());
+}
+
+std::string Renderer::windowTitle() const
+{
+    return m_windowTitle;
+}
+
+int Renderer::windowWidth() const
+{
+    return m_windowWidth;
+}
+
+bool Renderer::setWindowSize(int width, int height)
+{
+    return SDL_SetWindowSize(m_window, width, height);
+}
+
+int Renderer::windowHeight() const
+{
+    return m_windowHeight;
+}
+
+bool Renderer::present()
+{
+    return SDL_RenderPresent(m_renderer);
+}
+
+void Renderer::setColor(const Color& color)
+{
+    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+}
+
+void Renderer::clear(const Color& color)
+{
+    SDL_SetRenderDrawColor(m_renderer, color.r, color.b, color.b, color.a);
+    SDL_RenderClear(m_renderer);
 }
 
 void Renderer::drawCircle(const Vec2& position, const float radius)
@@ -108,4 +242,11 @@ void Renderer::loadTexture(const std::string& id, const std::string& path)
     SDL_DestroySurface(surf);
 
     m_textures[id] = texture;
+}
+SDL_Texture* Renderer::getTexture(const std::string& id) const
+{
+    if (!m_textures.contains(id)) {
+        return nullptr;
+    }
+    return m_textures.at(id);
 }

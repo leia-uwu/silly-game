@@ -67,9 +67,7 @@ class Game
 {
 
 private:
-    SDL_Window* m_window;
-    SDL_Renderer* m_SDLRenderer;
-    Renderer m_renderer;
+    Renderer& m_renderer;
     InputManager m_inputManager;
 
     std::chrono::duration<double> m_lastNow = std::chrono::system_clock::now().time_since_epoch();
@@ -82,11 +80,11 @@ private:
     void addPipe();
 
 public:
-    Game(SDL_Window* window, SDL_Renderer* renderer);
+    Game(Renderer& renderer);
 
     RenderItem root;
 
-    Renderer renderer()
+    [[nodiscard]] Renderer& renderer()
     {
         return m_renderer;
     };
@@ -94,8 +92,6 @@ public:
     SDL_AppResult update();
 
     SDL_AppResult processEvent(SDL_Event* event);
-
-    void shutdown();
 };
 
 class Pipe

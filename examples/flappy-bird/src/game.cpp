@@ -3,7 +3,6 @@
 #include <SDL3/SDL_video.h>
 #include <chrono>
 #include <cstdlib>
-#include <iostream>
 
 #include "systems/math/collision.h"
 #include "systems/math/shape.h"
@@ -11,15 +10,13 @@
 
 #include "game.h"
 
-Game::Game(SDL_Window* window, SDL_Renderer* renderer)
-    : m_window(window)
-    , m_SDLRenderer(renderer)
-    , m_renderer(renderer)
+Game::Game(Renderer& renderer)
+    : m_renderer(renderer)
 {
 
-    SDL_SetRenderLogicalPresentation(renderer, GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-    SDL_SetRenderVSync(renderer, 1);
-    SDL_SetWindowMinimumSize(window, GAME_WIDTH, GAME_HEIGHT);
+    // TODO: move those to methods on Renderer
+    SDL_SetRenderLogicalPresentation(renderer.renderer(), GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    SDL_SetWindowMinimumSize(renderer.window(), GAME_WIDTH, GAME_HEIGHT);
 
     m_renderer.loadTexture("bird", "../examples/flappy-bird/assets/bird.bmp");
     m_renderer.loadTexture("pipe", "../examples/flappy-bird/assets/pipe.bmp");
@@ -67,9 +64,7 @@ SDL_AppResult Game::update()
     // RENDER
     //
 
-    SDL_SetRenderDrawColor(m_SDLRenderer, 20, 20, 20, 255);
-    SDL_RenderClear(m_SDLRenderer);
-
+    m_renderer.clear(0x141414);
     root.clear();
     for (auto& pipe : m_pipes) {
         pipe.render(root);
@@ -77,7 +72,8 @@ SDL_AppResult Game::update()
     m_player.render(root);
     root.renderChildren(root.getMatrix(), m_renderer);
 
-    SDL_RenderPresent(m_SDLRenderer);
+    m_renderer.present();
+
     return SDL_APP_CONTINUE;
 };
 
@@ -129,10 +125,4 @@ void Game::addPipe()
         PIPE_WIDTH,
         GAME_HEIGHT - gapYEnd
     );
-}
-
-void Game::shutdown()
-{
-    SDL_DestroyRenderer(m_SDLRenderer);
-    SDL_DestroyWindow(m_window);
 }
