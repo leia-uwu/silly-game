@@ -79,6 +79,7 @@ SDL_AppResult Game::update()
 
 SDL_AppResult Game::processEvent(SDL_Event* event)
 {
+    m_renderer.processSDLEvent(event);
     m_inputManager.processSDLEvent(event);
 
     switch (event->type) {

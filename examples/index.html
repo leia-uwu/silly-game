@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #examples {
+            margin-left: 30px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=no">
+</head>
+
+<body>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="examples" style="display: none;">
+        <h3>Examples:</h3>
+    </div>
+    <script async defer type="module">
+
+        const bundles = import.meta.glob("./wasm-build/*.js");
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const selectedGame = searchParams.get("game");
+
+        if (selectedGame) {
+            const keys = Object.keys(bundles);
+            const game = keys.find(k => k.includes(selectedGame));
+
+            if (bundles[game]) {
+                document.getElementById("canvas").style.display = "block";
+
+                const module = await bundles[game]();
+                await module.default();
+            } else {
+                document.write(`Example game ${selectedGame} not found`);
+            }
+        } else {
+            const container = document.getElementById("examples");
+            container.style.display = "";
+
+            for (const key in bundles) {
+                const a = document.createElement("a");
+                const gameId = key.split("/").at(-1).slice(0, -3)
+                a.href = `./?game=${gameId}`;
+                a.innerText = gameId;
+
+                container.appendChild(a);
+            }
+        }
+
+        window.addEventListener("keydown", (event) => {
+            if (event.ctrlKey || event.altKey || event.metaKey || event.key.match(/F\d+/ig)) {
+                event.stopImmediatePropagation();
+            }
+        }, true);
+
+        window.addEventListener("keyup", (event) => {
+            if (event.ctrlKey || event.altKey || event.metaKey || event.key.match(/F\d+/ig)) {
+                event.stopImmediatePropagation();
+            }
+        }, true);
+    </script>
+</body>
+
+</html>

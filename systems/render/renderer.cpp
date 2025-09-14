@@ -243,6 +243,7 @@ void Renderer::loadTexture(const std::string& id, const std::string& path)
 
     m_textures[id] = texture;
 }
+
 SDL_Texture* Renderer::getTexture(const std::string& id) const
 {
     if (!m_textures.contains(id)) {

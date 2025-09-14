@@ -12,7 +12,7 @@ Testing/
 _deps/
 
 node_modules/
-client/wasm/
+*wasm-build*
 
 # temp files ending with ~
 *~
