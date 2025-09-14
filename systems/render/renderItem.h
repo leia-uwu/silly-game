@@ -7,7 +7,6 @@
 
 #include <SDL3/SDL_render.h>
 
-#include <algorithm>
 #include <cassert>
 #include <memory>
 #include <utility>
@@ -19,17 +18,10 @@ class RenderItem
 private:
     std::vector<RenderItem*> m_children;
 
-    RenderItem* m_parent = nullptr;
-
 public:
     Vec2 pos;
     Vec2 scale = {1, 1};
     float rot = 0;
-
-    [[nodiscard]] RenderItem* parent()
-    {
-        return m_parent;
-    }
 
     [[nodiscard]] Matrix3x3 getMatrix() const
     {
@@ -40,16 +32,6 @@ public:
     {
         assert(child != nullptr);
 
-        // don't add it twice :)
-        if (child->m_parent == this) {
-            return *this;
-        }
-
-        if (child->m_parent != nullptr) {
-            child->m_parent->removeChild(child);
-        }
-
-        child->m_parent = this;
         m_children.push_back(child);
         return *this;
     };
@@ -64,10 +46,19 @@ public:
 
     RenderItem& removeChild(RenderItem* child)
     {
-        assert(child->m_parent == this);
+        for (auto it = m_children.begin(); it != m_children.end(); ++it) {
+            if (*it == child) {
+                m_children.erase(it);
+                break;
+            }
+        }
 
-        m_children.erase(std::ranges::find(m_children, child));
-        child->m_parent = nullptr;
+        return *this;
+    }
+
+    RenderItem& clear()
+    {
+        m_children.clear();
 
         return *this;
     }
@@ -84,20 +75,6 @@ public:
     virtual void render(const Matrix3x3& transform, Renderer& renderer) const { };
 
     virtual ~RenderItem() = default;
-
-    virtual void destroy(bool destroyChildren)
-    {
-        if (destroyChildren) {
-            for (auto* child : m_children) {
-                child->destroy(true);
-            }
-            m_children.clear();
-        }
-        if (m_parent != nullptr) {
-            m_parent->removeChild(this);
-        }
-        delete this;
-    }
 };
 
 class CircleItem : public RenderItem

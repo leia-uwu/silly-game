@@ -27,11 +27,6 @@ public:
 
         container.addChild({&body, &handL, &handR});
     }
-
-    ~Player()
-    {
-        container.destroy(true);
-    }
 };
 
 class Game
