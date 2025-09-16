@@ -228,7 +228,7 @@ bool Collision::RectPolygon(
     Vec2 resNormal;
     float resDepth = std::numeric_limits<float>::max();
 
-    for (auto vertNormal : polyNormals) {
+    for (const auto& vertNormal : polyNormals) {
         float minA, maxA, minB, maxB;
         projectVertices(polyPoints, vertNormal, Vec2(), &minA, &maxA);
         projectVertices(rectPoints, vertNormal, Vec2(), &minB, &maxB);
@@ -247,7 +247,7 @@ bool Collision::RectPolygon(
         }
     }
 
-    for (auto vertNormal : rectNormals) {
+    for (const auto& vertNormal : rectNormals) {
         float minA, maxA, minB, maxB;
         projectVertices(polyPoints, vertNormal, Vec2(), &minA, &maxA);
         projectVertices(rectPoints, vertNormal, Vec2(), &minB, &maxB);
@@ -290,23 +290,21 @@ bool Collision::CirclePolygon(
 
     CollRes* res
 )
-
 {
     assert(polyPoints.size() == polyNormals.size());
 
-    Vec2 resNormal{};
-    float resDepth = std::numeric_limits<float>::max();
-
     Vec2 circToPoly = polyCenter - circlePos;
 
-    Vec2 closestPoint{};
+    Vec2 closestPoint;
     float minDist = std::numeric_limits<float>::max();
 
     bool wantsRes = res != nullptr;
+    Vec2 resNormal;
+    float resDepth = std::numeric_limits<float>::max();
 
     for (size_t i = 0; i < polyPoints.size(); i++) {
-        Vec2 normal = polyNormals[i];
-        Vec2 point = polyPoints[i];
+        const Vec2& normal = polyNormals[i];
+        const Vec2& point = polyPoints[i];
 
         float minA, maxA, minB, maxB;
         projectVertices(polyPoints, normal, polyCenter, &minA, &maxA);
@@ -380,12 +378,11 @@ bool Collision::PolygonPolygon(
     assert(pointsA.size() == normalsA.size());
     assert(pointsB.size() == normalsB.size());
 
-    Vec2 resNormal{};
+    bool wantsRes = res != nullptr;
+    Vec2 resNormal;
     float resDepth = std::numeric_limits<float>::max();
 
-    bool wantsRes = res != nullptr;
-
-    for (auto vertNormal : normalsA) {
+    for (const auto& vertNormal : normalsA) {
         float minA, maxA, minB, maxB;
         projectVertices(pointsA, vertNormal, Vec2(), &minA, &maxA);
         projectVertices(pointsB, vertNormal, Vec2(), &minB, &maxB);
@@ -404,7 +401,7 @@ bool Collision::PolygonPolygon(
         }
     }
 
-    for (auto vertNormal : normalsB) {
+    for (const auto& vertNormal : normalsB) {
         float minA, maxA, minB, maxB;
         projectVertices(pointsA, vertNormal, Vec2(), &minA, &maxA);
         projectVertices(pointsB, vertNormal, Vec2(), &minB, &maxB);

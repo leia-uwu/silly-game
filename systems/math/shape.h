@@ -9,7 +9,6 @@
 #include <format>
 #include <functional>
 #include <string>
-
 #include <numeric>
 #include <vector>
 
@@ -160,8 +159,8 @@ public:
     void calculate_normals()
     {
         for (size_t i = 0; i < points.size(); i++) {
-            Vec2 pointA = points[i];
-            Vec2 pointB = points[(i + 1) % points.size()];
+            const Vec2& pointA = points[i];
+            const Vec2& pointB = points[(i + 1) % points.size()];
             Vec2 edge = pointB - pointA;
 
             m_normals[i] = edge.perp().normalize();
@@ -171,10 +170,10 @@ public:
     void calculate_center()
     {
         m_center = {0, 0};
-        for (auto point : points) {
+        for (const auto& point : points) {
             m_center += point;
         }
-        m_center *= 1.F / points.size();
+        m_center /= points.size();
     }
 
     [[nodiscard]] const Vec2& center() const
@@ -189,7 +188,7 @@ public:
 
     [[nodiscard]] std::string toString() const override
     {
-        std::string formated = std::accumulate(
+        const std::string formatted = std::accumulate(
             points.cbegin(),
             points.cend(),
             std::string(),
@@ -197,7 +196,7 @@ public:
                 return std::format("{} ({}),", a, b.toString());
             }
         );
-        return std::format("Polygon [{}]", formated);
+        return std::format("Polygon [{}]", formatted);
     }
 
     [[nodiscard]] bool pointInside(const Vec2& point) const override
@@ -220,7 +219,7 @@ public:
         for (auto& pt : points) {
             Vec2 toCenter = m_center - pt;
             float length = toCenter.length();
-            Vec2 dir = toCenter.normalize(length);
+            const Vec2& dir = toCenter.normalize(length);
 
             pt = m_center - (dir * (length * scale));
         }
@@ -262,7 +261,7 @@ public:
     /**
      * Check collision between 2 shapes.
      *
-     * @return true if both shapes collides.
+     * @return true if both shapes collide.
      *
      * @param shapeA The first shape.
      * @param shapeB The second shape.
@@ -285,4 +284,4 @@ public:
     bool check(const Shape& shapeA, const Shape& shapeB, Collision::CollRes* res) const;
 };
 
-inline CollisionFns COLLISION_FNS;
+const inline CollisionFns COLLISION_FNS;

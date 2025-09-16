@@ -99,7 +99,7 @@ public:
         uint8_t byteCount
     );
 
-    ByteStream& writeBooleans(uint8_t byteCount, std::vector<bool> bools);
+    ByteStream& writeBooleans(uint8_t byteCount, const std::vector<bool>& bools);
 
     std::vector<bool> readBooleans(uint8_t byteCount);
 };

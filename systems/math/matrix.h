@@ -11,20 +11,17 @@ public:
     std::array<float, 9> arr;
 
     Matrix3x3()
-        : arr()
+        : arr({
+              // clang-format off
+              1, 0, 0,
+              0, 1, 0,
+              0, 0, 1
+              // clang-format on
+          })
     {
-        arr[0] = 1;
-        arr[1] = 0;
-        arr[2] = 0;
-        arr[3] = 0;
-        arr[4] = 1;
-        arr[5] = 0;
-        arr[6] = 0;
-        arr[7] = 0;
-        arr[8] = 1;
     }
 
-    Matrix3x3(Vec2 pos, float rot, Vec2 scale)
+    Matrix3x3(const Vec2& pos, float rot, const Vec2& scale)
     {
         auto sin = std::sin(rot);
         auto cos = std::cos(rot);

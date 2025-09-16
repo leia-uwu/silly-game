@@ -48,14 +48,14 @@ public:
     bool operator==(const Vec2& a) const;
     bool operator!=(const Vec2& a) const;
 
-    float operator[](int index) const;
+    [[nodiscard]] float operator[](int index) const;
     float& operator[](int index);
-    Vec2 operator-() const;
+    [[nodiscard]] Vec2 operator-() const;
     float operator*(const Vec2& a) const;
-    Vec2 operator*(float a) const;
-    Vec2 operator/(float a) const;
-    Vec2 operator+(const Vec2& a) const;
-    Vec2 operator-(const Vec2& a) const;
+    [[nodiscard]] Vec2 operator*(float a) const;
+    [[nodiscard]] Vec2 operator/(float a) const;
+    [[nodiscard]] Vec2 operator+(const Vec2& a) const;
+    [[nodiscard]] Vec2 operator-(const Vec2& a) const;
     Vec2& operator+=(const Vec2& a);
     Vec2& operator-=(const Vec2& a);
     Vec2& operator/=(const Vec2& a);
@@ -64,14 +64,14 @@ public:
 
     [[nodiscard]] std::string toString() const;
 
-    static Vec2 add(const Vec2& a, const Vec2& b);
-    static Vec2 add(const Vec2& a, float value);
-    static Vec2 sub(const Vec2& a, const Vec2& b);
-    static Vec2 sub(const Vec2& a, float value);
-    static Vec2 mul(const Vec2& a, const Vec2& b);
-    static Vec2 mul(const Vec2& a, float scale);
-    static Vec2 div(const Vec2& a, const Vec2& b);
-    static Vec2 div(const Vec2& a, float scale);
+    [[nodiscard]] static Vec2 add(const Vec2& a, const Vec2& b);
+    [[nodiscard]] static Vec2 add(const Vec2& a, float value);
+    [[nodiscard]] static Vec2 sub(const Vec2& a, const Vec2& b);
+    [[nodiscard]] static Vec2 sub(const Vec2& a, float value);
+    [[nodiscard]] static Vec2 mul(const Vec2& a, const Vec2& b);
+    [[nodiscard]] static Vec2 mul(const Vec2& a, float scale);
+    [[nodiscard]] static Vec2 div(const Vec2& a, const Vec2& b);
+    [[nodiscard]] static Vec2 div(const Vec2& a, float scale);
 
     friend std::ostream& operator<<(std::ostream& os, const Vec2& vec);
 };
