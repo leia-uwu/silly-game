@@ -5,6 +5,7 @@ silly-game.kdev4
 
 .cache/
 build*/
+install*/
 dist/
 compile_commands.json
 Testing/

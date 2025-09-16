@@ -18,8 +18,8 @@ Game::Game(Renderer& renderer)
     SDL_SetRenderLogicalPresentation(renderer.renderer(), GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     SDL_SetWindowMinimumSize(renderer.window(), GAME_WIDTH, GAME_HEIGHT);
 
-    m_renderer.loadTexture("bird", "../examples/flappy-bird/assets/bird.bmp");
-    m_renderer.loadTexture("pipe", "../examples/flappy-bird/assets/pipe.bmp");
+    m_renderer.loadTexture("bird", "./assets/bird.bmp");
+    m_renderer.loadTexture("pipe", "./assets/pipe.bmp");
 }
 
 SDL_AppResult Game::update()

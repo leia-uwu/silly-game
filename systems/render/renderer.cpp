@@ -224,7 +224,6 @@ void Renderer::drawPoly(const std::vector<Vec2>& points)
 void Renderer::loadTexture(const std::string& id, const std::string& path)
 {
     std::string filePath = SDL_GetBasePath();
-    filePath += "../";
     filePath += path;
 
     std::cout << "Loading " << filePath << "\n";

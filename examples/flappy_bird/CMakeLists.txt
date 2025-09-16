@@ -12,6 +12,16 @@ target_link_libraries(
     util math render input
 )
 
+install(TARGETS flappy_bird DESTINATION examples/flappy_bird)
+
+install(
+    FILES
+    assets/bird.bmp
+    assets/pipe.bmp
+    DESTINATION
+    examples/flappy_bird/assets
+)
+
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
         flappy_bird
