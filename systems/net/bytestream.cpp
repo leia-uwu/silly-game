@@ -256,7 +256,7 @@ double_t ByteStream::readFloat(
     return min + (max - min) * value / range;
 }
 
-ByteStream& ByteStream::writeBooleans(uint8_t byteCount, std::vector<bool> bools)
+ByteStream& ByteStream::writeBooleans(uint8_t byteCount, const std::vector<bool>& bools)
 {
     const uint64_t size = byteCount * 8L;
     if (bools.size() > size) {
