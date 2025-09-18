@@ -1,17 +1,17 @@
 #include "bytestream.h"
 #include <cstdint>
 
-ByteStream::ByteStream(const size_t size)
-    : m_size(size)
-    , m_owns_data(true)
+ByteStream::ByteStream(const size_t size) :
+    m_size(size),
+    m_owns_data(true)
 {
     m_buffer = new uint8_t[size]();
 }
 
-ByteStream::ByteStream(uint8_t* buff, const size_t size)
-    : m_size(size)
-    , m_buffer(buff)
-    , m_owns_data(false)
+ByteStream::ByteStream(uint8_t* buff, const size_t size) :
+    m_size(size),
+    m_buffer(buff),
+    m_owns_data(false)
 {
 }
 

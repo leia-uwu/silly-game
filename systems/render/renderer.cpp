@@ -37,15 +37,13 @@ static bool resizeCanvas(int eventType, const EmscriptenUiEvent* event, void* us
 };
 #endif
 
-Renderer::Renderer()
-    : m_windowTitle("Game")
-    , m_windowWidth(800)
-    , m_windowHeight(400) { };
+Renderer::Renderer() :
+    m_windowTitle("Game"), m_windowWidth(800), m_windowHeight(400) { };
 
-Renderer::Renderer(std::string title, int width, int height)
-    : m_windowTitle(std::move(title))
-    , m_windowWidth(width)
-    , m_windowHeight(height) { };
+Renderer::Renderer(std::string title, int width, int height) :
+    m_windowTitle(std::move(title)),
+    m_windowWidth(width),
+    m_windowHeight(height) { };
 
 Renderer::~Renderer()
 {

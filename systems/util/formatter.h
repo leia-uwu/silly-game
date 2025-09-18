@@ -45,9 +45,10 @@ protected:
         const ushort m_closingCode,
         const Formatter* const m_parent
     ) noexcept
-        : m_openingCode(m_openingCode)
-        , m_closingCode(m_closingCode)
-        , m_parent(m_parent)
+        :
+        m_openingCode(m_openingCode),
+        m_closingCode(m_closingCode),
+        m_parent(m_parent)
     {
     }
 

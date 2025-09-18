@@ -33,8 +33,8 @@ public:
     virtual ~Shape() = default;
 
 protected:
-    Shape(Type type)
-        : type(type)
+    Shape(Type type) :
+        type(type)
     {
     }
 };

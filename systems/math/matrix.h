@@ -10,14 +10,14 @@ class Matrix3x3
 public:
     std::array<float, 9> arr;
 
-    Matrix3x3()
-        : arr({
-              // clang-format off
+    Matrix3x3() :
+        arr({
+            // clang-format off
               1, 0, 0,
               0, 1, 0,
               0, 0, 1
-              // clang-format on
-          })
+            // clang-format on
+        })
     {
     }
 

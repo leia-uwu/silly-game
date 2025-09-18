@@ -2,8 +2,8 @@
 
 #include <cmath>
 #include <format>
-#include <string>
 #include <ostream>
+#include <string>
 
 #define VEC2_EPSILON 0.001F
 
@@ -76,21 +76,18 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Vec2& vec);
 };
 
-inline Vec2::Vec2()
-    : x(0)
-    , y(0)
+inline Vec2::Vec2() :
+    x(0), y(0)
 {
 }
 
-inline Vec2::Vec2(const float xPos)
-    : x(xPos)
-    , y(xPos)
+inline Vec2::Vec2(const float xPos) :
+    x(xPos), y(xPos)
 {
 }
 
-inline Vec2::Vec2(const float xPos, const float yPos)
-    : x(xPos)
-    , y(yPos)
+inline Vec2::Vec2(const float xPos, const float yPos) :
+    x(xPos), y(yPos)
 {
 }
 

@@ -10,8 +10,8 @@
 
 #include "game.h"
 
-Game::Game(Renderer& renderer)
-    : m_renderer(renderer)
+Game::Game(Renderer& renderer) :
+    m_renderer(renderer)
 {
 
     // TODO: move those to methods on Renderer

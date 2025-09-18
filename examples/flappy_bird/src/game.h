@@ -32,8 +32,8 @@ public:
 
     Polygon hitbox;
 
-    Player()
-        : hitbox(Rect::fromDims(PLAYER_SIZE, PLAYER_SIZE, {PLAYER_SIZE, PLAYER_SIZE}).getPoints())
+    Player() :
+        hitbox(Rect::fromDims(PLAYER_SIZE, PLAYER_SIZE, {PLAYER_SIZE, PLAYER_SIZE}).getPoints())
     {
         sprite.width = PLAYER_SIZE;
         sprite.height = PLAYER_SIZE;
@@ -109,8 +109,8 @@ public:
         Vec2 pos,
         float width,
         float height
-    )
-        : hitbox(Rect::fromDims(width, height, pos))
+    ) :
+        hitbox(Rect::fromDims(width, height, pos))
     {
         sprite.setTexture("pipe");
         sprite.tint = 0x00ff00;

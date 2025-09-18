@@ -1,9 +1,9 @@
 #include "shape.h"
 
-Circle::Circle(Vec2 pos, float rad)
-    : Shape(CIRCLE)
-    , pos(pos)
-    , rad(rad)
+Circle::Circle(Vec2 pos, float rad) :
+    Shape(CIRCLE),
+    pos(pos),
+    rad(rad)
 {
     assert(rad >= 0);
 }
@@ -35,10 +35,10 @@ Circle& Circle::scale(const float scale)
     return *this;
 }
 
-Rect::Rect(Vec2 min, Vec2 max)
-    : Shape(RECT)
-    , min(min)
-    , max(max)
+Rect::Rect(Vec2 min, Vec2 max) :
+    Shape(RECT),
+    min(min),
+    max(max)
 {
     // min being bigger than max can cause issues with collision functions
     assert(min.x < max.x);
@@ -93,6 +93,17 @@ std::vector<Vec2> Rect::getPoints() const
 Vec2 Rect::center() const
 {
     return min + ((max - min) / 2);
+}
+
+Polygon::Polygon(const std::vector<Vec2>& points) :
+    Shape(POLYGON),
+    points(points),
+    m_normals(points.size())
+{
+    assert(points.size() >= 3);
+
+    calculate_normals();
+    calculate_center();
 }
 
 Polygon& Polygon::scale(const float scale)
@@ -161,17 +172,6 @@ void Polygon::calculate_normals()
 
         m_normals[i] = edge.perp().normalize();
     }
-}
-
-Polygon::Polygon(const std::vector<Vec2>& points)
-    : Shape(POLYGON)
-    , points(points)
-    , m_normals(points.size())
-{
-    assert(points.size() >= 3);
-
-    calculate_normals();
-    calculate_center();
 }
 
 CollisionFns::CollisionFns()
