@@ -24,21 +24,14 @@ set(FETCHCONTENT_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
-find_package(SDL3 QUIET CONFIG COMPONENTS SDL3-shared)
-if (NOT SDL3_FOUND)
-    FetchContent_Declare(
-        SDL
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL
-        GIT_TAG        release-3.2.16
-        GIT_SHALLOW ON
-    )
-    FetchContent_MakeAvailable(SDL)
-endif()
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+
+include(findSDL)
+findSDL()
 
 add_subdirectory(systems)
-add_subdirectory(client)
 
-# if (NOT DEFINED EMSCRIPTEN AND NOT DEFINED WIN32)
-    # add_subdirectory(server)
-# endif()
-
+option(BUILD_EXAMPLES "Build example games" ON)
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()

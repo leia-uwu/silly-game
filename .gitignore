@@ -5,10 +5,15 @@ silly-game.kdev4
 
 .cache/
 build*/
+install*/
 dist/
 compile_commands.json
+Testing/
 
 _deps/
 
 node_modules/
-client/wasm/
+*wasm-build*
+
+# temp files ending with ~
+*~
