@@ -6,10 +6,8 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
-#include <format>
 #include <functional>
 #include <string>
-#include <numeric>
 #include <vector>
 
 class Shape
@@ -26,6 +24,9 @@ public:
 
     [[nodiscard]] virtual std::string toString() const = 0;
     [[nodiscard]] virtual bool pointInside(const Vec2& point) const = 0;
+
+    [[nodiscard]] virtual Vec2 center() const = 0;
+
     virtual Shape& translate(const Vec2& posToAdd) = 0;
     virtual Shape& scale(float scale) = 0;
 
@@ -44,35 +45,17 @@ public:
     Vec2 pos;
     float rad;
 
-    Circle(Vec2 pos, float rad)
-        : Shape(CIRCLE)
-        , pos(pos)
-        , rad(rad)
-    {
-        assert(rad >= 0);
-    }
+    Circle(Vec2 pos, float rad);
 
-    [[nodiscard]] std::string toString() const override
-    {
-        return std::format("Circle (X: {0:.4f}, Y: {1:.4f}, Rad: {2:.4f})", pos.x, pos.y, rad);
-    }
+    [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override
-    {
-        return Collision::PointCircle(point, pos, rad);
-    }
+    [[nodiscard]] bool pointInside(const Vec2& point) const override;
 
-    Circle& translate(const Vec2& posToAdd) override
-    {
-        pos += posToAdd;
-        return *this;
-    };
+    [[nodiscard]] Vec2 center() const override;
 
-    Circle& scale(const float scale) override
-    {
-        rad *= scale;
-        return *this;
-    }
+    Circle& translate(const Vec2& posToAdd) override;
+
+    Circle& scale(float scale) override;
 };
 
 class Rect : public Shape
@@ -81,22 +64,9 @@ public:
     Vec2 min;
     Vec2 max;
 
-    Rect(Vec2 min, Vec2 max)
-        : Shape(RECT)
-        , min(min)
-        , max(max)
-    {
-        // min being bigger than max can cause issues with collision functions
-        assert(min.x < max.x);
-        assert(min.y < max.y);
-    }
+    Rect(Vec2 min, Vec2 max);
 
-    static Rect fromDims(float width, float height, Vec2 center = {0, 0})
-    {
-        Vec2 size{width / 2, height / 2};
-
-        return Rect{center - size, center + size};
-    }
+    static Rect fromDims(float width, float height, Vec2 center = {0, 0});
 
     [[nodiscard]] float width() const
     {
@@ -108,48 +78,17 @@ public:
         return max.y - min.y;
     }
 
-    [[nodiscard]] Vec2 center() const
-    {
-        return min + ((max - min) / 2);
-    }
+    [[nodiscard]] Vec2 center() const override;
 
-    [[nodiscard]] std::vector<Vec2> getPoints() const
-    {
-        return {
-            min,
-            {min.x, max.y},
-            max,
-            {max.x, min.y}
-        };
-    }
+    [[nodiscard]] std::vector<Vec2> getPoints() const;
 
-    [[nodiscard]] std::string toString() const override
-    {
-        return std::format("Rect(Min ({}) Max ({}))", min.toString(), max.toString());
-    }
+    [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override
-    {
-        return Collision::PointRect(point, min, max);
-    }
+    [[nodiscard]] bool pointInside(const Vec2& point) const override;
 
-    Rect& translate(const Vec2& posToAdd) override
-    {
-        min += posToAdd;
-        max += posToAdd;
+    Rect& translate(const Vec2& posToAdd) override;
 
-        return *this;
-    };
-
-    Rect& scale(const float scale) override
-    {
-        Vec2 center = this->center();
-
-        min = (min - center) * scale + center;
-        max = (max - center) * scale + center;
-
-        return *this;
-    }
+    Rect& scale(float scale) override;
 };
 
 class Polygon : public Shape
@@ -162,87 +101,26 @@ private:
     Vec2 m_center;
 
 public:
-    Polygon(const std::vector<Vec2>& points)
-        : Shape(POLYGON)
-        , points(points)
-        , m_normals(points.size())
-    {
-        assert(points.size() >= 3);
+    Polygon(const std::vector<Vec2>& points);
 
-        calculate_normals();
-        calculate_center();
-    }
+    void calculate_normals();
 
-    void calculate_normals()
-    {
-        for (size_t i = 0; i < points.size(); i++) {
-            const Vec2& pointA = points[i];
-            const Vec2& pointB = points[(i + 1) % points.size()];
-            Vec2 edge = pointB - pointA;
+    void calculate_center();
 
-            m_normals[i] = edge.perp().normalize();
-        }
-    }
-
-    void calculate_center()
-    {
-        m_center = {0, 0};
-        for (const auto& point : points) {
-            m_center += point;
-        }
-        m_center /= points.size();
-    }
-
-    [[nodiscard]] const Vec2& center() const
-    {
-        return m_center;
-    }
+    [[nodiscard]] Vec2 center() const override;
 
     [[nodiscard]] const std::vector<Vec2>& normals() const
     {
         return m_normals;
-    }
+    };
 
-    [[nodiscard]] std::string toString() const override
-    {
-        const std::string formatted = std::accumulate(
-            points.cbegin(),
-            points.cend(),
-            std::string(),
-            [](std::string a, const Vec2& b) {
-                return std::format("{} ({}),", a, b.toString());
-            }
-        );
-        return std::format("Polygon [{}]", formatted);
-    }
+    [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override
-    {
-        return Collision::PointPolygon(point, points);
-    }
+    [[nodiscard]] bool pointInside(const Vec2& point) const override;
 
-    Polygon& translate(const Vec2& posToAdd) override
-    {
-        for (auto& point : points) {
-            point += posToAdd;
-        }
-        m_center += posToAdd;
+    Polygon& translate(const Vec2& posToAdd) override;
 
-        return *this;
-    }
-
-    Polygon& scale(const float scale) override
-    {
-        for (auto& pt : points) {
-            Vec2 toCenter = m_center - pt;
-            float length = toCenter.length();
-            const Vec2& dir = toCenter.normalize(length);
-
-            pt = m_center - (dir * (length * scale));
-        }
-
-        return *this;
-    }
+    Polygon& scale(float scale) override;
 };
 
 using CollisionFn = std::function<bool(const Shape&, const Shape&, Collision::CollRes*)>;
@@ -255,22 +133,10 @@ struct CollisionFnData
 
 class CollisionFns
 {
+private:
     std::array<std::array<CollisionFnData, Shape::COUNT>, Shape::COUNT> m_fns;
 
-    void registerFn(Shape::Type typeA, Shape::Type typeB, const CollisionFn& fn)
-    {
-        m_fns[typeA][typeB] = {
-            .fn = fn,
-            .reverse = false
-        };
-
-        if (typeA != typeB) {
-            m_fns[typeB][typeA] = {
-                .fn = fn,
-                .reverse = true
-            };
-        }
-    }
+    void registerFn(Shape::Type typeA, Shape::Type typeB, const CollisionFn& fn);
 
 public:
     CollisionFns();
