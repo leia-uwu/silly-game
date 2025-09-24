@@ -9,7 +9,7 @@
 #include <cassert>
 #include <vector>
 
-#include <GLES3/gl32.h>
+#include <glad/gl.h>
 
 class RenderItem
 {

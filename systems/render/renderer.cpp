@@ -1,6 +1,12 @@
 #include "renderer.h"
+#include "systems/render/shader.h"
 
 #include <iostream>
+
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
+
+#include <SDL3/SDL_video.h>
 
 // emscripten helpers
 // to make the canvas properly cover the entire web page
@@ -52,7 +58,9 @@ Renderer::~Renderer()
 SDL_AppResult Renderer::init()
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
     m_window = SDL_CreateWindow(
         "Game",
@@ -67,6 +75,7 @@ SDL_AppResult Renderer::init()
     }
 
     m_glContext = SDL_GL_CreateContext(m_window);
+    gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
 
     if (m_glContext == nullptr) {
         std::cerr << "SDL_GL_CreateContext error: " << SDL_GetError() << "\n";

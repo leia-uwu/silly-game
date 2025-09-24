@@ -2,8 +2,10 @@
 
 #include <SDL3/SDL_filesystem.h>
 
+#include <glad/gl.h>
+
 #define STB_IMAGE_IMPLEMENTATION
-#include "lib/stb_image.h"
+#include <stb/stb_image.h>
 
 #include <iostream>
 

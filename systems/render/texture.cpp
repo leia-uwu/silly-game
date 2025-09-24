@@ -1,7 +1,5 @@
 #include "texture.h"
 
-#include <GLES3/gl32.h>
-
 Texture::Texture(GLuint id) :
     id(id),
     width(0),

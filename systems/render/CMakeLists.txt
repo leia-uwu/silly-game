@@ -1,4 +1,3 @@
-
 if (NOT DEFINED EMSCRIPTEN)
     find_package(OpenGL REQUIRED)
 endif()

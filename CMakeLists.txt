@@ -29,6 +29,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 include(findSDL)
 findSDL()
 
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/include")
 add_subdirectory(systems)
 
 option(BUILD_EXAMPLES "Build example games" ON)

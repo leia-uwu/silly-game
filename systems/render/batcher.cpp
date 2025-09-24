@@ -1,6 +1,6 @@
 #include "batcher.h"
 
-#include <GLES3/gl32.h>
+#include <glad/gl.h>
 
 static const char* FRAGMENT_SHADER =
     "#version 330\n"

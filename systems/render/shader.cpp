@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <GLES3/gl32.h>
+#include <glad/gl.h>
 
 Shader& Shader::use()
 {
