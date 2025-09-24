@@ -1,6 +1,5 @@
 #include "resources.h"
 
-#include <GL/gl.h>
 #include <SDL3/SDL_filesystem.h>
 
 #define STB_IMAGE_IMPLEMENTATION

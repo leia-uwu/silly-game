@@ -6,9 +6,6 @@
 #include "shader.h"
 #include "texture.h"
 
-#include <GL/gl.h>
-#include <GLES3/gl32.h>
-
 #include <cassert>
 #include <cstddef>
 

@@ -1,9 +1,9 @@
 #pragma once
 
+#include <SDL3/SDL_opengl.h>
+
 #include "systems/math/matrix.h"
 #include "systems/math/vec2.h"
-
-#include <GL/gl.h>
 
 class Shader
 {

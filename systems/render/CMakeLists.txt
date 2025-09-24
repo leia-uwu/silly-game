@@ -19,7 +19,7 @@ set_target_properties(
 )
 
 if (NOT DEFINED EMSCRIPTEN)
-    target_link_libraries(render math SDL3::SDL3 OpenGL)
+    target_link_libraries(render math SDL3::SDL3 OpenGL::GL)
 else()
     target_link_libraries(render math SDL3::SDL3)
 endif()

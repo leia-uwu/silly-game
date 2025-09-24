@@ -2,12 +2,11 @@
 
 #include "renderer.h"
 #include "systems/math/matrix.h"
-#include "systems/render/color.h"
+#include "color.h"
 
 #include <SDL3/SDL_render.h>
 
 #include <cassert>
-
 #include <vector>
 
 #include <GLES3/gl32.h>
@@ -112,4 +111,3 @@ public:
         );
     }
 };
-

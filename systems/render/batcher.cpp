@@ -1,8 +1,9 @@
 #include "batcher.h"
-#include "systems/math/matrix.h"
+
+#include <GLES3/gl32.h>
 
 static const char* FRAGMENT_SHADER =
-    "#version 330 core\n"
+    "#version 330\n"
     "layout (location = 0) out vec4 o_color;\n"
     "in vec4 v_color;\n"
     "in vec2 v_textureCord;\n"
@@ -14,7 +15,7 @@ static const char* FRAGMENT_SHADER =
     "}\n";
 
 static const char* VERTEX_SHADER =
-    "#version 330 core\n"
+    "#version 330\n"
     "layout (location = 0) in vec2 a_pos;\n"
     "layout (location = 1) in vec2 a_textureCord;\n"
     "layout (location = 2) in vec4 a_color;\n"

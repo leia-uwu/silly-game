@@ -1,6 +1,7 @@
 #pragma once
 
-#include <GL/gl.h>
+#include "SDL3/SDL_opengl.h"
+
 #include <cstdint>
 
 class Texture

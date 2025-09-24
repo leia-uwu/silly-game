@@ -21,7 +21,7 @@ static void checkCompileErrors(GLuint object, bool isProgram, const std::string&
     if (!isProgram) {
         glGetShaderiv(object, GL_COMPILE_STATUS, &success);
 
-        if (!success) {
+        if (success != GL_TRUE) {
             glGetShaderInfoLog(object, 1024, nullptr, infoLog);
             std::cerr << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- \n";
@@ -29,7 +29,7 @@ static void checkCompileErrors(GLuint object, bool isProgram, const std::string&
     } else {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
 
-        if (!success) {
+        if (success != GL_TRUE) {
             glGetProgramInfoLog(object, 1024, nullptr, infoLog);
             std::cerr << "| ERROR::SHADER: Link-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- \n";

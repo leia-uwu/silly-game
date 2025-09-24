@@ -3,6 +3,7 @@
 #include "vec2.h"
 #include <array>
 #include <cmath>
+#include <cstdint>
 
 // I HAVE NO IDEA WTH ANY OF THE MAGIC MATH HERE DOES!!!
 class Matrix3x3
