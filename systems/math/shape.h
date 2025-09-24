@@ -32,6 +32,8 @@ public:
 
     virtual ~Shape() = default;
 
+    [[nodiscard]] bool getCollision(const Shape& other, Collision::CollRes* res) const;
+
 protected:
     Shape(Type type) :
         type(type)
@@ -166,5 +168,3 @@ public:
      */
     bool check(const Shape& shapeA, const Shape& shapeB, Collision::CollRes* res) const;
 };
-
-const inline CollisionFns COLLISION_FNS;

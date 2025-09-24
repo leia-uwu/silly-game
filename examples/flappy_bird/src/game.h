@@ -48,7 +48,7 @@ public:
         hitbox.translate(step);
 
         Collision::CollRes res;
-        if (COLLISION_FNS.check(hitbox, GAME_FLOOR, &res)) {
+        if (hitbox.getCollision(GAME_FLOOR, &res)) {
             hitbox.translate(res.normal * -res.depth);
             vel.y = 0;
         }

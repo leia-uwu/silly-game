@@ -54,7 +54,7 @@ SDL_AppResult Game::update()
         // std::cout << pipe.hitbox.center() << "\n";
 
         Collision::CollRes res;
-        if (COLLISION_FNS.check(m_player.hitbox, pipe.hitbox, &res)) {
+        if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
             // m_player.hitbox.translate(res.normal * -res.depth);
             m_player.sprite.tint = 0xff0000;
         }

@@ -1,5 +1,11 @@
 #include "shape.h"
 
+bool Shape::getCollision(const Shape& other, Collision::CollRes* res) const
+{
+    static const CollisionFns fns;
+    return fns.check(*this, other, res);
+}
+
 Circle::Circle(Vec2 pos, float rad) :
     Shape(CIRCLE),
     pos(pos),
