@@ -72,7 +72,6 @@ SDL_AppResult Game::update()
     root.pos.x = -m_renderer.windowWidth() / 2.F;
     root.pos.y = -m_renderer.windowHeight() / 2.F;
 
-    m_renderer.batcher.beginBatch();
     for (auto& pipe : m_pipes) {
         pipe.render(root);
     }
@@ -80,7 +79,6 @@ SDL_AppResult Game::update()
     m_player.render(root);
     root.renderChildren(root.getMatrix(), m_renderer);
 
-    m_renderer.batcher.flushBatch(m_renderer.resources().getTexture("bird"));
     m_renderer.present();
 
     return SDL_APP_CONTINUE;

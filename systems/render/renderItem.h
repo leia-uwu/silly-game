@@ -104,7 +104,7 @@ public:
 
         const Vec2 size{width * scale.x, height * scale.y};
 
-        renderer.batcher.renderSprite(
+        renderer.batcher().renderSprite(
             transform.translation() - (size / 2.F),
             size,
             texture,

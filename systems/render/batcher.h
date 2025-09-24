@@ -13,7 +13,7 @@ inline constexpr size_t MAX_BATCH_VERTICES = 1024;
 inline constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
 inline constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
 
-class SpriteBatcher
+class RenderBatcher
 {
 private:
     struct Vec3
@@ -51,11 +51,13 @@ private:
     size_t m_batchIndex = 0;
     size_t m_indicesToRender = 0;
 
+    Texture m_lastTexture;
+
 public:
     Matrix3x3 transform;
 
     void init();
-    ~SpriteBatcher();
+    ~RenderBatcher();
 
     void renderSprite(
         const Vec2& pos,
@@ -72,5 +74,5 @@ public:
     );
 
     void beginBatch();
-    void flushBatch(const Texture& texture);
+    void flushBatch();
 };

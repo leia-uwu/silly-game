@@ -26,6 +26,7 @@ private:
     Color m_clearColor;
 
     ResourceManager m_resources;
+    RenderBatcher m_batcher;
 
 public:
     Renderer();
@@ -33,8 +34,6 @@ public:
     Renderer(const Renderer&) = delete;
 
     ~Renderer();
-
-    SpriteBatcher batcher;
 
     /**
      * Tries to create the SDL Window and SDL Renderer
@@ -60,6 +59,11 @@ public:
         return m_resources;
     }
 
+    RenderBatcher& batcher()
+    {
+        return m_batcher;
+    }
+
     Color clearColor()
     {
         return m_clearColor;
@@ -69,6 +73,6 @@ public:
         m_clearColor = color;
     }
 
-    void clear() const;
-    void present() const;
+    void clear();
+    void present();
 };

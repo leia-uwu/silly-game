@@ -94,7 +94,7 @@ SDL_AppResult Renderer::init()
 
     SDL_GL_SetSwapInterval(-1);
 
-    batcher.init();
+    m_batcher.init();
 
     return SDL_APP_CONTINUE;
 }
@@ -107,7 +107,7 @@ void Renderer::processSDLEvent(SDL_Event* event)
         m_windowHeight = event->window.data2;
 
         glViewport(0, 0, m_windowWidth, m_windowHeight);
-        batcher.transform = Matrix3x3(
+        m_batcher.transform = Matrix3x3(
             {0, 0},
             0,
             {1.F / (m_windowWidth / 2.F), -(1.F / (m_windowHeight / 2.F))}
@@ -147,7 +147,7 @@ int Renderer::windowHeight() const
     return m_windowHeight;
 }
 
-void Renderer::clear() const
+void Renderer::clear()
 {
     glClearColor(
         m_clearColor.normalizedR(),
@@ -156,9 +156,12 @@ void Renderer::clear() const
         m_clearColor.normalizedA()
     );
     glClear(GL_COLOR_BUFFER_BIT);
+
+    m_batcher.beginBatch();
 }
 
-void Renderer::present() const
+void Renderer::present()
 {
+    m_batcher.flushBatch();
     SDL_GL_SwapWindow(m_window);
 }

@@ -64,7 +64,7 @@ static const char* VERTEX_SHADER =
     "}\n";
 #endif
 
-void SpriteBatcher::init()
+void RenderBatcher::init()
 {
     assert(m_initialized == false);
     m_initialized = true;
@@ -119,29 +119,30 @@ void SpriteBatcher::init()
     DEFINE_VERTEX_ATTRIB(1, GL_UNSIGNED_INT, textureID)
 }
 
-SpriteBatcher::~SpriteBatcher()
+RenderBatcher::~RenderBatcher()
 {
     glDeleteVertexArrays(1, &m_quadVAO);
     glDeleteBuffers(1, &m_quadVBO);
     glDeleteBuffers(1, &m_quadEBO);
 }
 
-void SpriteBatcher::renderSprite(
+void RenderBatcher::renderSprite(
     const Vec2& pos,
     const Vec2& scale,
     const Texture& texture,
     const Color& tint
 )
 {
-    if (m_batchIndex + 4 >= VERTEX_BUFFER_SIZE) {
-        flushBatch(texture);
+    if (m_batchIndex + 4 >= VERTEX_BUFFER_SIZE || m_lastTexture.id != texture.id) {
+        flushBatch();
         beginBatch();
+        m_lastTexture = texture;
     }
 
     addSprite(pos, scale, texture, tint);
 }
 
-void SpriteBatcher::addSprite(
+void RenderBatcher::addSprite(
     const Vec2& pos,
     const Vec2& scale,
     const Texture& texture,
@@ -188,13 +189,13 @@ void SpriteBatcher::addSprite(
     m_indicesToRender += 6;
 }
 
-void SpriteBatcher::beginBatch()
+void RenderBatcher::beginBatch()
 {
     m_batchIndex = 0;
     m_indicesToRender = 0;
 }
 
-void SpriteBatcher::flushBatch(const Texture& texture)
+void RenderBatcher::flushBatch()
 {
     if (m_batchIndex == 0 || m_indicesToRender == 0)
         return;
@@ -203,7 +204,7 @@ void SpriteBatcher::flushBatch(const Texture& texture)
     glBufferSubData(GL_ARRAY_BUFFER, 0, m_batchIndex * sizeof(Vertex), m_vertices);
 
     // FIXME: more than 1 texture lol
-    texture.bind();
+    m_lastTexture.bind();
     glActiveTexture(GL_TEXTURE0);
 
     m_spriteShader.use();
