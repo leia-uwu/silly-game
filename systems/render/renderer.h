@@ -27,7 +27,6 @@ private:
 
     ResourceManager m_resources;
 
-
 public:
     Renderer();
     Renderer(std::string title, int width, int height);
@@ -56,7 +55,8 @@ public:
 
     bool setWindowSize(int width, int height);
 
-    ResourceManager& resources() {
+    ResourceManager& resources()
+    {
         return m_resources;
     }
 

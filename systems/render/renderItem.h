@@ -1,15 +1,16 @@
 #pragma once
 
-#include "renderer.h"
-#include "systems/math/matrix.h"
 #include "color.h"
+#include "renderer.h"
+
+#include "systems/math/matrix.h"
+
+#include <glad/gl.h>
 
 #include <SDL3/SDL_render.h>
 
 #include <cassert>
 #include <vector>
-
-#include <glad/gl.h>
 
 class RenderItem
 {

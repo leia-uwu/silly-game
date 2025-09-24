@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "systems/math/matrix.h"
 #include "systems/math/vec2.h"
 
