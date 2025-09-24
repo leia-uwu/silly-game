@@ -75,12 +75,17 @@ SDL_AppResult Renderer::init()
     }
 
     m_glContext = SDL_GL_CreateContext(m_window);
-    gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
-
     if (m_glContext == nullptr) {
         std::cerr << "SDL_GL_CreateContext error: " << SDL_GetError() << "\n";
         return SDL_APP_FAILURE;
     }
+
+    int version = gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
+    if (version == 0) {
+        std::cerr << "gladLoadGL error: failed to load OpenGL\n";
+        return SDL_APP_FAILURE;
+    }
+    std::cout << "Using OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << "\n";
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, m_window, 0, resizeCanvas);
