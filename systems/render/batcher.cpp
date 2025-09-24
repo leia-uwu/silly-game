@@ -2,13 +2,14 @@
 
 #include <glad/gl.h>
 
+#ifndef __EMSCRIPTEN__
 static const char* FRAGMENT_SHADER =
     "#version 330\n"
     "layout (location = 0) out vec4 o_color;\n"
     "in vec4 v_color;\n"
     "in vec2 v_textureCord;\n"
     "flat in uint v_textureID;\n"
-    "uniform sampler2D u_texture;"
+    "uniform sampler2D u_texture;\n"
     "void main()\n"
     "{\n"
     "    o_color = texture(u_texture, v_textureCord) * v_color;\n"
@@ -23,7 +24,7 @@ static const char* VERTEX_SHADER =
     "out vec4 v_color;\n"
     "out vec2 v_textureCord;\n"
     "flat out uint v_textureID;\n"
-    "uniform mat3 u_transform;"
+    "uniform mat3 u_transform;\n"
     "void main()\n"
     "{\n"
     "    v_color = a_color;\n"
@@ -31,6 +32,37 @@ static const char* VERTEX_SHADER =
     "    v_textureID = a_textureID;\n"
     "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
     "}\n";
+// keeping those in sync will surely be fun...
+#else
+static const char* FRAGMENT_SHADER =
+    "precision highp float;\n"
+    "varying vec4 v_color;\n"
+    "varying vec2 v_textureCord;\n"
+    "varying float v_textureID;\n"
+    "uniform sampler2D u_texture;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_FragColor = texture2D(u_texture, v_textureCord) * v_color;\n"
+    "}\n";
+
+static const char* VERTEX_SHADER =
+    "precision highp float;\n"
+    "attribute vec2 a_pos;\n"
+    "attribute vec2 a_textureCord;\n"
+    "attribute vec4 a_color;\n"
+    "attribute float a_textureID;\n"
+    "varying vec4 v_color;\n"
+    "varying vec2 v_textureCord;\n"
+    "varying float v_textureID;\n"
+    "uniform mat3 u_transform;\n"
+    "void main()\n"
+    "{\n"
+    "    v_color = a_color;\n"
+    "    v_textureCord = a_textureCord;\n"
+    "    v_textureID = a_textureID;\n"
+    "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
+    "}\n";
+#endif
 
 void SpriteBatcher::init()
 {

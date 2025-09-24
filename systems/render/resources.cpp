@@ -4,8 +4,10 @@
 
 #include <glad/gl.h>
 
+#ifndef __EMSCRIPTEN__
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+#endif
 
 #include <iostream>
 
@@ -22,12 +24,16 @@ void ResourceManager::loadTexture(const std::string& id, const std::string& path
     std::cout << "Loading " << filePath << "\n";
 
     int width, height, nrChannels;
-
+#ifndef __EMSCRIPTEN__
     uint8_t* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
-
+#else
+    uint8_t data[1];
+#endif
     texture.generate(width, height, data);
 
+#ifndef __EMSCRIPTEN__
     stbi_image_free(data);
+#endif
 
     m_textures[id] = texture;
 }

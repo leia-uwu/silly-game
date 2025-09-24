@@ -25,6 +25,6 @@ install(
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
         flappy_bird
-        PROPERTIES LINK_FLAGS "-sENVIRONMENT=web -sMODULARIZE=instance -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2"
+        PROPERTIES LINK_FLAGS "-sENVIRONMENT=web -sMODULARIZE=instance -sFULL_ES3"
     )
 endif()
