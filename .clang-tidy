@@ -10,6 +10,7 @@ Checks:
   - -readability-math-missing-parentheses
   - -readability-isolate-declaration
   - -modernize-use-trailing-return-type
+  - -modernize-avoid-c-arrays
   - -bugprone-easily-swappable-parameters
   - -bugprone-assignment-in-if-condition
   - -bugprone-narrowing-conversions

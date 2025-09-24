@@ -15,11 +15,13 @@ Game::Game(Renderer& renderer) :
 {
 
     // TODO: move those to methods on Renderer
-    SDL_SetRenderLogicalPresentation(renderer.renderer(), GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    // SDL_SetRenderLogicalPresentation(renderer.renderer(), GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     SDL_SetWindowMinimumSize(renderer.window(), GAME_WIDTH, GAME_HEIGHT);
 
-    m_renderer.loadTexture("bird", "./assets/bird.bmp");
-    m_renderer.loadTexture("pipe", "./assets/pipe.bmp");
+    m_renderer.resources().loadTexture("bird", "assets/bird.bmp");
+    m_renderer.resources().loadTexture("pipe", "assets/pipe.bmp");
+
+    m_renderer.setClearColor(0x141414);
 }
 
 SDL_AppResult Game::update()
@@ -64,14 +66,21 @@ SDL_AppResult Game::update()
     // RENDER
     //
 
-    m_renderer.clear(0x141414);
+    m_renderer.clear();
     root.clear();
+
+    root.pos.x = -m_renderer.windowWidth() / 2.F;
+    root.pos.y = -m_renderer.windowHeight() / 2.F;
+
+    m_renderer.batcher.beginBatch();
     for (auto& pipe : m_pipes) {
         pipe.render(root);
     }
+
     m_player.render(root);
     root.renderChildren(root.getMatrix(), m_renderer);
 
+    m_renderer.batcher.flushBatch(m_renderer.resources().getTexture("bird"));
     m_renderer.present();
 
     return SDL_APP_CONTINUE;

@@ -2,15 +2,15 @@
 
 #include "renderer.h"
 #include "systems/math/matrix.h"
-#include "systems/math/shape.h"
 #include "systems/render/color.h"
 
 #include <SDL3/SDL_render.h>
 
 #include <cassert>
-#include <memory>
-#include <utility>
+
 #include <vector>
+
+#include <GLES3/gl32.h>
 
 class RenderItem
 {
@@ -77,45 +77,6 @@ public:
     virtual ~RenderItem() = default;
 };
 
-class CircleItem : public RenderItem
-{
-public:
-    float rad;
-    Color color;
-
-    void render(const Matrix3x3& transform, Renderer& renderer) const override
-    {
-        renderer.setColor(color);
-
-        auto mScale = transform.scale();
-        renderer.drawEllipse(
-            transform.translation(),
-            rad * mScale.x,
-            rad * mScale.y
-        );
-    }
-};
-
-class RectItem : public RenderItem
-{
-public:
-    float width;
-    float height;
-    Color color;
-
-    void render(const Matrix3x3& transform, Renderer& renderer) const override
-    {
-        renderer.setColor(color);
-
-        auto mScale = transform.scale();
-        renderer.drawRect(
-            transform.translation(),
-            width * mScale.x,
-            height * mScale.y
-        );
-    }
-};
-
 class SpriteItem : public RenderItem
 {
 public:
@@ -125,10 +86,6 @@ public:
     float height;
 
     Vec2 center = {0.5, 0.5};
-
-    Vec2 framePos;
-    // float frameWidth;
-    // float frameHeight;
 
     Color tint = 0xffffff;
 
@@ -141,89 +98,18 @@ public:
 
     void render(const Matrix3x3& transform, Renderer& renderer) const override
     {
-        SDL_Texture* texture = renderer.getTexture(textureId);
+        const auto& texture = renderer.resources().getTexture(textureId);
 
-        float srcWidth, srcHeight;
-        SDL_GetTextureSize(texture, &srcWidth, &srcHeight);
+        auto scale = transform.scale();
 
-        SDL_FRect srcRect = {
-            .x = framePos.x,
-            .y = framePos.y,
-            .w = srcWidth,
-            .h = srcHeight,
-        };
+        const Vec2 size{width * scale.x, height * scale.y};
 
-        Vec2 scale = transform.scale();
-
-        float dstWidth = width * scale.x;
-        float dstHeight = height * scale.y;
-
-        auto t = transform.translation();
-        SDL_FRect dstRect = {
-            .x = t.x - (dstWidth / 2.F),
-            .y = t.y - (dstHeight / 2.F),
-            .w = dstWidth,
-            .h = dstHeight,
-        };
-
-        SDL_FPoint rotCenter = {center.x * dstRect.w, center.y * dstRect.h};
-
-        SDL_SetTextureColorMod(texture, tint.r, tint.g, tint.b);
-        SDL_SetTextureAlphaModFloat(texture, alpha);
-
-        SDL_RenderTextureRotated(
-            renderer.renderer(),
+        renderer.batcher.renderSprite(
+            transform.translation() - (size / 2.F),
+            size,
             texture,
-            &srcRect,
-            &dstRect,
-            transform.rotation(),
-            &rotCenter,
-            SDL_FLIP_NONE
+            tint
         );
     }
 };
 
-class ShapeRender : public RenderItem
-{
-public:
-    std::unique_ptr<Shape> shape;
-    Color color;
-
-    void render(const Matrix3x3& transform, Renderer& renderer) const override
-    {
-        renderer.setColor(color);
-
-        auto mScale = transform.scale();
-        switch (shape->type) {
-        case Shape::CIRCLE: {
-            auto circle = static_cast<const Circle&>(*shape);
-
-            renderer.drawEllipse(
-                circle.pos + transform.translation(),
-                circle.rad * mScale.x,
-                circle.rad * mScale.y
-            );
-            break;
-        }
-        case Shape::RECT: {
-            auto rect = static_cast<const Rect&>(*shape);
-
-            renderer.drawRect(
-                rect.center() + transform.translation(),
-                rect.width() * mScale.x,
-                rect.height() * mScale.y
-            );
-            break;
-        }
-        case Shape::POLYGON: {
-            auto poly = static_cast<const Polygon&>(*shape);
-            // TODO translate and scale
-            renderer.drawPoly(poly.points);
-            break;
-        }
-        default: {
-            std::unreachable();
-        }
-        }
-    }
-};
