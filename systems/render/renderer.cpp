@@ -88,7 +88,7 @@ SDL_AppResult Renderer::init()
         std::cerr << "gladLoadGL error: failed to load OpenGL\n";
         return SDL_APP_FAILURE;
     }
-    std::cout << "Using OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << "\n";
+    std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, m_window, 0, resizeCanvas);
