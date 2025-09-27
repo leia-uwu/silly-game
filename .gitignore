@@ -2,6 +2,7 @@
 # kdevelop
 .kdev4/
 silly-game.kdev4
+.kateproject.build
 
 .cache/
 build*/
