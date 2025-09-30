@@ -14,20 +14,6 @@
  */
 class Renderer
 {
-private:
-    SDL_Window* m_window = nullptr;
-    SDL_GLContext m_glContext;
-
-    std::string m_windowTitle;
-
-    int m_windowWidth;
-    int m_windowHeight;
-
-    Color m_clearColor;
-
-    ResourceManager m_resources;
-    RenderBatcher m_batcher;
-
 public:
     Renderer();
     Renderer(std::string title, int width, int height);
@@ -36,7 +22,7 @@ public:
     ~Renderer();
 
     /**
-     * Tries to create the SDL Window and SDL Renderer
+     * Tries to initialize SDL, the window and OpenGL context
      * If it fails you should exit the program
      */
     SDL_AppResult init();
@@ -75,4 +61,18 @@ public:
 
     void clear();
     void present();
+
+private:
+    SDL_Window* m_window = nullptr;
+    SDL_GLContext m_glContext;
+
+    std::string m_windowTitle;
+
+    int m_windowWidth;
+    int m_windowHeight;
+
+    Color m_clearColor;
+
+    ResourceManager m_resources;
+    RenderBatcher m_batcher;
 };

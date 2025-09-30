@@ -9,13 +9,29 @@
 #include <cassert>
 #include <cstddef>
 
-inline constexpr size_t MAX_BATCH_VERTICES = 1024;
-inline constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
-inline constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
-
 class RenderBatcher
 {
+public:
+    Matrix3x3 transform;
+
+    void init();
+    ~RenderBatcher();
+
+    void renderSprite(
+        const Vec2& pos,
+        const Vec2& scale,
+        const Texture& texture,
+        const Color& tint
+    );
+
+    void beginBatch();
+    void flushBatch();
+
 private:
+    static constexpr size_t MAX_BATCH_VERTICES = 1024;
+    static constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
+    static constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
+
     struct Vec3
     {
         float x;
@@ -53,26 +69,10 @@ private:
 
     Texture m_lastTexture;
 
-public:
-    Matrix3x3 transform;
-
-    void init();
-    ~RenderBatcher();
-
-    void renderSprite(
-        const Vec2& pos,
-        const Vec2& scale,
-        const Texture& texture,
-        const Color& tint
-    );
-
     void addSprite(
         const Vec2& pos,
         const Vec2& scale,
         const Texture& texture,
         const Color& tint
     );
-
-    void beginBatch();
-    void flushBatch();
 };

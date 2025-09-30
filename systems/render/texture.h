@@ -9,21 +9,21 @@ class Texture
 public:
     GLuint id;
 
-    uint32_t width;
-    uint32_t height;
+    GLuint width;
+    GLuint height;
 
-    uint32_t internalFormat;
-    uint32_t imageFormat;
+    GLuint internalFormat;
+    GLuint imageFormat;
 
-    uint32_t wrapS;
-    uint32_t wrapT;
-    uint32_t filterMin;
-    uint32_t filterMax;
+    GLuint wrapS;
+    GLuint wrapT;
+    GLuint filterMin;
+    GLuint filterMax;
 
-    Texture(uint32_t id);
+    Texture(GLuint id);
     Texture() = default;
 
-    void generate(uint32_t width, uint32_t height, uint8_t* data);
+    void generate(GLuint width, GLuint height, uint8_t* data);
 
     void bind() const;
 };
