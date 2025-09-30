@@ -4,9 +4,9 @@
 #include <chrono>
 #include <cstdlib>
 
-#include "systems/math/collision.h"
-#include "systems/math/shape.h"
-#include "systems/render/renderItem.h"
+#include "math/collision.h"
+#include "math/shape.h"
+#include "render/renderItem.h"
 
 #include "game.h"
 

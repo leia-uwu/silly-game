@@ -1,10 +1,9 @@
 #pragma once
 
-#include "systems/input/inputManager.h"
-#include "systems/math/shape.h"
-#include "systems/math/vec2.h"
-#include "systems/render/renderItem.h"
-#include "systems/render/renderer.h"
+#include "input/inputManager.h"
+#include "math/shape.h"
+#include "math/vec2.h"
+#include "render/renderItem.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
