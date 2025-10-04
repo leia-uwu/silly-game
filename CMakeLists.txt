@@ -29,6 +29,10 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 include(findSDL)
 findSDL()
 
+if (NOT DEFINED EMSCRIPTEN)
+    find_package(OpenGL REQUIRED)
+endif()
+
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/include")
 add_subdirectory(systems)
 
