@@ -3,7 +3,8 @@
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
-#include <chrono>
+#include <SDL3/SDL_timer.h>
+
 #include <memory>
 
 class GameApp
@@ -48,7 +49,7 @@ protected:
 
     InputManager m_inputManager;
 
-    std::chrono::duration<double> m_lastNow = std::chrono::system_clock::now().time_since_epoch();
+    uint64_t m_lastNow = SDL_GetPerformanceCounter();
 };
 
 // NOLINTBEGIN(bugprone-macro-parentheses)

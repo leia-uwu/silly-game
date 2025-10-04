@@ -1,5 +1,4 @@
 #include "app/app.h"
-#include <SDL3/SDL_init.h>
 
 SDL_AppResult GameApp::init(int /*argc*/, char** /*argv*/)
 {
@@ -18,8 +17,8 @@ SDL_AppResult GameApp::SDLEvent(SDL_Event* /*event*/)
 
 SDL_AppResult GameApp::processSDLIterate()
 {
-    std::chrono::duration<double> newNow = std::chrono::system_clock::now().time_since_epoch();
-    float dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
+    uint64_t newNow = SDL_GetPerformanceCounter();
+    float dt = ((newNow - m_lastNow) / (float)SDL_GetPerformanceFrequency());
     m_lastNow = newNow;
 
     renderer().clear();
