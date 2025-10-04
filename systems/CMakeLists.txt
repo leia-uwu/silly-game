@@ -75,6 +75,7 @@ target_sources(
         include/render/batcher.h
         include/render/renderer.h
 )
+
 #
 # Input
 #
@@ -94,6 +95,27 @@ target_sources(
     BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include"
     FILES
         include/input/inputManager.h
+)
+
+#
+# App
+#
+
+add_library(
+    app
+    STATIC
+    src/app/app.cpp
+)
+target_link_libraries(app SDL3::SDL3)
+
+target_sources(
+    app
+    PUBLIC
+    FILE_SET HEADERS
+    TYPE HEADERS
+    BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    FILES
+        include/app/app.h
 )
 
 #

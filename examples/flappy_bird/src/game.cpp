@@ -1,7 +1,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_video.h>
-#include <chrono>
+
 #include <cstdlib>
 
 #include "math/collision.h"
@@ -10,30 +11,24 @@
 
 #include "game.h"
 
-Game::Game(Renderer& renderer) :
-    m_renderer(renderer)
+SDL_AppResult Game::init(int /*argc*/, char** /*argv*/)
 {
+    SDL_SetWindowMinimumSize(renderer().window(), GAME_WIDTH, GAME_HEIGHT);
+    renderer().setClearColor(0x141414);
 
-    // TODO: move those to methods on Renderer
-    // SDL_SetRenderLogicalPresentation(renderer.renderer(), GAME_WIDTH, GAME_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-    SDL_SetWindowMinimumSize(renderer.window(), GAME_WIDTH, GAME_HEIGHT);
+    renderer().resources().loadTexture("bird", "assets/bird.bmp");
+    renderer().resources().loadTexture("pipe", "assets/pipe.bmp");
 
-    m_renderer.resources().loadTexture("bird", "assets/bird.bmp");
-    m_renderer.resources().loadTexture("pipe", "assets/pipe.bmp");
-
-    m_renderer.setClearColor(0x141414);
+    return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult Game::update()
+SDL_AppResult Game::update(float dt)
 {
     //
     // UPDATE
     //
-    std::chrono::duration<double> newNow = std::chrono::system_clock::now().time_since_epoch();
-    float dt = std::chrono::duration<double, std::ratio<1>>(newNow - m_lastNow).count();
-    m_lastNow = newNow;
 
-    if (m_inputManager.isKeyDown("W") || m_inputManager.isMouseBtnDown(0)) {
+    if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(0)) {
         m_player.vel.y = -500;
     }
 
@@ -51,7 +46,6 @@ SDL_AppResult Game::update()
 
     for (auto& pipe : m_pipes) {
         pipe.update(dt);
-        // std::cout << pipe.hitbox.center() << "\n";
 
         Collision::CollRes res;
         if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
@@ -60,41 +54,24 @@ SDL_AppResult Game::update()
         }
     }
 
-    m_inputManager.flush();
-
     //
     // RENDER
     //
 
-    m_renderer.clear();
     root.clear();
 
-    root.pos.x = -m_renderer.windowWidth() / 2.F;
-    root.pos.y = -m_renderer.windowHeight() / 2.F;
+    root.pos.x = -renderer().windowWidth() / 2.F;
+    root.pos.y = -renderer().windowHeight() / 2.F;
 
     for (auto& pipe : m_pipes) {
         pipe.render(root);
     }
 
     m_player.render(root);
-    root.renderChildren(root.getMatrix(), m_renderer);
-
-    m_renderer.present();
+    root.renderChildren(root.getMatrix(), renderer());
 
     return SDL_APP_CONTINUE;
 };
-
-SDL_AppResult Game::processEvent(SDL_Event* event)
-{
-    m_renderer.processSDLEvent(event);
-    m_inputManager.processSDLEvent(event);
-
-    switch (event->type) {
-    case SDL_EVENT_QUIT:
-        return SDL_APP_SUCCESS;
-    }
-    return SDL_APP_CONTINUE;
-}
 
 void Game::addPipe()
 {
@@ -133,4 +110,58 @@ void Game::addPipe()
         PIPE_WIDTH,
         GAME_HEIGHT - gapYEnd
     );
+}
+
+Player::Player() :
+    hitbox(Rect::fromDims(PLAYER_SIZE, PLAYER_SIZE, {PLAYER_SIZE, PLAYER_SIZE}).getPoints())
+{
+    sprite.width = PLAYER_SIZE;
+    sprite.height = PLAYER_SIZE;
+    sprite.setTexture("bird");
+}
+
+void Player::update(float dt)
+{
+    vel.y += GRAVITY * dt;
+
+    Vec2 step = vel * dt;
+    hitbox.translate(step);
+
+    Collision::CollRes res;
+    if (hitbox.getCollision(GAME_FLOOR, &res)) {
+        hitbox.translate(res.normal * -res.depth);
+        vel.y = 0;
+    }
+}
+
+void Player::render(RenderItem& root)
+{
+    sprite.pos = hitbox.center();
+    root.addChild(&sprite);
+}
+
+Pipe::Pipe(
+    Vec2 pos,
+    float width,
+    float height
+) :
+    hitbox(Rect::fromDims(width, height, pos))
+{
+    sprite.setTexture("pipe");
+    sprite.tint = 0x00ff00;
+}
+
+void Pipe::update(float dt)
+{
+    Vec2 step = vel * dt;
+    hitbox.translate(step);
+}
+
+void Pipe::render(RenderItem& root)
+{
+    sprite.pos = hitbox.center();
+    sprite.width = hitbox.width();
+    sprite.height = hitbox.height();
+
+    root.addChild(&sprite);
 }

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "input/inputManager.h"
+#include "app/app.h"
 #include "math/shape.h"
 #include "math/vec2.h"
 #include "render/renderItem.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
-#include <chrono>
 
 static const float GAME_WIDTH = 1024;
 static const float GAME_HEIGHT = 512;
@@ -31,66 +30,11 @@ public:
 
     Polygon hitbox;
 
-    Player() :
-        hitbox(Rect::fromDims(PLAYER_SIZE, PLAYER_SIZE, {PLAYER_SIZE, PLAYER_SIZE}).getPoints())
-    {
-        sprite.width = PLAYER_SIZE;
-        sprite.height = PLAYER_SIZE;
-        sprite.setTexture("bird");
-    }
+    Player();
 
-    void update(float dt)
-    {
-        vel.y += GRAVITY * dt;
+    void update(float dt);
 
-        Vec2 step = vel * dt;
-        hitbox.translate(step);
-
-        Collision::CollRes res;
-        if (hitbox.getCollision(GAME_FLOOR, &res)) {
-            hitbox.translate(res.normal * -res.depth);
-            vel.y = 0;
-        }
-    }
-
-    void render(RenderItem& root)
-    {
-        sprite.pos = hitbox.center();
-        root.addChild(&sprite);
-    }
-};
-
-class Pipe;
-
-class Game
-{
-
-private:
-    Renderer& m_renderer;
-    InputManager m_inputManager;
-
-    std::chrono::duration<double> m_lastNow = std::chrono::system_clock::now().time_since_epoch();
-
-    Player m_player;
-    std::vector<Pipe> m_pipes;
-
-    float m_lastPipeDistance = 0;
-
-    void addPipe();
-
-public:
-    Game(Renderer& renderer);
-
-    RenderItem root;
-
-    [[nodiscard]] Renderer& renderer()
-    {
-        return m_renderer;
-    };
-
-    SDL_AppResult update();
-
-    SDL_AppResult processEvent(SDL_Event* event);
+    void render(RenderItem& root);
 };
 
 class Pipe
@@ -102,36 +46,34 @@ public:
 
     Rect hitbox;
 
-    // RectItem debugHitbox;
-
     Pipe(
         Vec2 pos,
         float width,
         float height
-    ) :
-        hitbox(Rect::fromDims(width, height, pos))
+    );
+
+    void update(float dt);
+
+    void render(RenderItem& root);
+};
+
+class Game : public GameApp
+{
+public:
+    Game(Renderer* renderer) :
+        GameApp(renderer)
     {
-        sprite.setTexture("pipe");
-        sprite.tint = 0x00ff00;
     }
 
-    void update(float dt)
-    {
-        Vec2 step = vel * dt;
-        hitbox.translate(step);
-    }
+    SDL_AppResult init(int argc, char** argv) override;
 
-    void render(RenderItem& root)
-    {
-        sprite.pos = hitbox.center();
-        sprite.width = hitbox.width();
-        sprite.height = hitbox.height();
+    RenderItem root;
+    SDL_AppResult update(float dt) override;
 
-        // debugHitbox.pos = pos;
-        // debugHitbox.width = hitbox.width();
-        // debugHitbox.height = hitbox.height();
+private:
+    Player m_player;
+    std::vector<Pipe> m_pipes;
+    float m_lastPipeDistance = 0;
 
-        root.addChild(&sprite);
-        // root.addChild(&debugHitbox);
-    }
+    void addPipe();
 };
