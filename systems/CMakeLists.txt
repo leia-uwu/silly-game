@@ -40,6 +40,7 @@ target_sources(
         include/math/vec2.h
         include/math/matrix.h
         include/math/collision.h
+        include/math/grid.h
 )
 
 #

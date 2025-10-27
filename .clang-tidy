@@ -31,3 +31,4 @@ CheckOptions:
   - { key: readability-identifier-naming.ProtectedMemberPrefix,         value: m_ }
   - { key: readability-identifier-naming.PrivateStaticMemberPrefix,     value: s_ }
   - { key: readability-identifier-naming.ProtectedStaticMemberPrefix,   value: s_ }
+  - { key: readability-function-cognitive-complexity.Threshold,          value: 30 }
