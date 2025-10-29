@@ -24,7 +24,7 @@ function(finduWebsockets)
     add_library(uSockets ${SOURCES})
 
     target_include_directories(uSockets PUBLIC ${usockets_SOURCE_DIR}/src)
-    target_compile_definitions(uSockets PRIVATE LIBUS_NO_SSL LIBUS_USE_LIBUV)
+    target_compile_definitions(uSockets PRIVATE LIBUS_NO_SSL)
 
     FetchContent_Declare(
         uWebSockets
@@ -37,6 +37,6 @@ function(finduWebsockets)
 
     add_library(uWebSockets INTERFACE)
     target_include_directories(uWebSockets INTERFACE ${uwebsockets_SOURCE_DIR}/src/)
-    target_link_libraries(uWebSockets INTERFACE uSockets ${ZLIB_LIBRARIES} libuv)
+    target_link_libraries(uWebSockets INTERFACE uSockets ${ZLIB_LIBRARIES})
 
 endfunction()
