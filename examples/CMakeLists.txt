@@ -9,4 +9,12 @@ if (DEFINED EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".js" CACHE INTERNAL "")
 endif()
 
+install(
+    FILES
+    public/assets/bird.bmp
+    public/assets/pipe.bmp
+    DESTINATION
+    examples/assets
+)
+
 add_subdirectory(flappy_bird)

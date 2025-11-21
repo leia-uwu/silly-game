@@ -10,7 +10,8 @@
 class ResourceManager
 {
 public:
-    void loadTexture(const std::string& id, const std::string& path);
+    void loadTexture(const char* id, const char* path);
+
     [[nodiscard]] Texture getTexture(const std::string& id);
 
     void loadShader(

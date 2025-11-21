@@ -12,15 +12,7 @@ target_link_libraries(
     util math render input app
 )
 
-install(TARGETS flappy_bird DESTINATION examples/flappy_bird)
-
-install(
-    FILES
-    assets/bird.bmp
-    assets/pipe.bmp
-    DESTINATION
-    examples/flappy_bird/assets
-)
+install(TARGETS flappy_bird DESTINATION examples)
 
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
