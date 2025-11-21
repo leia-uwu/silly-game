@@ -49,7 +49,6 @@ private:
         Vec2 pos;
         Vec2 textureCord;
         Vec4 color;
-        GLuint textureID;
     };
 
     Shader m_spriteShader;
@@ -70,7 +69,6 @@ private:
     void addSprite(
         const Vec2& pos,
         const Vec2& scale,
-        const Texture& texture,
         const Color& tint
     );
 };

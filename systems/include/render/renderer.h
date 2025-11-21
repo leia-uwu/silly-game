@@ -54,6 +54,7 @@ public:
     {
         return m_clearColor;
     }
+
     void setClearColor(const Color& color)
     {
         m_clearColor = color;

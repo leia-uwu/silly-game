@@ -8,7 +8,6 @@ static const char* FRAGMENT_SHADER =
     "layout (location = 0) out vec4 o_color;\n"
     "in vec4 v_color;\n"
     "in vec2 v_textureCord;\n"
-    "flat in uint v_textureID;\n"
     "uniform sampler2D u_texture;\n"
     "void main()\n"
     "{\n"
@@ -20,16 +19,13 @@ static const char* VERTEX_SHADER =
     "layout (location = 0) in vec2 a_pos;\n"
     "layout (location = 1) in vec2 a_textureCord;\n"
     "layout (location = 2) in vec4 a_color;\n"
-    "layout (location = 3) in uint a_textureID;\n"
     "out vec4 v_color;\n"
     "out vec2 v_textureCord;\n"
-    "flat out uint v_textureID;\n"
     "uniform mat3 u_transform;\n"
     "void main()\n"
     "{\n"
     "    v_color = a_color;\n"
     "    v_textureCord = a_textureCord;\n"
-    "    v_textureID = a_textureID;\n"
     "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
     "}\n";
 // keeping those in sync will surely be fun...
@@ -38,7 +34,6 @@ static const char* FRAGMENT_SHADER =
     "precision highp float;\n"
     "varying vec4 v_color;\n"
     "varying vec2 v_textureCord;\n"
-    "varying float v_textureID;\n"
     "uniform sampler2D u_texture;\n"
     "void main()\n"
     "{\n"
@@ -50,16 +45,13 @@ static const char* VERTEX_SHADER =
     "attribute vec2 a_pos;\n"
     "attribute vec2 a_textureCord;\n"
     "attribute vec4 a_color;\n"
-    "attribute float a_textureID;\n"
     "varying vec4 v_color;\n"
     "varying vec2 v_textureCord;\n"
-    "varying float v_textureID;\n"
     "uniform mat3 u_transform;\n"
     "void main()\n"
     "{\n"
     "    v_color = a_color;\n"
     "    v_textureCord = a_textureCord;\n"
-    "    v_textureID = a_textureID;\n"
     "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
     "}\n";
 #endif
@@ -115,8 +107,6 @@ void RenderBatcher::init()
     DEFINE_VERTEX_ATTRIB(2, GL_FLOAT, textureCord)
 
     DEFINE_VERTEX_ATTRIB(4, GL_FLOAT, color)
-
-    DEFINE_VERTEX_ATTRIB(1, GL_UNSIGNED_INT, textureID)
 }
 
 RenderBatcher::~RenderBatcher()
@@ -139,13 +129,12 @@ void RenderBatcher::renderSprite(
         m_lastTexture = texture;
     }
 
-    addSprite(pos, scale, texture, tint);
+    addSprite(pos, scale, tint);
 }
 
 void RenderBatcher::addSprite(
     const Vec2& pos,
     const Vec2& scale,
-    const Texture& texture,
     const Color& tint
     // float rotation
 )
@@ -161,28 +150,24 @@ void RenderBatcher::addSprite(
         .pos = {pos.x, pos.y},
         .textureCord = {0.F, 0.F},
         .color = color,
-        .textureID = texture.id,
     };
 
     m_vertices[m_batchIndex + 1] = {
         .pos = {pos.x + scale.x, pos.y},
         .textureCord = {1.F, 0.F},
         .color = color,
-        .textureID = texture.id,
     };
 
     m_vertices[m_batchIndex + 2] = {
         .pos = {pos.x + scale.x, pos.y + scale.y},
         .textureCord = {1.F, 1.F},
         .color = color,
-        .textureID = texture.id,
     };
 
     m_vertices[m_batchIndex + 3] = {
         .pos = {pos.x, pos.y + scale.y},
         .textureCord = {0.F, 1.F},
         .color = color,
-        .textureID = texture.id,
     };
 
     m_batchIndex += 4;
