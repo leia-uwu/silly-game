@@ -189,8 +189,8 @@ void RenderBatcher::flushBatch()
     glBufferSubData(GL_ARRAY_BUFFER, 0, m_batchIndex * sizeof(Vertex), m_vertices);
 
     // FIXME: more than 1 texture lol
-    m_lastTexture.bind();
     glActiveTexture(GL_TEXTURE0);
+    m_lastTexture.bind();
 
     m_spriteShader.use();
     m_spriteShader.setInt("u_texture", 0);
