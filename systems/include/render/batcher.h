@@ -68,6 +68,17 @@ public:
     };
 
     void addVertice(const Vertex& vert);
+    void addIndice(uint32_t i);
+
+    [[nodiscard]] uint32_t indiceOffset() const
+    {
+        return m_indicesOffset;
+    }
+
+    void incrementIndiceOffset(uint32_t i)
+    {
+        m_indicesOffset += i;
+    }
 
     void addBatchable(const Batchable& batchable);
 
@@ -88,9 +99,11 @@ private:
     GLuint m_quadEBO;
 
     Vertex m_vertices[VERTEX_BUFFER_SIZE];
+    GLuint m_indices[MAX_INDEX_SIZE];
 
     size_t m_batchIndex = 0;
-    size_t m_indicesToRender = 0;
+    size_t m_indicesIndex = 0;
+    size_t m_indicesOffset = 0;
 
     Texture m_lastTexture;
 

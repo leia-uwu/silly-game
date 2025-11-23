@@ -1,5 +1,6 @@
 #include "render/batcher.h"
 
+#include <cstdint>
 #include <glad/gl.h>
 
 #ifndef __EMSCRIPTEN__
@@ -63,20 +64,6 @@ void RenderBatcher::init()
 
     m_spriteShader.compile(VERTEX_SHADER, FRAGMENT_SHADER, nullptr);
 
-    uint32_t indices[MAX_INDEX_SIZE];
-    uint32_t offset = 0;
-    for (size_t i = 0; i < MAX_INDEX_SIZE; i += 6) {
-        indices[i + 0] = 0 + offset;
-        indices[i + 1] = 1 + offset;
-        indices[i + 2] = 2 + offset;
-
-        indices[i + 3] = 2 + offset;
-        indices[i + 4] = 3 + offset;
-        indices[i + 5] = 0 + offset;
-
-        offset += 4;
-    }
-
     glGenVertexArrays(1, &m_quadVAO);
     glGenBuffers(1, &m_quadVBO);
     glGenBuffers(1, &m_quadEBO);
@@ -84,10 +71,10 @@ void RenderBatcher::init()
     glBindVertexArray(m_quadVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, VERTEX_BUFFER_SIZE * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), nullptr, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), nullptr, GL_DYNAMIC_DRAW);
 
     size_t attribIndex = 0;
 #define DEFINE_VERTEX_ATTRIB(size, type, key)                           \
@@ -119,16 +106,20 @@ RenderBatcher::~RenderBatcher()
 void RenderBatcher::beginBatch()
 {
     m_batchIndex = 0;
-    m_indicesToRender = 0;
+    m_indicesIndex = 0;
+    m_indicesOffset = 0;
 }
 
 void RenderBatcher::flushBatch()
 {
-    if (m_batchIndex == 0 || m_indicesToRender == 0)
+    if (m_batchIndex == 0 || m_indicesIndex == 0)
         return;
 
     glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, m_batchIndex * sizeof(Vertex), m_vertices);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadEBO);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indicesIndex * sizeof(GLuint), m_indices);
 
     // FIXME: more than 1 texture lol
     glActiveTexture(GL_TEXTURE0);
@@ -139,7 +130,7 @@ void RenderBatcher::flushBatch()
     m_spriteShader.setMatrix3("u_transform", transform);
 
     glBindVertexArray(m_quadVAO);
-    glDrawElements(GL_TRIANGLES, m_indicesToRender, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, m_indicesIndex, GL_UNSIGNED_INT, nullptr);
 }
 
 void RenderBatcher::addVertice(const Vertex& vert)
@@ -150,22 +141,32 @@ void RenderBatcher::addVertice(const Vertex& vert)
     m_batchIndex++;
 }
 
+void RenderBatcher::addIndice(uint32_t i)
+{
+    assert((m_indicesIndex + 1) < MAX_INDEX_SIZE);
+
+    m_indices[m_indicesIndex] = i;
+    m_indicesIndex++;
+}
+
 void RenderBatcher::addBatchable(const Batchable& batchable)
 {
-    size_t oldSize = m_batchIndex;
+    size_t oldBatchIndex = m_batchIndex;
+    size_t oldIndiceIndex = m_indicesIndex;
+
     if (m_batchIndex + batchable.batchSize() >= VERTEX_BUFFER_SIZE || m_lastTexture.id != batchable.texture.id) {
         flushBatch();
         beginBatch();
-        oldSize = 0;
+        oldBatchIndex = 0;
+        oldIndiceIndex = 0;
         m_lastTexture = batchable.texture;
     }
 
     batchable.addToBatcher(*this);
 
     // to make sure addToBatcher and batchSize are in sync
-    assert(m_batchIndex == (oldSize + batchable.batchSize()));
-
-    m_indicesToRender += batchable.indices();
+    assert(m_batchIndex == (oldBatchIndex + batchable.batchSize()));
+    assert(m_indicesIndex == (oldIndiceIndex + batchable.indices()));
 }
 
 RenderBatcher::Batchable::Batchable(const Texture& texture) : texture(texture)
@@ -223,4 +224,16 @@ void RenderBatcher::TextureBatchable::addToBatcher(RenderBatcher& batcher) const
         .textureCord = {0.F, 1.F},
         .color = color,
     });
+
+    size_t offset = batcher.indiceOffset();
+
+    batcher.addIndice(0 + offset);
+    batcher.addIndice(1 + offset);
+    batcher.addIndice(2 + offset);
+
+    batcher.addIndice(2 + offset);
+    batcher.addIndice(3 + offset);
+    batcher.addIndice(0 + offset);
+
+    batcher.incrementIndiceOffset(4);
 }
