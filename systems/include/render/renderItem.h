@@ -1,5 +1,6 @@
 #pragma once
 
+#include "render/batcher.h"
 #include "render/color.h"
 #include "render/renderer.h"
 
@@ -104,11 +105,12 @@ public:
 
         const Vec2 size{width * scale.x, height * scale.y};
 
-        renderer.batcher().renderSprite(
+        renderer.batcher().addBatchable(RenderBatcher::TextureBatchable{
             transform.translation() - (size / 2.F),
             size,
             texture,
-            tint
-        );
+            tint,
+            0,
+        });
     }
 };

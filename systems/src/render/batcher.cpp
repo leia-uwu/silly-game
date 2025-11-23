@@ -116,64 +116,6 @@ RenderBatcher::~RenderBatcher()
     glDeleteBuffers(1, &m_quadEBO);
 }
 
-void RenderBatcher::renderSprite(
-    const Vec2& pos,
-    const Vec2& scale,
-    const Texture& texture,
-    const Color& tint
-)
-{
-    if (m_batchIndex + 4 >= VERTEX_BUFFER_SIZE || m_lastTexture.id != texture.id) {
-        flushBatch();
-        beginBatch();
-        m_lastTexture = texture;
-    }
-
-    addSprite(pos, scale, tint);
-}
-
-void RenderBatcher::addSprite(
-    const Vec2& pos,
-    const Vec2& scale,
-    const Color& tint
-    // float rotation
-)
-{
-    Vec4 color = {
-        .x = tint.normalizedR(),
-        .y = tint.normalizedG(),
-        .z = tint.normalizedB(),
-        .w = tint.normalizedA()
-    };
-
-    m_vertices[m_batchIndex] = {
-        .pos = {pos.x, pos.y},
-        .textureCord = {0.F, 0.F},
-        .color = color,
-    };
-
-    m_vertices[m_batchIndex + 1] = {
-        .pos = {pos.x + scale.x, pos.y},
-        .textureCord = {1.F, 0.F},
-        .color = color,
-    };
-
-    m_vertices[m_batchIndex + 2] = {
-        .pos = {pos.x + scale.x, pos.y + scale.y},
-        .textureCord = {1.F, 1.F},
-        .color = color,
-    };
-
-    m_vertices[m_batchIndex + 3] = {
-        .pos = {pos.x, pos.y + scale.y},
-        .textureCord = {0.F, 1.F},
-        .color = color,
-    };
-
-    m_batchIndex += 4;
-    m_indicesToRender += 6;
-}
-
 void RenderBatcher::beginBatch()
 {
     m_batchIndex = 0;
@@ -198,4 +140,87 @@ void RenderBatcher::flushBatch()
 
     glBindVertexArray(m_quadVAO);
     glDrawElements(GL_TRIANGLES, m_indicesToRender, GL_UNSIGNED_INT, nullptr);
+}
+
+void RenderBatcher::addVertice(const Vertex& vert)
+{
+    assert((m_batchIndex + 1) < MAX_BATCH_VERTICES);
+
+    m_vertices[m_batchIndex] = vert;
+    m_batchIndex++;
+}
+
+void RenderBatcher::addBatchable(const Batchable& batchable)
+{
+    size_t oldSize = m_batchIndex;
+    if (m_batchIndex + batchable.batchSize() >= VERTEX_BUFFER_SIZE || m_lastTexture.id != batchable.texture.id) {
+        flushBatch();
+        beginBatch();
+        oldSize = 0;
+        m_lastTexture = batchable.texture;
+    }
+
+    batchable.addToBatcher(*this);
+
+    // to make sure addToBatcher and batchSize are in sync
+    assert(m_batchIndex == (oldSize + batchable.batchSize()));
+
+    m_indicesToRender += batchable.indices();
+}
+
+RenderBatcher::Batchable::Batchable(const Texture& texture) : texture(texture)
+{
+}
+
+RenderBatcher::TextureBatchable::TextureBatchable(const Vec2& pos, const Vec2& scale, const Texture& texture, const Color& tint, float rotation) :
+    Batchable(texture),
+    pos(pos),
+    scale(scale),
+    tint(tint),
+    rotation(rotation)
+{
+}
+
+[[nodiscard]] size_t RenderBatcher::TextureBatchable::batchSize() const
+{
+    return 4;
+}
+
+[[nodiscard]] size_t RenderBatcher::TextureBatchable::indices() const
+{
+    return 6;
+}
+
+void RenderBatcher::TextureBatchable::addToBatcher(RenderBatcher& batcher) const
+{
+    Vec4 color = {
+        .x = tint.normalizedR(),
+        .y = tint.normalizedG(),
+        .z = tint.normalizedB(),
+        .w = tint.normalizedA()
+    };
+
+    batcher.addVertice({
+        .pos = {pos.x, pos.y},
+        .textureCord = {0.F, 0.F},
+        .color = color,
+    });
+
+    batcher.addVertice({
+        .pos = {pos.x + scale.x, pos.y},
+        .textureCord = {1.F, 0.F},
+        .color = color,
+    });
+
+    batcher.addVertice({
+        .pos = {pos.x + scale.x, pos.y + scale.y},
+        .textureCord = {1.F, 1.F},
+        .color = color,
+    });
+
+    batcher.addVertice({
+        .pos = {pos.x, pos.y + scale.y},
+        .textureCord = {0.F, 1.F},
+        .color = color,
+    });
 }

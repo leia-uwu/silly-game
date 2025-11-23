@@ -15,21 +15,6 @@ public:
     void init();
     ~RenderBatcher();
 
-    void renderSprite(
-        const Vec2& pos,
-        const Vec2& scale,
-        const Texture& texture,
-        const Color& tint
-    );
-
-    void beginBatch();
-    void flushBatch();
-
-private:
-    static constexpr size_t MAX_BATCH_VERTICES = 1024;
-    static constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
-    static constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
-
     struct Vec3
     {
         float x;
@@ -50,6 +35,49 @@ private:
         Vec2 textureCord;
         Vec4 color;
     };
+
+    class Batchable
+    {
+    public:
+        Texture texture;
+
+        Batchable(const Texture& texture);
+        [[nodiscard]] virtual size_t batchSize() const = 0;
+        [[nodiscard]] virtual size_t indices() const = 0;
+
+    private:
+        virtual void addToBatcher(RenderBatcher& batcher) const = 0;
+        friend class RenderBatcher;
+    };
+
+    class TextureBatchable : public Batchable
+    {
+    public:
+        Vec2 pos;
+        Vec2 scale;
+        Color tint;
+        float rotation;
+
+        TextureBatchable(const Vec2& pos, const Vec2& scale, const Texture& texture, const Color& tint, float rotation);
+
+        [[nodiscard]] size_t batchSize() const override;
+        [[nodiscard]] size_t indices() const override;
+
+    private:
+        void addToBatcher(RenderBatcher& batcher) const override;
+    };
+
+    void addVertice(const Vertex& vert);
+
+    void addBatchable(const Batchable& batchable);
+
+    void beginBatch();
+    void flushBatch();
+
+private:
+    static constexpr size_t MAX_BATCH_VERTICES = 1024;
+    static constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
+    static constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
 
     Shader m_spriteShader;
 
