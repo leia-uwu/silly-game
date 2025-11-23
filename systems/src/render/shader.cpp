@@ -11,9 +11,6 @@ Shader& Shader::use()
 
 static void checkCompileErrors(GLuint object, bool isProgram, const std::string& type)
 {
-    // apparently glGetProgramiv will only set this to GL_FALSE on error???
-    // so initialize it to 1
-    // otherwise it may randomly be 0 and print an error when theres no error
     GLint success;
 
     char infoLog[1024];
@@ -112,8 +109,3 @@ void Shader::setMatrix3(const char* name, const Matrix3x3& matrix) const
 {
     glUniformMatrix3fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, matrix.arr.data());
 }
-
-// void Shader::setMatrix4(const char* name, const Matrix4x4& matrix) const
-// {
-//     glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, matrix.arr.data());
-// }
