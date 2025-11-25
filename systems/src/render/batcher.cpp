@@ -154,7 +154,7 @@ void RenderBatcher::addBatchable(const Batchable& batchable)
     size_t oldBatchIndex = m_batchIndex;
     size_t oldIndiceIndex = m_indicesIndex;
 
-    if (m_batchIndex + batchable.batchSize() >= VERTEX_BUFFER_SIZE || m_lastTexture.id != batchable.texture.id) {
+    if (m_batchIndex + batchable.batchSize() >= MAX_BATCH_VERTICES || m_lastTexture.id != batchable.texture.id) {
         flushBatch();
         beginBatch();
         oldBatchIndex = 0;
