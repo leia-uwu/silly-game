@@ -29,7 +29,7 @@ SDL_AppResult Game::update(float dt)
         // update loop, only run when focused
         //
 
-        if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(0)) {
+        if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(1)) {
             m_player.vel.y = -500;
         }
 
