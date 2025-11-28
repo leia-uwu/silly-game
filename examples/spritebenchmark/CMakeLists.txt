@@ -3,12 +3,12 @@ set(
     main.cpp
 )
 
-add_executable(spritebenchmark ${CLIENT_HEADERS} ${BENCHMARK_SRC})
+add_executable(spritebenchmark ${BENCHMARK_SRC})
 
 target_link_libraries(
     spritebenchmark
     PRIVATE SDL3::SDL3
-    util math render input app
+    util math input render app
 )
 
 install(TARGETS spritebenchmark DESTINATION examples)

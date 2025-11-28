@@ -4,12 +4,12 @@ set(
     src/game.cpp
 )
 
-add_executable(flappy_bird ${CLIENT_HEADERS} ${FLAPPY_SRC})
+add_executable(flappy_bird ${FLAPPY_SRC})
 
 target_link_libraries(
     flappy_bird
     PRIVATE SDL3::SDL3
-    util math render input app
+    util math input render app
 )
 
 install(TARGETS flappy_bird DESTINATION examples)
