@@ -40,6 +40,8 @@ public:
 
     bool setWindowSize(int width, int height);
 
+    [[nodiscard]] bool focused() const;
+
     ResourceManager& resources()
     {
         return m_resources;
@@ -71,6 +73,8 @@ private:
 
     int m_windowWidth;
     int m_windowHeight;
+
+    bool m_focused = true;
 
     Color m_clearColor;
 

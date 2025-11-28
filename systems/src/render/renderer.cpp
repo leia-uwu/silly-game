@@ -120,6 +120,12 @@ void Renderer::processSDLEvent(SDL_Event* event)
             {1.F / (m_windowWidth / 2.F), -(1.F / (m_windowHeight / 2.F))}
         );
         break;
+    case SDL_EVENT_WINDOW_FOCUS_LOST:
+        m_focused = false;
+        break;
+    case SDL_EVENT_WINDOW_FOCUS_GAINED:
+        m_focused = true;
+        break;
     }
 }
 
@@ -144,14 +150,19 @@ int Renderer::windowWidth() const
     return m_windowWidth;
 }
 
+int Renderer::windowHeight() const
+{
+    return m_windowHeight;
+}
+
 bool Renderer::setWindowSize(int width, int height)
 {
     return SDL_SetWindowSize(m_window, width, height);
 }
 
-int Renderer::windowHeight() const
+[[nodiscard]] bool Renderer::focused() const
 {
-    return m_windowHeight;
+    return m_focused;
 }
 
 void Renderer::clear()

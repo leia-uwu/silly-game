@@ -24,36 +24,37 @@ SDL_AppResult Game::init(int /*argc*/, char** /*argv*/)
 
 SDL_AppResult Game::update(float dt)
 {
-    //
-    // UPDATE
-    //
+    if (renderer().focused()) {
+        //
+        // update loop, only run when focused
+        //
 
-    if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(0)) {
-        m_player.vel.y = -500;
-    }
+        if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(0)) {
+            m_player.vel.y = -500;
+        }
 
-    m_player.update(dt);
+        m_player.update(dt);
 
-    m_lastPipeDistance += PIPE_SPEED * dt;
+        m_lastPipeDistance += PIPE_SPEED * dt;
 
-    if (m_lastPipeDistance > PIPE_DISTANCE) {
-        m_lastPipeDistance = 0;
+        if (m_lastPipeDistance > PIPE_DISTANCE) {
+            m_lastPipeDistance = 0;
 
-        addPipe();
-    }
+            addPipe();
+        }
 
-    m_player.sprite.tint = 0xaa55ff;
+        m_player.sprite.tint = 0xaa55ff;
 
-    for (auto& pipe : m_pipes) {
-        pipe.update(dt);
+        for (auto& pipe : m_pipes) {
+            pipe.update(dt);
 
-        Collision::CollRes res;
-        if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
-            // m_player.hitbox.translate(res.normal * -res.depth);
-            m_player.sprite.tint = 0xff0000;
+            Collision::CollRes res;
+            if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
+                // m_player.hitbox.translate(res.normal * -res.depth);
+                m_player.sprite.tint = 0xff0000;
+            }
         }
     }
-
     //
     // RENDER
     //
