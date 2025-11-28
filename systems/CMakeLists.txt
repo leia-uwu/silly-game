@@ -51,6 +51,7 @@ add_library(
     render
     STATIC
     src/render/shader.cpp
+    src/render/shaders.c
     src/render/texture.cpp
     src/render/resources.cpp
     src/render/batcher.cpp

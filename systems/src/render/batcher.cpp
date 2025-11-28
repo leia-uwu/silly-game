@@ -1,48 +1,15 @@
 #include "render/batcher.h"
+#include "shaders.h"
 
 #include <cstdint>
 #include <glad/gl.h>
-
-static const char* FRAGMENT_SHADER = R"(\
-#version 300 es
-precision highp float;
-layout (location = 0) out vec4 o_color;
-in vec4 v_color;
-in vec2 v_textureCord;
-uniform sampler2D u_texture;
-void main()
-{
-    o_color = texture(u_texture, v_textureCord) * v_color;
-}
-)";
-
-static const char* VERTEX_SHADER = R"(\
-#version 300 es
-precision highp float;
-layout (location = 0) in vec2 a_pos;
-layout (location = 1) in vec2 a_textureCord;
-layout (location = 2) in uint a_color;
-out vec4 v_color;
-out vec2 v_textureCord;
-uniform mat3 u_transform;
-void main()
-{
-    float r = float((a_color >> 24) & 255u) / 255.0;
-    float g = float((a_color >> 16) & 255u) / 255.0;
-    float b = float((a_color >> 8 ) & 255u) / 255.0;
-    float a = float((a_color      ) & 255u) / 255.0;
-    v_color = vec4(r, g, b, a);
-    v_textureCord = a_textureCord;
-    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);
-}
-)";
 
 void RenderBatcher::init()
 {
     assert(m_initialized == false);
     m_initialized = true;
 
-    m_spriteShader.compile(VERTEX_SHADER, FRAGMENT_SHADER, nullptr);
+    m_spriteShader.compile(getSpriteVertShader(), getSpriteFragShader(), nullptr);
 
     glGenVertexArrays(1, &m_quadVAO);
     glGenBuffers(1, &m_quadVBO);
