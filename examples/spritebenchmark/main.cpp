@@ -19,14 +19,18 @@ public:
 class Benchmark : public GameApp
 {
 public:
-    Benchmark(Renderer* renderer) :
-        GameApp(renderer)
+    Benchmark() :
+        GameApp({
+            .width = 800,
+            .height = 800,
+            .resizable = false,
+            .windowTitle = "OBS bitrate killer",
+        })
     {
     }
 
     SDL_AppResult init(int /*argc*/, char** /*argv*/) override
     {
-        renderer().setWindowSize(800, 800);
         renderer().resources().loadTexture("bird", "assets/bird.bmp");
 
         for (auto& sprite : m_sprites) {
@@ -40,6 +44,7 @@ public:
             sprite.velocity.y = ((std::rand() / (float)RAND_MAX) * 1000) - 500;
             root.addChild(&sprite);
         }
+        renderer().setClearColor(0);
 
         return SDL_APP_CONTINUE;
     };

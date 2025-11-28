@@ -76,7 +76,6 @@ SDL_AppResult Game::update(float dt)
 
 void Game::addPipe()
 {
-
     const int pad = PIPE_GAP / 2;
     const int gapYMax = GAME_HEIGHT - PIPE_GAP - pad;
 

@@ -15,8 +15,15 @@
 class Renderer
 {
 public:
-    Renderer();
-    Renderer(std::string title, int width, int height);
+    struct InitFlags
+    {
+        size_t width = 800;
+        size_t height = 400;
+        bool resizable = true;
+        std::string windowTitle = "Game";
+    };
+
+    Renderer(const InitFlags& flags);
     Renderer(const Renderer&) = delete;
 
     ~Renderer();
@@ -40,6 +47,8 @@ public:
 
     bool setWindowSize(int width, int height);
 
+    [[nodiscard]] bool resizable() const;
+    void setResizable(bool resizable);
     [[nodiscard]] bool focused() const;
 
     ResourceManager& resources()
@@ -74,7 +83,18 @@ private:
     int m_windowWidth;
     int m_windowHeight;
 
+    bool m_resizable = true;
     bool m_focused = true;
+
+    void resize()
+    {
+        glViewport(0, 0, m_windowWidth, m_windowHeight);
+        m_batcher.transform = Matrix3x3(
+            {0, 0},
+            0,
+            {1.F / (m_windowWidth / 2.F), -(1.F / (m_windowHeight / 2.F))}
+        );
+    };
 
     Color m_clearColor;
 

@@ -60,8 +60,13 @@ public:
 class Game : public GameApp
 {
 public:
-    Game(Renderer* renderer) :
-        GameApp(renderer)
+    Game() :
+        GameApp({
+            .width = 800,
+            .height = 450,
+            .resizable = false,
+            .windowTitle = "Flappy Bird!"
+        })
     {
     }
 

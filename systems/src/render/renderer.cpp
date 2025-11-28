@@ -7,11 +7,6 @@
 
 #include <SDL3/SDL_video.h>
 
-// emscripten helpers
-// to make the canvas properly cover the entire web page
-// TODO: Make this under a fullscreen flag in Renderer
-// Currently we are just always forcing it to be the size of the browser tab window
-
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>
@@ -26,27 +21,25 @@ EM_JS(int, getWindowHeight, (), {
 
 static bool resizeCanvas(int eventType, const EmscriptenUiEvent* event, void* userData)
 {
-    auto window = static_cast<SDL_Window*>(userData);
+    auto* renderer = static_cast<Renderer*>(userData);
+    if (!renderer->resizable())
+        return 0;
 
     int width = getWindowWidth();
     int height = getWindowHeight();
 
-    if (!SDL_SetWindowSize(window, width, height)) {
+    if (!SDL_SetWindowSize(renderer->window(), width, height)) {
         std::cout << "SDL_SetWindowSize error: " << SDL_GetError() << "\n";
     }
     return 0;
 };
 #endif
 
-Renderer::Renderer() :
-    m_windowTitle("Game"),
-    m_windowWidth(800),
-    m_windowHeight(400) { };
-
-Renderer::Renderer(std::string title, int width, int height) :
-    m_windowTitle(std::move(title)),
-    m_windowWidth(width),
-    m_windowHeight(height) { };
+Renderer::Renderer(const InitFlags& flags) :
+    m_windowWidth(flags.width),
+    m_windowHeight(flags.height),
+    m_resizable(flags.resizable),
+    m_windowTitle(flags.windowTitle) { };
 
 Renderer::~Renderer()
 {
@@ -69,11 +62,17 @@ SDL_AppResult Renderer::init()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    SDL_WindowFlags flags = SDL_WINDOW_OPENGL;
+
+    if (m_resizable) {
+        flags |= SDL_WINDOW_RESIZABLE;
+    }
+
     m_window = SDL_CreateWindow(
-        "Game",
-        800,
-        450,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+        m_windowTitle.c_str(),
+        m_windowWidth,
+        m_windowHeight,
+        flags
     );
 
     if (m_window == nullptr) {
@@ -96,12 +95,17 @@ SDL_AppResult Renderer::init()
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, m_window, 0, resizeCanvas);
-    resizeCanvas(0, nullptr, m_window);
+    resizeCanvas(0, nullptr, this);
 #endif
 
-    SDL_GL_SetSwapInterval(-1);
+    if (!SDL_GL_SetSwapInterval(-1)) {
+        std::cerr << "Adaptive vsync not supported!\n";
+        SDL_GL_SetSwapInterval(1);
+    };
 
     m_batcher.init();
+
+    resize();
 
     return SDL_APP_CONTINUE;
 }
@@ -113,12 +117,7 @@ void Renderer::processSDLEvent(SDL_Event* event)
         m_windowWidth = event->window.data1;
         m_windowHeight = event->window.data2;
 
-        glViewport(0, 0, m_windowWidth, m_windowHeight);
-        m_batcher.transform = Matrix3x3(
-            {0, 0},
-            0,
-            {1.F / (m_windowWidth / 2.F), -(1.F / (m_windowHeight / 2.F))}
-        );
+        resize();
         break;
     case SDL_EVENT_WINDOW_FOCUS_LOST:
         m_focused = false;
@@ -158,6 +157,17 @@ int Renderer::windowHeight() const
 bool Renderer::setWindowSize(int width, int height)
 {
     return SDL_SetWindowSize(m_window, width, height);
+}
+
+[[nodiscard]] bool Renderer::resizable() const
+{
+    return m_resizable;
+}
+
+void Renderer::setResizable(bool resizable)
+{
+    m_resizable = true;
+    SDL_SetWindowResizable(m_window, resizable);
 }
 
 [[nodiscard]] bool Renderer::focused() const

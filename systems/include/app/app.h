@@ -5,15 +5,11 @@
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_timer.h>
 
-#include <memory>
-
 class GameApp
 {
 public:
-    GameApp(Renderer* renderer) :
-        m_renderer(renderer)
+    GameApp(const Renderer::InitFlags& flags) : m_renderer(flags)
     {
-        assert(m_renderer.get() != nullptr);
     }
     virtual SDL_AppResult init(int argc, char** argv);
 
@@ -32,7 +28,7 @@ public:
 
     Renderer& renderer()
     {
-        return *m_renderer;
+        return m_renderer;
     }
 
     InputManager& inputManager()
@@ -45,7 +41,7 @@ public:
     SDL_AppResult processSDLEvent(SDL_Event* event);
 
 protected:
-    std::unique_ptr<Renderer> m_renderer;
+    Renderer m_renderer;
 
     InputManager m_inputManager;
 
@@ -63,14 +59,13 @@ protected:
 #define INIT_APP(APP)                                                 \
     SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) \
     {                                                                 \
-        auto* renderer = new Renderer();                              \
+        auto* app = new APP();                                        \
                                                                       \
-        SDL_AppResult result = renderer->init();                      \
+        SDL_AppResult result = app->renderer().init();                \
         if (result != SDL_APP_CONTINUE) {                             \
             return result;                                            \
         }                                                             \
                                                                       \
-        auto* app = new APP(renderer);                                \
         result = app->init(argc, argv);                               \
         if (result != SDL_APP_CONTINUE) {                             \
             return result;                                            \
