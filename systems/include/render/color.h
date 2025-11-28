@@ -26,12 +26,12 @@ public:
 
     [[nodiscard]] uint32_t RGBHex() const
     {
-        return r | (g << 8) | (b << 16);
+        return (r << 16) | (g << 8) | b;
     }
 
     [[nodiscard]] uint32_t RGBAHex() const
     {
-        return r | (g << 8) | (b << 16) | (a << 24);
+        return (r << 24) | (g << 16) | (b << 8) | a;
     }
 
     //

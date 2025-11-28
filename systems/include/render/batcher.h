@@ -33,7 +33,7 @@ public:
     {
         Vec2 pos;
         Vec2 textureCord;
-        Vec4 color;
+        uint32_t color;
     };
 
     class Batchable

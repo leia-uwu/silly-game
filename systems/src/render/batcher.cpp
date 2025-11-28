@@ -3,59 +3,39 @@
 #include <cstdint>
 #include <glad/gl.h>
 
-#ifndef __EMSCRIPTEN__
-static const char* FRAGMENT_SHADER =
-    "#version 330\n"
-    "layout (location = 0) out vec4 o_color;\n"
-    "in vec4 v_color;\n"
-    "in vec2 v_textureCord;\n"
-    "uniform sampler2D u_texture;\n"
-    "void main()\n"
-    "{\n"
-    "    o_color = texture(u_texture, v_textureCord) * v_color;\n"
-    "}\n";
+static const char* FRAGMENT_SHADER = R"(\
+#version 300 es
+precision highp float;
+layout (location = 0) out vec4 o_color;
+in vec4 v_color;
+in vec2 v_textureCord;
+uniform sampler2D u_texture;
+void main()
+{
+    o_color = texture(u_texture, v_textureCord) * v_color;
+}
+)";
 
-static const char* VERTEX_SHADER =
-    "#version 330\n"
-    "layout (location = 0) in vec2 a_pos;\n"
-    "layout (location = 1) in vec2 a_textureCord;\n"
-    "layout (location = 2) in vec4 a_color;\n"
-    "out vec4 v_color;\n"
-    "out vec2 v_textureCord;\n"
-    "uniform mat3 u_transform;\n"
-    "void main()\n"
-    "{\n"
-    "    v_color = a_color;\n"
-    "    v_textureCord = a_textureCord;\n"
-    "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
-    "}\n";
-// keeping those in sync will surely be fun...
-#else
-static const char* FRAGMENT_SHADER =
-    "precision highp float;\n"
-    "varying vec4 v_color;\n"
-    "varying vec2 v_textureCord;\n"
-    "uniform sampler2D u_texture;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = texture2D(u_texture, v_textureCord) * v_color;\n"
-    "}\n";
-
-static const char* VERTEX_SHADER =
-    "precision highp float;\n"
-    "attribute vec2 a_pos;\n"
-    "attribute vec2 a_textureCord;\n"
-    "attribute vec4 a_color;\n"
-    "varying vec4 v_color;\n"
-    "varying vec2 v_textureCord;\n"
-    "uniform mat3 u_transform;\n"
-    "void main()\n"
-    "{\n"
-    "    v_color = a_color;\n"
-    "    v_textureCord = a_textureCord;\n"
-    "    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);\n"
-    "}\n";
-#endif
+static const char* VERTEX_SHADER = R"(\
+#version 300 es
+precision highp float;
+layout (location = 0) in vec2 a_pos;
+layout (location = 1) in vec2 a_textureCord;
+layout (location = 2) in uint a_color;
+out vec4 v_color;
+out vec2 v_textureCord;
+uniform mat3 u_transform;
+void main()
+{
+    float r = float((a_color >> 24) & 255u) / 255.0;
+    float g = float((a_color >> 16) & 255u) / 255.0;
+    float b = float((a_color >> 8 ) & 255u) / 255.0;
+    float a = float((a_color      ) & 255u) / 255.0;
+    v_color = vec4(r, g, b, a);
+    v_textureCord = a_textureCord;
+    gl_Position = mat4(u_transform) * vec4(a_pos.x, a_pos.y, 0.0, 1.0);
+}
+)";
 
 void RenderBatcher::init()
 {
@@ -93,7 +73,15 @@ void RenderBatcher::init()
 
     DEFINE_VERTEX_ATTRIB(2, GL_FLOAT, textureCord)
 
-    DEFINE_VERTEX_ATTRIB(4, GL_FLOAT, color)
+    glVertexAttribIPointer(
+        attribIndex,
+        1,
+        GL_UNSIGNED_INT,
+        sizeof(Vertex), /* NOLINTNEXTLINE(performance-no-int-to-ptr) */
+        (const void*)offsetof(Vertex, color)
+    );
+    glEnableVertexAttribArray(attribIndex);
+    attribIndex++;
 }
 
 RenderBatcher::~RenderBatcher()
@@ -194,12 +182,7 @@ RenderBatcher::TextureBatchable::TextureBatchable(const Vec2& pos, const Vec2& s
 
 void RenderBatcher::TextureBatchable::addToBatcher(RenderBatcher& batcher) const
 {
-    Vec4 color = {
-        .x = tint.normalizedR(),
-        .y = tint.normalizedG(),
-        .z = tint.normalizedB(),
-        .w = tint.normalizedA()
-    };
+    uint32_t color = tint.RGBAHex();
 
     batcher.addVertice({
         .pos = {pos.x, pos.y},
