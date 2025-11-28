@@ -3,8 +3,7 @@
 #include <cstdint>
 #include <glad/gl.h>
 
-static const char* FRAGMENT_SHADER = R"(\
-#version 300 es
+static const char* FRAGMENT_SHADER = R"(#version 300 es
 precision highp float;
 layout (location = 0) out vec4 o_color;
 in vec4 v_color;
@@ -16,8 +15,7 @@ void main()
 }
 )";
 
-static const char* VERTEX_SHADER = R"(\
-#version 300 es
+static const char* VERTEX_SHADER = R"(#version 300 es
 precision highp float;
 layout (location = 0) in vec2 a_pos;
 layout (location = 1) in vec2 a_textureCord;
