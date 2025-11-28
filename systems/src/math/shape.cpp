@@ -6,7 +6,7 @@ bool Shape::getCollision(const Shape& other, Collision::CollRes* res) const
     return fns.check(*this, other, res);
 }
 
-Circle::Circle(Vec2 pos, float rad) :
+Circle::Circle(Vec2F pos, float rad) :
     Shape(CIRCLE),
     pos(pos),
     rad(rad)
@@ -19,17 +19,17 @@ std::string Circle::toString() const
     return std::format("Circle (X: {0:.4f}, Y: {1:.4f}, Rad: {2:.4f})", pos.x, pos.y, rad);
 }
 
-bool Circle::pointInside(const Vec2& point) const
+bool Circle::pointInside(const Vec2F& point) const
 {
     return Collision::PointCircle(point, pos, rad);
 }
 
-Vec2 Circle::center() const
+Vec2F Circle::center() const
 {
     return pos;
 }
 
-Circle& Circle::translate(const Vec2& posToAdd)
+Circle& Circle::translate(const Vec2F& posToAdd)
 {
     pos += posToAdd;
     return *this;
@@ -41,7 +41,7 @@ Circle& Circle::scale(const float scale)
     return *this;
 }
 
-Rect::Rect(Vec2 min, Vec2 max) :
+Rect::Rect(Vec2F min, Vec2F max) :
     Shape(RECT),
     min(min),
     max(max)
@@ -51,16 +51,16 @@ Rect::Rect(Vec2 min, Vec2 max) :
     assert(min.y < max.y);
 }
 
-Rect Rect::fromDims(float width, float height, Vec2 center)
+Rect Rect::fromDims(float width, float height, Vec2F center)
 {
-    Vec2 size{width / 2, height / 2};
+    Vec2F size{width / 2, height / 2};
 
     return Rect{center - size, center + size};
 }
 
 Rect& Rect::scale(const float scale)
 {
-    Vec2 center = this->center();
+    Vec2F center = this->center();
 
     min = (min - center) * scale + center;
     max = (max - center) * scale + center;
@@ -68,7 +68,7 @@ Rect& Rect::scale(const float scale)
     return *this;
 }
 
-Rect& Rect::translate(const Vec2& posToAdd)
+Rect& Rect::translate(const Vec2F& posToAdd)
 {
     min += posToAdd;
     max += posToAdd;
@@ -76,7 +76,7 @@ Rect& Rect::translate(const Vec2& posToAdd)
     return *this;
 }
 
-bool Rect::pointInside(const Vec2& point) const
+bool Rect::pointInside(const Vec2F& point) const
 {
     return Collision::PointRect(point, min, max);
 }
@@ -86,7 +86,7 @@ std::string Rect::toString() const
     return std::format("Rect(Min ({}) Max ({}))", min.toString(), max.toString());
 }
 
-std::vector<Vec2> Rect::getPoints() const
+std::vector<Vec2F> Rect::getPoints() const
 {
     return {
         min,
@@ -96,12 +96,12 @@ std::vector<Vec2> Rect::getPoints() const
     };
 }
 
-Vec2 Rect::center() const
+Vec2F Rect::center() const
 {
     return min + ((max - min) / 2);
 }
 
-Polygon::Polygon(const std::vector<Vec2>& points) :
+Polygon::Polygon(const std::vector<Vec2F>& points) :
     Shape(POLYGON),
     points(points),
     m_normals(points.size())
@@ -115,9 +115,9 @@ Polygon::Polygon(const std::vector<Vec2>& points) :
 Polygon& Polygon::scale(const float scale)
 {
     for (auto& pt : points) {
-        Vec2 toCenter = m_center - pt;
+        Vec2F toCenter = m_center - pt;
         float length = toCenter.length();
-        const Vec2& dir = toCenter.normalize(length);
+        const Vec2F& dir = toCenter.normalize(length);
 
         pt = m_center - (dir * (length * scale));
     }
@@ -125,7 +125,7 @@ Polygon& Polygon::scale(const float scale)
     return *this;
 }
 
-Polygon& Polygon::translate(const Vec2& posToAdd)
+Polygon& Polygon::translate(const Vec2F& posToAdd)
 {
     for (auto& point : points) {
         point += posToAdd;
@@ -135,7 +135,7 @@ Polygon& Polygon::translate(const Vec2& posToAdd)
     return *this;
 }
 
-bool Polygon::pointInside(const Vec2& point) const
+bool Polygon::pointInside(const Vec2F& point) const
 {
     return Collision::PointPolygon(point, points);
 }
@@ -155,7 +155,7 @@ std::string Polygon::toString() const
     return out;
 }
 
-Vec2 Polygon::center() const
+Vec2F Polygon::center() const
 {
     return m_center;
 }
@@ -172,9 +172,9 @@ void Polygon::calculate_center()
 void Polygon::calculate_normals()
 {
     for (size_t i = 0; i < points.size(); i++) {
-        const Vec2& pointA = points[i];
-        const Vec2& pointB = points[(i + 1) % points.size()];
-        Vec2 edge = pointB - pointA;
+        const Vec2F& pointA = points[i];
+        const Vec2F& pointB = points[(i + 1) % points.size()];
+        Vec2F edge = pointB - pointA;
 
         m_normals[i] = edge.perp().normalize();
     }

@@ -26,7 +26,7 @@ class Player
 public:
     SpriteItem sprite;
 
-    Vec2 vel;
+    Vec2F vel;
 
     Polygon hitbox;
 
@@ -42,12 +42,12 @@ class Pipe
 public:
     SpriteItem sprite;
 
-    Vec2 vel{-PIPE_SPEED, 0};
+    Vec2F vel{-PIPE_SPEED, 0};
 
     Rect hitbox;
 
     Pipe(
-        Vec2 pos,
+        Vec2F pos,
         float width,
         float height
     );

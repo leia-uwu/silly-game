@@ -13,7 +13,7 @@ class BenchSprite : public SpriteItem
 {
 public:
     BenchSprite() : SpriteItem() { };
-    Vec2 velocity;
+    Vec2F velocity;
 };
 
 class Benchmark : public GameApp

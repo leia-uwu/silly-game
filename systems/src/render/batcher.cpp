@@ -159,7 +159,7 @@ RenderBatcher::Batchable::Batchable(const Texture& texture) : texture(texture)
 {
 }
 
-RenderBatcher::TextureBatchable::TextureBatchable(const Vec2& pos, const Vec2& scale, const Texture& texture, const Color& tint, float rotation) :
+RenderBatcher::TextureBatchable::TextureBatchable(const Vec2F& pos, const Vec2F& scale, const Texture& texture, const Color& tint, float rotation) :
     Batchable(texture),
     pos(pos),
     scale(scale),

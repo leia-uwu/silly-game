@@ -10,8 +10,8 @@
 template<typename T>
 static void projectVertices(
     const T& points,
-    const Vec2& normal,
-    const Vec2& center,
+    const Vec2F& normal,
+    const Vec2F& center,
 
     float* out_min,
     float* out_max
@@ -20,7 +20,7 @@ static void projectVertices(
     float min = std::numeric_limits<float>::max();
     float max = -min;
 
-    for (const Vec2& point : points) {
+    for (const Vec2F& point : points) {
         float proj = normal * (center - point);
 
         min = std::min(proj, min);
@@ -32,18 +32,18 @@ static void projectVertices(
 }
 
 static void projectCircle(
-    const Vec2& center,
+    const Vec2F& center,
     const float radius,
-    const Vec2& normal,
+    const Vec2F& normal,
 
     float* out_min,
     float* out_max
 )
 {
-    Vec2 scaled = normal * radius;
+    Vec2F scaled = normal * radius;
 
-    Vec2 p1 = center + scaled;
-    Vec2 p2 = center - scaled;
+    Vec2F p1 = center + scaled;
+    Vec2F p2 = center - scaled;
 
     float min = p1 * normal;
     float max = p2 * normal;
@@ -60,16 +60,16 @@ static void projectCircle(
 }
 
 bool Collision::CircleCircle(
-    const Vec2& posA,
+    const Vec2F& posA,
     const float radA,
 
-    const Vec2& posB,
+    const Vec2F& posB,
     const float radB,
 
     CollRes* res
 )
 {
-    Vec2 sub = posB - posA;
+    Vec2F sub = posB - posA;
 
     float distSqrt = sub.lengthSqr();
     float rad = radA + radB;
@@ -80,18 +80,18 @@ bool Collision::CircleCircle(
 
     if (res != nullptr) {
         float dist = std::sqrt(distSqrt);
-        res->normal = dist > 0.000001 ? sub / dist : Vec2(1, 0);
+        res->normal = dist > 0.000001 ? sub / dist : Vec2F(1, 0);
         res->depth = rad - dist;
     }
     return true;
 }
 
 bool Collision::CircleRect(
-    const Vec2& circlePos,
+    const Vec2F& circlePos,
     const float circleRad,
 
-    const Vec2& rectMin,
-    const Vec2& rectMax,
+    const Vec2F& rectMin,
+    const Vec2F& rectMax,
 
     CollRes* res
 )
@@ -102,20 +102,20 @@ bool Collision::CircleRect(
     ) {
         // circle inside rect
         if (res != nullptr) {
-            Vec2 halfDimension = (rectMax - rectMin) * 0.5;
-            Vec2 rectToCircle = (rectMin + halfDimension) - circlePos;
+            Vec2F halfDimension = (rectMax - rectMin) * 0.5;
+            Vec2F rectToCircle = (rectMin + halfDimension) - circlePos;
             float xDepth = std::abs(rectToCircle.x) - halfDimension.x - circleRad;
             float yDepth = std::abs(rectToCircle.y) - halfDimension.y - circleRad;
 
             // make the normal relative to the deepest axis
             if (xDepth > yDepth) {
-                res->normal = Vec2(
+                res->normal = Vec2F(
                     rectToCircle.x > 0 ? 1 : -1,
                     0
                 );
                 res->depth = -xDepth;
             } else {
-                res->normal = Vec2(
+                res->normal = Vec2F(
                     0,
                     rectToCircle.y > 0 ? 1 : -1
                 );
@@ -126,7 +126,7 @@ bool Collision::CircleRect(
         return true;
     }
 
-    Vec2 dir{
+    Vec2F dir{
         std::clamp(circlePos.x, rectMin.x, rectMax.x) - circlePos.x,
         std::clamp(circlePos.y, rectMin.y, rectMax.y) - circlePos.y
     };
@@ -148,11 +148,11 @@ bool Collision::CircleRect(
 }
 
 bool Collision::RectRect(
-    const Vec2& rectAMin,
-    const Vec2& rectAMax,
+    const Vec2F& rectAMin,
+    const Vec2F& rectAMax,
 
-    const Vec2& rectBMin,
-    const Vec2& rectBMax,
+    const Vec2F& rectBMin,
+    const Vec2F& rectBMax,
 
     CollRes* res
 )
@@ -163,10 +163,10 @@ bool Collision::RectRect(
         return rectBMin.x < rectBMax.x && rectBMin.y < rectBMax.y && rectAMin.x < rectAMax.x && rectAMin.y < rectAMax.y;
     }
 
-    Vec2 halfDimA = (rectAMax - rectAMin) * 0.5;
-    Vec2 halfDimB = (rectBMax - rectBMin) * 0.5;
+    Vec2F halfDimA = (rectAMax - rectAMin) * 0.5;
+    Vec2F halfDimB = (rectBMax - rectBMin) * 0.5;
 
-    Vec2 bToA = ((rectBMin + halfDimB) - (rectAMin + halfDimA));
+    Vec2F bToA = ((rectBMin + halfDimB) - (rectAMin + halfDimA));
 
     float xDepth = halfDimA.x + halfDimB.x - std::abs(bToA.x);
 
@@ -179,13 +179,13 @@ bool Collision::RectRect(
         return false;
 
     if (xDepth < yDepth) {
-        res->normal = Vec2(
+        res->normal = Vec2F(
             bToA.x < 0 ? -1 : 1,
             0
         );
         res->depth = xDepth;
     } else {
-        res->normal = Vec2(
+        res->normal = Vec2F(
             0,
             bToA.y < 0 ? -1 : 1
         );
@@ -196,42 +196,42 @@ bool Collision::RectRect(
 }
 
 bool Collision::RectPolygon(
-    const Vec2& rectMin,
-    const Vec2& rectMax,
+    const Vec2F& rectMin,
+    const Vec2F& rectMax,
 
-    const std::vector<Vec2>& polyPoints,
-    const std::vector<Vec2>& polyNormals,
-    const Vec2& polyCenter,
+    const std::vector<Vec2F>& polyPoints,
+    const std::vector<Vec2F>& polyNormals,
+    const Vec2F& polyCenter,
 
     CollRes* res
 )
 {
     assert(polyPoints.size() == polyNormals.size());
 
-    const std::array<Vec2, 4> rectPoints = {
+    const std::array<Vec2F, 4> rectPoints = {
         rectMin,
         {rectMin.x, rectMax.y},
         rectMax,
         {rectMax.x, rectMin.y}
     };
 
-    static const std::array<Vec2, 4> rectNormals{
-        Vec2{0, 1},
-        Vec2{-1, 0},
-        Vec2{0, -1},
-        Vec2{1, 0}
+    static const std::array<Vec2F, 4> rectNormals{
+        Vec2F{0, 1},
+        Vec2F{-1, 0},
+        Vec2F{0, -1},
+        Vec2F{1, 0}
     };
 
-    Vec2 rectCenter = rectMin + ((rectMax - rectMin) / 2);
+    Vec2F rectCenter = rectMin + ((rectMax - rectMin) / 2);
 
     bool wantsRes = res != nullptr;
-    Vec2 resNormal;
+    Vec2F resNormal;
     float resDepth = std::numeric_limits<float>::max();
 
     for (const auto& vertNormal : polyNormals) {
         float minA, maxA, minB, maxB;
-        projectVertices(polyPoints, vertNormal, Vec2(), &minA, &maxA);
-        projectVertices(rectPoints, vertNormal, Vec2(), &minB, &maxB);
+        projectVertices(polyPoints, vertNormal, {}, &minA, &maxA);
+        projectVertices(rectPoints, vertNormal, {}, &minB, &maxB);
 
         if (minA >= maxB || minB >= maxA) {
             return false;
@@ -249,8 +249,8 @@ bool Collision::RectPolygon(
 
     for (const auto& vertNormal : rectNormals) {
         float minA, maxA, minB, maxB;
-        projectVertices(polyPoints, vertNormal, Vec2(), &minA, &maxA);
-        projectVertices(rectPoints, vertNormal, Vec2(), &minB, &maxB);
+        projectVertices(polyPoints, vertNormal, {}, &minA, &maxA);
+        projectVertices(rectPoints, vertNormal, {}, &minB, &maxB);
 
         if (minA >= maxB || minB >= maxA) {
             return false;
@@ -267,7 +267,7 @@ bool Collision::RectPolygon(
     }
 
     if (wantsRes) {
-        Vec2 direction = rectCenter - polyCenter;
+        Vec2F direction = rectCenter - polyCenter;
 
         if (direction * resNormal > 0) {
             resNormal.invert();
@@ -281,30 +281,30 @@ bool Collision::RectPolygon(
 }
 
 bool Collision::CirclePolygon(
-    const Vec2& circlePos,
+    const Vec2F& circlePos,
     float circleRad,
 
-    const std::vector<Vec2>& polyPoints,
-    const std::vector<Vec2>& polyNormals,
-    const Vec2& polyCenter,
+    const std::vector<Vec2F>& polyPoints,
+    const std::vector<Vec2F>& polyNormals,
+    const Vec2F& polyCenter,
 
     CollRes* res
 )
 {
     assert(polyPoints.size() == polyNormals.size());
 
-    Vec2 circToPoly = polyCenter - circlePos;
+    Vec2F circToPoly = polyCenter - circlePos;
 
-    Vec2 closestPoint;
+    Vec2F closestPoint;
     float minDist = std::numeric_limits<float>::max();
 
     bool wantsRes = res != nullptr;
-    Vec2 resNormal;
+    Vec2F resNormal;
     float resDepth = std::numeric_limits<float>::max();
 
     for (size_t i = 0; i < polyPoints.size(); i++) {
-        const Vec2& normal = polyNormals[i];
-        const Vec2& point = polyPoints[i];
+        const Vec2F& normal = polyNormals[i];
+        const Vec2F& point = polyPoints[i];
 
         float minA, maxA, minB, maxB;
         projectVertices(polyPoints, normal, polyCenter, &minA, &maxA);
@@ -330,7 +330,7 @@ bool Collision::CirclePolygon(
         }
     }
 
-    Vec2 normal = (closestPoint - circlePos).normalize();
+    Vec2F normal = (closestPoint - circlePos).normalize();
 
     float minA, maxA, minB, maxB;
     projectVertices(polyPoints, normal, polyCenter, &minA, &maxA);
@@ -348,7 +348,7 @@ bool Collision::CirclePolygon(
             resNormal = normal;
         }
 
-        Vec2 direction = polyCenter - circlePos;
+        Vec2F direction = polyCenter - circlePos;
 
         if ((direction * resNormal) < 0) {
             resNormal.invert();
@@ -364,13 +364,13 @@ bool Collision::CirclePolygon(
 }
 
 bool Collision::PolygonPolygon(
-    const std::vector<Vec2>& pointsA,
-    const std::vector<Vec2>& normalsA,
-    const Vec2& centerA,
+    const std::vector<Vec2F>& pointsA,
+    const std::vector<Vec2F>& normalsA,
+    const Vec2F& centerA,
 
-    const std::vector<Vec2>& pointsB,
-    const std::vector<Vec2>& normalsB,
-    const Vec2& centerB,
+    const std::vector<Vec2F>& pointsB,
+    const std::vector<Vec2F>& normalsB,
+    const Vec2F& centerB,
 
     CollRes* res
 )
@@ -379,13 +379,13 @@ bool Collision::PolygonPolygon(
     assert(pointsB.size() == normalsB.size());
 
     bool wantsRes = res != nullptr;
-    Vec2 resNormal;
+    Vec2F resNormal;
     float resDepth = std::numeric_limits<float>::max();
 
     for (const auto& vertNormal : normalsA) {
         float minA, maxA, minB, maxB;
-        projectVertices(pointsA, vertNormal, Vec2(), &minA, &maxA);
-        projectVertices(pointsB, vertNormal, Vec2(), &minB, &maxB);
+        projectVertices(pointsA, vertNormal, {}, &minA, &maxA);
+        projectVertices(pointsB, vertNormal, {}, &minB, &maxB);
 
         if (minA >= maxB || minB >= maxA) {
             return false;
@@ -403,8 +403,8 @@ bool Collision::PolygonPolygon(
 
     for (const auto& vertNormal : normalsB) {
         float minA, maxA, minB, maxB;
-        projectVertices(pointsA, vertNormal, Vec2(), &minA, &maxA);
-        projectVertices(pointsB, vertNormal, Vec2(), &minB, &maxB);
+        projectVertices(pointsA, vertNormal, {}, &minA, &maxA);
+        projectVertices(pointsB, vertNormal, {}, &minB, &maxB);
 
         if (minA >= maxB || minB >= maxA) {
             return false;
@@ -421,7 +421,7 @@ bool Collision::PolygonPolygon(
     }
 
     if (wantsRes) {
-        Vec2 direction = centerB - centerA;
+        Vec2F direction = centerB - centerA;
 
         if (direction * resNormal < 0) {
             resNormal.invert();
@@ -435,17 +435,17 @@ bool Collision::PolygonPolygon(
     return true;
 }
 
-bool Collision::PointCircle(const Vec2& point, const Vec2& circlePos, float circleRad)
+bool Collision::PointCircle(const Vec2F& point, const Vec2F& circlePos, float circleRad)
 {
     return point.distanceTo(circlePos) <= circleRad;
 }
 
-bool Collision::PointRect(const Vec2& point, const Vec2& rectMin, const Vec2& rectMax)
+bool Collision::PointRect(const Vec2F& point, const Vec2F& rectMin, const Vec2F& rectMax)
 {
     return point.x > rectMin.x && point.y > rectMin.y && point.x < rectMax.x && point.y < rectMax.y;
 }
 
-bool Collision::PointPolygon(const Vec2& point, const std::vector<Vec2>& points)
+bool Collision::PointPolygon(const Vec2F& point, const std::vector<Vec2F>& points)
 {
     // https://wrfranklin.org/Research/Short_Notes/pnpoly.html
     size_t count = points.size();

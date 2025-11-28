@@ -20,8 +20,8 @@ private:
     std::vector<RenderItem*> m_children;
 
 public:
-    Vec2 pos;
-    Vec2 scale = {1, 1};
+    Vec2F pos;
+    Vec2F scale = {1, 1};
     float rot = 0;
 
     [[nodiscard]] Matrix3x3 getMatrix() const
@@ -86,7 +86,7 @@ public:
     float width;
     float height;
 
-    Vec2 center = {0.5, 0.5};
+    Vec2F center = {0.5, 0.5};
 
     Color tint = 0xffffff;
 
@@ -103,7 +103,7 @@ public:
 
         auto scale = transform.scale();
 
-        const Vec2 size{width * scale.x, height * scale.y};
+        const Vec2F size{width * scale.x, height * scale.y};
 
         renderer.batcher().addBatchable(RenderBatcher::TextureBatchable{
             transform.translation() - (size / 2.F),

@@ -7,21 +7,22 @@
 
 #define VEC2_EPSILON 0.001F
 
+template<typename VecT>
 class Vec2
 {
 public:
-    float x;
-    float y;
+    VecT x;
+    VecT y;
 
     Vec2() : x(0), y(0)
     {
     }
 
-    Vec2(float xAndY) : x(xAndY), y(xAndY)
+    Vec2(VecT xAndY) : x(xAndY), y(xAndY)
     {
     }
 
-    Vec2(float xPos, float yPos) : x(xPos), y(yPos)
+    Vec2(VecT xPos, VecT yPos) : x(xPos), y(yPos)
     {
     }
 
@@ -30,7 +31,7 @@ public:
         return {x, y};
     }
 
-    void set(float xPos, float yPos)
+    void set(VecT xPos, VecT yPos)
     {
         x = xPos;
         y = yPos;
@@ -41,7 +42,7 @@ public:
         return std::isfinite(x) && std::isfinite(y);
     };
 
-    Vec2& add(float value)
+    Vec2& add(VecT value)
     {
         x += value;
         y += value;
@@ -57,7 +58,7 @@ public:
         return *this;
     }
 
-    Vec2& sub(float value)
+    Vec2& sub(VecT value)
     {
         x -= value;
         y -= value;
@@ -73,7 +74,7 @@ public:
         return *this;
     }
 
-    Vec2& scale(float scale)
+    Vec2& scale(VecT scale)
     {
         x *= scale;
         y *= scale;
@@ -89,7 +90,7 @@ public:
         return *this;
     }
 
-    Vec2& div(float scale)
+    Vec2& div(VecT scale)
     {
         x /= scale;
         y /= scale;
@@ -105,10 +106,10 @@ public:
         return *this;
     }
 
-    Vec2& rotate(float rad)
+    Vec2& rotate(VecT rad)
     {
-        const float cosr = std::cos(rad);
-        const float sinr = std::sin(rad);
+        const VecT cosr = std::cos(rad);
+        const VecT sinr = std::sin(rad);
 
         x = x * cosr - y * sinr;
         y = x * sinr + y * cosr;
@@ -125,7 +126,7 @@ public:
 
     Vec2& perp()
     {
-        float oldX = x;
+        VecT oldX = x;
         x = -y;
         y = oldX;
         return *this;
@@ -133,7 +134,7 @@ public:
 
     Vec2& normalize()
     {
-        const float len = length();
+        const VecT len = length();
 
         if (len > VEC2_EPSILON) {
             x /= len;
@@ -143,7 +144,7 @@ public:
         return *this;
     }
 
-    Vec2& normalize(float length)
+    Vec2& normalize(VecT length)
     {
         if (length > VEC2_EPSILON) {
             x /= length;
@@ -155,7 +156,7 @@ public:
 
     Vec2& normalizeSafe(const Vec2& v = {1.0, 0.0})
     {
-        const float len = length();
+        const VecT len = length();
 
         if (len > VEC2_EPSILON) {
             x /= len;
@@ -168,22 +169,22 @@ public:
         return *this;
     }
 
-    [[nodiscard]] float lengthSqr() const
+    [[nodiscard]] VecT lengthSqr() const
     {
         return x * x + y * y;
     }
 
-    [[nodiscard]] float length() const
+    [[nodiscard]] VecT length() const
     {
         return std::sqrt(lengthSqr());
     }
 
-    [[nodiscard]] float distanceTo(const Vec2& a) const
+    [[nodiscard]] VecT distanceTo(const Vec2& a) const
     {
         return Vec2::sub(*this, a).length();
     }
 
-    [[nodiscard]] float dot(const Vec2& a) const
+    [[nodiscard]] VecT dot(const Vec2& a) const
     {
         return x * a.x + y * a.y;
     }
@@ -193,7 +194,7 @@ public:
         return x == a.x && y == a.y;
     }
 
-    [[nodiscard]] bool equals(const Vec2& a, float epsilon) const
+    [[nodiscard]] bool equals(const Vec2& a, VecT epsilon) const
     {
         return std::fabs(x - a.x) <= epsilon && std::fabs(y - a.y) <= epsilon;
     }
@@ -208,12 +209,12 @@ public:
         return !equals(a);
     }
 
-    [[nodiscard]] float operator[](int index) const
+    [[nodiscard]] VecT operator[](int index) const
     {
         return (&x)[index];
     }
 
-    float& operator[](int index)
+    VecT& operator[](int index)
     {
         return (&x)[index];
     }
@@ -223,17 +224,17 @@ public:
         return {-x, -y};
     }
 
-    float operator*(const Vec2& a) const
+    VecT operator*(const Vec2& a) const
     {
         return x * a.x + y * a.y;
     }
 
-    [[nodiscard]] Vec2 operator*(float a) const
+    [[nodiscard]] Vec2 operator*(VecT a) const
     {
         return {x * a, y * a};
     }
 
-    [[nodiscard]] Vec2 operator/(float a) const
+    [[nodiscard]] Vec2 operator/(VecT a) const
     {
         return {x / a, y / a};
     }
@@ -272,7 +273,7 @@ public:
         return *this;
     }
 
-    Vec2& operator/=(float a)
+    Vec2& operator/=(VecT a)
     {
         x /= a;
         y /= a;
@@ -280,7 +281,7 @@ public:
         return *this;
     }
 
-    Vec2& operator*=(float a)
+    Vec2& operator*=(VecT a)
     {
         x *= a;
         y *= a;
@@ -298,7 +299,7 @@ public:
         return {a.x + b.x, a.y + b.y};
     }
 
-    [[nodiscard]] static Vec2 add(const Vec2& a, float value)
+    [[nodiscard]] static Vec2 add(const Vec2& a, VecT value)
     {
         return {a.x + value, a.y + value};
     }
@@ -308,7 +309,7 @@ public:
         return {a.x - b.x, a.y - b.y};
     }
 
-    [[nodiscard]] static Vec2 sub(const Vec2& a, float value)
+    [[nodiscard]] static Vec2 sub(const Vec2& a, VecT value)
     {
         return {a.x - value, a.y - value};
     }
@@ -318,7 +319,7 @@ public:
         return {a.x * b.x, a.y * b.y};
     }
 
-    [[nodiscard]] static Vec2 mul(const Vec2& a, float scale)
+    [[nodiscard]] static Vec2 mul(const Vec2& a, VecT scale)
     {
         return {a.x * scale, a.y * scale};
     }
@@ -328,7 +329,7 @@ public:
         return {a.x / b.x, a.y / b.y};
     }
 
-    [[nodiscard]] static Vec2 div(const Vec2& a, float scale)
+    [[nodiscard]] static Vec2 div(const Vec2& a, VecT scale)
     {
         return {a.x / scale, a.y / scale};
     }
@@ -339,3 +340,5 @@ public:
         return os;
     };
 };
+
+using Vec2F = Vec2<float>;

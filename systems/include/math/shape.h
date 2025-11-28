@@ -23,11 +23,11 @@ public:
     const Type type;
 
     [[nodiscard]] virtual std::string toString() const = 0;
-    [[nodiscard]] virtual bool pointInside(const Vec2& point) const = 0;
+    [[nodiscard]] virtual bool pointInside(const Vec2F& point) const = 0;
 
-    [[nodiscard]] virtual Vec2 center() const = 0;
+    [[nodiscard]] virtual Vec2F center() const = 0;
 
-    virtual Shape& translate(const Vec2& posToAdd) = 0;
+    virtual Shape& translate(const Vec2F& posToAdd) = 0;
     virtual Shape& scale(float scale) = 0;
 
     virtual ~Shape() = default;
@@ -44,18 +44,18 @@ protected:
 class Circle : public Shape
 {
 public:
-    Vec2 pos;
+    Vec2F pos;
     float rad;
 
-    Circle(Vec2 pos, float rad);
+    Circle(Vec2F pos, float rad);
 
     [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override;
+    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
 
-    [[nodiscard]] Vec2 center() const override;
+    [[nodiscard]] Vec2F center() const override;
 
-    Circle& translate(const Vec2& posToAdd) override;
+    Circle& translate(const Vec2F& posToAdd) override;
 
     Circle& scale(float scale) override;
 };
@@ -63,12 +63,12 @@ public:
 class Rect : public Shape
 {
 public:
-    Vec2 min;
-    Vec2 max;
+    Vec2F min;
+    Vec2F max;
 
-    Rect(Vec2 min, Vec2 max);
+    Rect(Vec2F min, Vec2F max);
 
-    static Rect fromDims(float width, float height, Vec2 center = {0, 0});
+    static Rect fromDims(float width, float height, Vec2F center = {0, 0});
 
     [[nodiscard]] float width() const
     {
@@ -80,15 +80,15 @@ public:
         return max.y - min.y;
     }
 
-    [[nodiscard]] Vec2 center() const override;
+    [[nodiscard]] Vec2F center() const override;
 
-    [[nodiscard]] std::vector<Vec2> getPoints() const;
+    [[nodiscard]] std::vector<Vec2F> getPoints() const;
 
     [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override;
+    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
 
-    Rect& translate(const Vec2& posToAdd) override;
+    Rect& translate(const Vec2F& posToAdd) override;
 
     Rect& scale(float scale) override;
 };
@@ -96,31 +96,31 @@ public:
 class Polygon : public Shape
 {
 public:
-    std::vector<Vec2> points;
+    std::vector<Vec2F> points;
 
 private:
-    std::vector<Vec2> m_normals;
-    Vec2 m_center;
+    std::vector<Vec2F> m_normals;
+    Vec2F m_center;
 
 public:
-    Polygon(const std::vector<Vec2>& points);
+    Polygon(const std::vector<Vec2F>& points);
 
     void calculate_normals();
 
     void calculate_center();
 
-    [[nodiscard]] Vec2 center() const override;
+    [[nodiscard]] Vec2F center() const override;
 
-    [[nodiscard]] const std::vector<Vec2>& normals() const
+    [[nodiscard]] const std::vector<Vec2F>& normals() const
     {
         return m_normals;
     };
 
     [[nodiscard]] std::string toString() const override;
 
-    [[nodiscard]] bool pointInside(const Vec2& point) const override;
+    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
 
-    Polygon& translate(const Vec2& posToAdd) override;
+    Polygon& translate(const Vec2F& posToAdd) override;
 
     Polygon& scale(float scale) override;
 };

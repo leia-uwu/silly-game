@@ -84,7 +84,7 @@ void Game::addPipe()
     const float gapYStart = (randomT * (gapYMax - pad)) + pad;
     const float gapYEnd = gapYStart + PIPE_GAP;
 
-    auto findPipe = [this](Vec2 pos, float width, float height) {
+    auto findPipe = [this](Vec2F pos, float width, float height) {
         for (Pipe& pipe : m_pipes) {
             if (pipe.hitbox.max.x < 0) {
 
@@ -124,7 +124,7 @@ void Player::update(float dt)
 {
     vel.y += GRAVITY * dt;
 
-    Vec2 step = vel * dt;
+    Vec2F step = vel * dt;
     hitbox.translate(step);
 
     Collision::CollRes res;
@@ -141,7 +141,7 @@ void Player::render(RenderItem& root)
 }
 
 Pipe::Pipe(
-    Vec2 pos,
+    Vec2F pos,
     float width,
     float height
 ) :
@@ -153,7 +153,7 @@ Pipe::Pipe(
 
 void Pipe::update(float dt)
 {
-    Vec2 step = vel * dt;
+    Vec2F step = vel * dt;
     hitbox.translate(step);
 }
 

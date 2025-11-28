@@ -10,12 +10,12 @@ bool InputManager::isMouseBtnDown(uint8_t btn)
     return m_mouseBtnsDown[btn];
 };
 
-Vec2 InputManager::getMousePos() const
+Vec2F InputManager::getMousePos() const
 {
     return m_mousePos;
 }
 
-Vec2 InputManager::getWheelDelta() const
+Vec2F InputManager::getWheelDelta() const
 {
     return m_wheelDelta;
 }

@@ -85,7 +85,7 @@ void Shader::setInt(const char* name, GLint value) const
     glUniform1i(glGetUniformLocation(this->id, name), value);
 }
 
-void Shader::setVec2(const char* name, const Vec2& vec) const
+void Shader::setVec2(const char* name, const Vec2F& vec) const
 {
     glUniform2f(glGetUniformLocation(this->id, name), vec.x, vec.y);
 }

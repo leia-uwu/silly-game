@@ -17,8 +17,8 @@ public:
 
     struct Vertex
     {
-        Vec2 pos;
-        Vec2 textureCord;
+        Vec2F pos;
+        Vec2F textureCord;
         uint32_t color;
     };
 
@@ -39,12 +39,12 @@ public:
     class TextureBatchable : public Batchable
     {
     public:
-        Vec2 pos;
-        Vec2 scale;
+        Vec2F pos;
+        Vec2F scale;
         Color tint;
         float rotation;
 
-        TextureBatchable(const Vec2& pos, const Vec2& scale, const Texture& texture, const Color& tint, float rotation);
+        TextureBatchable(const Vec2F& pos, const Vec2F& scale, const Texture& texture, const Color& tint, float rotation);
 
         [[nodiscard]] size_t batchSize() const override;
         [[nodiscard]] size_t indices() const override;
@@ -94,8 +94,8 @@ private:
     Texture m_lastTexture;
 
     void addSprite(
-        const Vec2& pos,
-        const Vec2& scale,
+        const Vec2F& pos,
+        const Vec2F& scale,
         const Color& tint
     );
 };

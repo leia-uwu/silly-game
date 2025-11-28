@@ -23,7 +23,7 @@ public:
     {
     }
 
-    Matrix3x3(const Vec2& pos, float rot, const Vec2& scale)
+    Matrix3x3(const Vec2F& pos, float rot, const Vec2F& scale)
     {
         auto sin = std::sin(rot);
         auto cos = std::cos(rot);
@@ -39,7 +39,7 @@ public:
         arr[8] = 1;
     }
 
-    [[nodiscard]] Vec2 translation() const
+    [[nodiscard]] Vec2F translation() const
     {
         return {
             arr[6], arr[7]
@@ -51,7 +51,7 @@ public:
         return std::atan2(arr[1], arr[0]);
     }
 
-    [[nodiscard]] Vec2 scale() const
+    [[nodiscard]] Vec2F scale() const
     {
         float x = Vec2(arr[0], arr[1]).length();
         float y = Vec2(arr[3], arr[4]).length();
