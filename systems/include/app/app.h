@@ -53,7 +53,7 @@ protected:
 /**
  * Initializes the application, APP must be a valid subclass of GameApp
  * This will:
- * - call app->initSystems then app->init, exiting if any of them fail
+ * - call app->renderer().init() then app->init(), exiting if any of them fail
  * - Set up SDL event handlers (SDL_AppIterate, SDL_AppEvent and SDL_AppQuit)
  */
 #define INIT_APP(APP)                                                 \
