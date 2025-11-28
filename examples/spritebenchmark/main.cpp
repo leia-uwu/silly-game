@@ -4,8 +4,9 @@
 #include <SDL3/SDL_main.h>
 
 #include "app/app.h"
-#include "math/shape.h"
 #include "render/renderItem.h"
+
+#include <algorithm>
 #include <cstdlib>
 
 class BenchSprite : public SpriteItem
@@ -60,6 +61,9 @@ public:
             if (sprite.pos.y < 0 || sprite.pos.y > height) {
                 sprite.velocity.y = -sprite.velocity.y;
             }
+
+            sprite.pos.x = std::clamp(sprite.pos.x, 0.F, (float)width);
+            sprite.pos.y = std::clamp(sprite.pos.y, 0.F, (float)width);
         }
 
         root.renderChildren(root.getMatrix(), renderer());
