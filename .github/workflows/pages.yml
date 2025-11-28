@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  github-pages-wasm-build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pacman -Syu --noconfirm cmake git emscripten ninja pnpm
+
+      - name: Configure CMake
+        run: /usr/lib/emscripten/emcmake cmake --preset dev_wasm
+
+      - name: Build
+        run: cmake --build build_wasm --config Release
+
+      - name: Install pnpm packages
+        run: pnpm install
+        working-directory: examples
+
+      - name: Build client
+        run: pnpm build
+        working-directory: examples/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./examples/dist"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
