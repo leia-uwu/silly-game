@@ -15,20 +15,6 @@ public:
     void init();
     ~RenderBatcher();
 
-    struct Vec3
-    {
-        float x;
-        float y;
-        float z;
-    };
-    struct Vec4
-    {
-        float x;
-        float y;
-        float z;
-        float w;
-    };
-
     struct Vertex
     {
         Vec2 pos;
