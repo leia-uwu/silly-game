@@ -86,15 +86,7 @@ private:
     bool m_resizable = true;
     bool m_focused = true;
 
-    void resize()
-    {
-        glViewport(0, 0, m_windowWidth, m_windowHeight);
-        m_batcher.transform = Matrix3x3(
-            {0, 0},
-            0,
-            {1.F / (m_windowWidth / 2.F), -(1.F / (m_windowHeight / 2.F))}
-        );
-    };
+    void resize();
 
     Color m_clearColor;
 

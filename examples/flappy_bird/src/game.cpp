@@ -30,7 +30,7 @@ SDL_AppResult Game::update(float dt)
         //
 
         if (inputManager().isKeyDown("W") || inputManager().isMouseBtnDown(1)) {
-            m_player.vel.y = -500;
+            m_player.vel.y = 500;
         }
 
         m_player.update(dt);
@@ -122,7 +122,7 @@ Player::Player() :
 
 void Player::update(float dt)
 {
-    vel.y += GRAVITY * dt;
+    vel.y -= GRAVITY * dt;
 
     Vec2F step = vel * dt;
     hitbox.translate(step);

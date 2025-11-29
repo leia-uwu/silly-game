@@ -19,7 +19,7 @@ static const float PIPE_WIDTH = 100;
 static const float PIPE_GAP = 150;
 static const float PIPE_DISTANCE = 400;
 
-static const Rect GAME_FLOOR = Rect::fromDims(GAME_WIDTH, 20, {GAME_WIDTH / 2, GAME_HEIGHT + 10});
+static const Rect GAME_FLOOR = Rect::fromDims(GAME_WIDTH, 20, {GAME_WIDTH / 2, -10});
 
 class Player
 {

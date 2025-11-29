@@ -92,10 +92,10 @@ public:
         Vec2F rotatedScaleY = {arr[3], arr[4]};
 
         return {
-            (pos + (rotatedScaleX - rotatedScaleY)),
-            (pos - (rotatedScaleX + rotatedScaleY)),
             (pos - (rotatedScaleX - rotatedScaleY)),
             (pos + (rotatedScaleX + rotatedScaleY)),
+            (pos + (rotatedScaleX - rotatedScaleY)),
+            (pos - (rotatedScaleX + rotatedScaleY)),
         };
     }
 
