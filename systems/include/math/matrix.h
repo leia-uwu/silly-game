@@ -58,6 +58,17 @@ public:
         return {x, y};
     }
 
+    Matrix3x3& mulScale(const Vec2F& scale)
+    {
+        arr[0] *= scale.x;
+        arr[1] *= scale.x;
+
+        arr[3] *= scale.y;
+        arr[4] *= scale.y;
+
+        return *this;
+    };
+
     static Matrix3x3 mul(const Matrix3x3& a, const Matrix3x3& b)
     {
         Matrix3x3 out;
@@ -73,6 +84,20 @@ public:
 
         return out;
     };
+
+    [[nodiscard]] std::array<Vec2F, 4> getPolygon() const
+    {
+        Vec2F pos = {arr[6], arr[7]};
+        Vec2F rotatedScaleX = {arr[0], arr[1]};
+        Vec2F rotatedScaleY = {arr[3], arr[4]};
+
+        return {
+            (pos + (rotatedScaleX - rotatedScaleY)),
+            (pos - (rotatedScaleX + rotatedScaleY)),
+            (pos - (rotatedScaleX - rotatedScaleY)),
+            (pos + (rotatedScaleX + rotatedScaleY)),
+        };
+    }
 
     float operator[](uint8_t index) const
     {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "math/vec2.h"
 #include "render/batcher.h"
 #include "render/color.h"
 #include "render/renderer.h"
@@ -83,8 +84,10 @@ class SpriteItem : public RenderItem
 public:
     std::string textureId;
 
-    float width;
-    float height;
+    uint32_t width;
+    uint32_t height;
+
+    Vec2U frameOffset;
 
     Vec2F center = {0.5, 0.5};
 
@@ -101,16 +104,11 @@ public:
     {
         const auto& texture = renderer.resources().getTexture(textureId);
 
-        auto scale = transform.scale();
-
-        const Vec2F size{width * scale.x, height * scale.y};
-
         renderer.batcher().addBatchable(RenderBatcher::TextureBatchable{
-            transform.translation() - (size / 2.F),
-            size,
             texture,
             tint,
-            0,
+            Matrix3x3{transform}.mulScale({width / 2.F, height / 2.F}),
+            frameOffset,
         });
     }
 };

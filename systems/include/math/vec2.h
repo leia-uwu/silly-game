@@ -342,3 +342,4 @@ public:
 };
 
 using Vec2F = Vec2<float>;
+using Vec2U = Vec2<uint32_t>;

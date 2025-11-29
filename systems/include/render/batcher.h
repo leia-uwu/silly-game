@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/matrix.h"
+#include "math/vec2.h"
 #include "render/color.h"
 #include "render/shader.h"
 #include "render/texture.h"
@@ -39,12 +41,21 @@ public:
     class TextureBatchable : public Batchable
     {
     public:
-        Vec2F pos;
-        Vec2F scale;
         Color tint;
-        float rotation;
 
-        TextureBatchable(const Vec2F& pos, const Vec2F& scale, const Texture& texture, const Color& tint, float rotation);
+        Matrix3x3 transform;
+
+        Vec2U frameOffset;
+
+        TextureBatchable(
+            const Texture& texture,
+            const Color& tint,
+            const Matrix3x3& transform,
+            const Vec2U& frameOffset
+        ) : Batchable(texture),
+            tint(tint),
+            transform(transform),
+            frameOffset(frameOffset) { };
 
         [[nodiscard]] size_t batchSize() const override;
         [[nodiscard]] size_t indices() const override;

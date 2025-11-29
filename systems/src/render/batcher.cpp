@@ -159,15 +159,6 @@ RenderBatcher::Batchable::Batchable(const Texture& texture) : texture(texture)
 {
 }
 
-RenderBatcher::TextureBatchable::TextureBatchable(const Vec2F& pos, const Vec2F& scale, const Texture& texture, const Color& tint, float rotation) :
-    Batchable(texture),
-    pos(pos),
-    scale(scale),
-    tint(tint),
-    rotation(rotation)
-{
-}
-
 [[nodiscard]] size_t RenderBatcher::TextureBatchable::batchSize() const
 {
     return 4;
@@ -182,26 +173,28 @@ void RenderBatcher::TextureBatchable::addToBatcher(RenderBatcher& batcher) const
 {
     uint32_t color = tint.RGBAHex();
 
+    auto poly = transform.getPolygon();
+
     batcher.addVertice({
-        .pos = {pos.x, pos.y},
+        .pos = poly[0],
         .textureCord = {0.F, 0.F},
         .color = color,
     });
 
     batcher.addVertice({
-        .pos = {pos.x + scale.x, pos.y},
+        .pos = poly[1],
         .textureCord = {1.F, 0.F},
         .color = color,
     });
 
     batcher.addVertice({
-        .pos = {pos.x + scale.x, pos.y + scale.y},
+        .pos = poly[2],
         .textureCord = {1.F, 1.F},
         .color = color,
     });
 
     batcher.addVertice({
-        .pos = {pos.x, pos.y + scale.y},
+        .pos = poly[3],
         .textureCord = {0.F, 1.F},
         .color = color,
     });

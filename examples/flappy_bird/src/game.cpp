@@ -132,6 +132,9 @@ void Player::update(float dt)
         hitbox.translate(res.normal * -res.depth);
         vel.y = 0;
     }
+
+    hitbox.rotate(dt);
+    sprite.rot += dt;
 }
 
 void Player::render(RenderItem& root)
