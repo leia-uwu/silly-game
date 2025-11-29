@@ -134,23 +134,3 @@ Texture ResourceManager::getTexture(const std::string& id)
 
     return m_textures[id];
 }
-
-void ResourceManager::loadShader(
-    const std::string& id,
-    const char* vertex,
-    const char* fragment,
-    const char* geometry
-)
-{
-    Shader shader;
-    shader.compile(vertex, fragment, geometry);
-
-    m_shaders[id] = shader;
-}
-
-Shader ResourceManager::getShader(const std::string& id)
-{
-    assert(m_shaders.contains(id));
-
-    return m_shaders[id];
-};
