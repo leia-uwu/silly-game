@@ -1,5 +1,6 @@
 #include "input/inputManager.h"
 #include "render/renderer.h"
+#include "util/ticker.h"
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -36,6 +37,11 @@ public:
         return m_inputManager;
     }
 
+    Ticker& ticker()
+    {
+        return m_ticker;
+    }
+
     SDL_AppResult processSDLIterate();
 
     SDL_AppResult processSDLEvent(SDL_Event* event);
@@ -45,7 +51,7 @@ protected:
 
     InputManager m_inputManager;
 
-    uint64_t m_lastNow = SDL_GetPerformanceCounter();
+    Ticker m_ticker;
 };
 
 // NOLINTBEGIN(bugprone-macro-parentheses)

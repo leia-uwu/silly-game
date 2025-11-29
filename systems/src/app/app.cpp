@@ -17,19 +17,20 @@ SDL_AppResult GameApp::SDLEvent(SDL_Event* /*event*/)
 
 SDL_AppResult GameApp::processSDLIterate()
 {
-    uint64_t newNow = SDL_GetPerformanceCounter();
-    float dt = ((newNow - m_lastNow) / (float)SDL_GetPerformanceFrequency());
-    m_lastNow = newNow;
+    m_ticker.frameStart();
 
     renderer().clear();
 
-    SDL_AppResult result = update(dt);
+    SDL_AppResult result = update(m_ticker.deltaTime());
 
     if (result != SDL_APP_CONTINUE) {
         return result;
     }
 
     inputManager().flush();
+
+    m_ticker.frameEnd();
+
     renderer().present();
 
     return SDL_APP_CONTINUE;

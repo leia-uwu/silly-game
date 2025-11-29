@@ -27,6 +27,7 @@ public:
             .windowTitle = "OBS bitrate killer",
         })
     {
+        ticker().toggleProfiling(true);
     }
 
     SDL_AppResult init(int /*argc*/, char** /*argv*/) override
