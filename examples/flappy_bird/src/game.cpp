@@ -61,8 +61,8 @@ SDL_AppResult Game::update(float dt)
 
     root.clear();
 
-    root.pos.x = -renderer().windowWidth() / 2.F;
-    root.pos.y = -renderer().windowHeight() / 2.F;
+    root.position.x = -renderer().windowWidth() / 2.F;
+    root.position.y = -renderer().windowHeight() / 2.F;
 
     for (auto& pipe : m_pipes) {
         pipe.render(root);
@@ -134,12 +134,12 @@ void Player::update(float dt)
     }
 
     hitbox.rotate(dt);
-    sprite.rot += dt;
+    sprite.rotation += dt;
 }
 
 void Player::render(RenderItem& root)
 {
-    sprite.pos = hitbox.center();
+    sprite.position = hitbox.center();
     root.addChild(&sprite);
 }
 
@@ -162,7 +162,7 @@ void Pipe::update(float dt)
 
 void Pipe::render(RenderItem& root)
 {
-    sprite.pos = hitbox.center();
+    sprite.position = hitbox.center();
     sprite.width = hitbox.width();
     sprite.height = hitbox.height();
 

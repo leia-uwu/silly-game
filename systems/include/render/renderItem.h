@@ -21,13 +21,13 @@ private:
     std::vector<RenderItem*> m_children;
 
 public:
-    Vec2F pos;
+    Vec2F position;
     Vec2F scale = {1, 1};
-    float rot = 0;
+    float rotation = 0;
 
     [[nodiscard]] Matrix3x3 getMatrix() const
     {
-        return {pos, rot, scale};
+        return {position, rotation, scale};
     }
 
     RenderItem& addChild(RenderItem* child)
