@@ -122,6 +122,8 @@ public:
 
     Polygon& translate(const Vec2F& posToAdd) override;
 
+    Polygon& rotate(float rotation);
+
     Polygon& scale(float scale) override;
 };
 

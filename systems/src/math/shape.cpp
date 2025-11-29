@@ -135,6 +135,22 @@ Polygon& Polygon::translate(const Vec2F& posToAdd)
     return *this;
 }
 
+Polygon& Polygon::rotate(float rotation)
+{
+    for (auto& point : points) {
+        float dist = point.distanceTo(m_center);
+
+        Vec2F dir = (point - m_center).normalize().rotate(rotation).normalize();
+
+        point = m_center - (dir * dist);
+    }
+
+    calculate_center();
+    calculate_normals();
+
+    return *this;
+};
+
 bool Polygon::pointInside(const Vec2F& point) const
 {
     return Collision::PointPolygon(point, points);
