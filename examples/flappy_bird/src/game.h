@@ -65,7 +65,7 @@ public:
             .width = 800,
             .height = 450,
             .resizable = false,
-            .windowTitle = "Flappy Bird!"
+            .windowTitle = "Flappy Bird!",
         })
     {
     }
