@@ -16,8 +16,8 @@ SDL_AppResult Game::init(int /*argc*/, char** /*argv*/)
     SDL_SetWindowMinimumSize(renderer().window(), GAME_WIDTH, GAME_HEIGHT);
     renderer().setClearColor(0x141414);
 
-    renderer().resources().loadTexture("bird", "assets/bird.bmp");
-    renderer().resources().loadTexture("pipe", "assets/pipe.bmp");
+    renderer().resources().loadTexture("bird", "assets/bird.png");
+    renderer().resources().loadTexture("pipe", "assets/pipe.png");
 
     return SDL_APP_CONTINUE;
 }

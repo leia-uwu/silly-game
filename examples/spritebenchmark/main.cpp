@@ -31,7 +31,7 @@ public:
 
     SDL_AppResult init(int /*argc*/, char** /*argv*/) override
     {
-        renderer().resources().loadTexture("bird", "assets/bird.bmp");
+        renderer().resources().loadTexture("bird", "assets/bird.png");
 
         for (auto& sprite : m_sprites) {
             sprite.setTexture("bird");

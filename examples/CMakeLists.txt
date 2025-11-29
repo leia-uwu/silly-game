@@ -11,8 +11,8 @@ endif()
 
 install(
     FILES
-    public/assets/bird.bmp
-    public/assets/pipe.bmp
+    public/assets/bird.png
+    public/assets/pipe.png
     DESTINATION
     examples/assets
 )
