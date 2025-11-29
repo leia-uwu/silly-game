@@ -103,6 +103,9 @@ SDL_AppResult Renderer::init()
         SDL_GL_SetSwapInterval(1);
     };
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     m_batcher.init();
 
     resize();

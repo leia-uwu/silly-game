@@ -12,6 +12,27 @@
 
 #include <iostream>
 
+static GLuint getFormat(int channels)
+{
+    GLuint format = GL_RGB;
+
+    switch (channels) {
+    case 1:
+        return GL_LUMINANCE;
+    case 2:
+        // no idea if this one is correct lol
+        // idk if theres a better way to translate the stbi channels to opengl formats
+        return GL_RG;
+    case 3:
+        return GL_RGB;
+    case 4:
+        return GL_RGBA;
+    default:
+        std::cerr << "Unknown image format, channels: " << channels << "\n";
+        return GL_RGBA;
+    }
+}
+
 #ifndef __EMSCRIPTEN__
 
 void ResourceManager::loadTexture(const char* id, const char* path)
@@ -26,8 +47,14 @@ void ResourceManager::loadTexture(const char* id, const char* path)
 
     std::cout << "Loading " << filePath << "\n";
 
-    int width, height, nrChannels;
+    int width;
+    int height;
+    int nrChannels;
     uint8_t* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
+
+    GLuint format = getFormat(nrChannels);
+
+    texture.imageFormat = format;
     texture.generate(width, height, data);
 
     stbi_image_free(data);
@@ -41,6 +68,8 @@ void ResourceManager::loadTexture(const char* id, const char* path)
 struct LoadCTX
 {
     const char* path;
+    const char* id;
+    std::unordered_map<std::string, Texture>& textures;
     GLuint texture;
 };
 
@@ -53,7 +82,9 @@ void ResourceManager::loadTexture(const char* id, const char* path)
 
     auto* ctx = new LoadCTX{
         .path = path,
-        .texture = textureId
+        .id = id,
+        .textures = m_textures,
+        .texture = textureId,
     };
 
     std::cout << "Loading " << path << "\n";
@@ -65,14 +96,20 @@ void ResourceManager::loadTexture(const char* id, const char* path)
         [](void* userData, void* buffer, int size) {
             auto* ctx = (LoadCTX*)userData;
 
-            int width, height, nrChannels;
+            int width;
+            int height;
+            int nrChannels;
             // TODO: find a way to decode the image using js built in stuff instead of stb
             uint8_t* data = stbi_load_from_memory((uint8_t*)buffer, size, &width, &height, &nrChannels, 0);
 
-            Texture texture{ctx->texture};
+            Texture& texture = ctx->textures[ctx->id];
 
+            GLuint format = getFormat(nrChannels);
+
+            // for webgl both need to be the same...?
+            // doing this for native breaks
+            texture.imageFormat = texture.internalFormat = format;
             texture.generate(width, height, data);
-
             std::cout << "Loaded " << ctx->path << "\n";
 
             delete ctx;
