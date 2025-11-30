@@ -1,6 +1,7 @@
 #include "util/ticker.h"
 
 #include <algorithm>
+#include <cfloat>
 #include <format>
 #include <iostream>
 
@@ -13,7 +14,7 @@
 void Ticker::frameStart()
 {
     double now = Ticker::getTime();
-    m_currentDeltaTime = std::clamp(now - m_lastFrameTime, 0.001, 0.125);
+    m_currentDeltaTime = std::clamp(now - m_lastFrameTime, (double)FLT_MIN, 0.125);
     m_lastFrameTime = now;
 }
 
