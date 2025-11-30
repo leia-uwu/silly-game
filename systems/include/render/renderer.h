@@ -72,7 +72,6 @@ public:
     }
 
     void clear();
-    void present();
 
 private:
     SDL_Window* m_window = nullptr;

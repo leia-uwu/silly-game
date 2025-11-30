@@ -191,12 +191,6 @@ void Renderer::clear()
     m_batcher.beginBatch();
 }
 
-void Renderer::present()
-{
-    m_batcher.flushBatch();
-    SDL_GL_SwapWindow(m_window);
-}
-
 void Renderer::resize()
 {
     glViewport(0, 0, m_windowWidth, m_windowHeight);

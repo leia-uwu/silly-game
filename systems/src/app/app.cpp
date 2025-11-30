@@ -29,9 +29,11 @@ SDL_AppResult GameApp::processSDLIterate()
 
     inputManager().flush();
 
+    m_renderer.batcher().flushBatch();
+
     m_ticker.frameEnd();
 
-    renderer().present();
+    SDL_GL_SwapWindow(m_renderer.window());
 
     return SDL_APP_CONTINUE;
 };
