@@ -73,7 +73,7 @@ public:
             sprite.rotation += sprite.rotationDir * dt;
 
             sprite.position.x = std::clamp(sprite.position.x, 0.F, (float)width);
-            sprite.position.y = std::clamp(sprite.position.y, 0.F, (float)width);
+            sprite.position.y = std::clamp(sprite.position.y, 0.F, (float)height);
         }
 
         root.renderChildren(root.getMatrix(), renderer());
