@@ -39,24 +39,23 @@ public:
             sprite.setTexture("bird");
             sprite.width = 64;
             sprite.height = 64;
-            sprite.tint = rand();
+            sprite.tint = std::rand();
             sprite.position.x = renderer().windowWidth() / 2.F;
             sprite.position.y = renderer().windowHeight() / 2.F;
             sprite.velocity.x = ((std::rand() / (float)RAND_MAX) * 1000) - 500;
             sprite.velocity.y = ((std::rand() / (float)RAND_MAX) * 1000) - 500;
             sprite.rotationDir = ((std::rand() / (float)RAND_MAX) * 20) - 10;
-            root.addChild(&sprite);
+            m_root.addChild(&sprite);
         }
         renderer().setClearColor(0);
 
         return SDL_APP_CONTINUE;
     };
 
-    RenderItem root;
     SDL_AppResult update(float dt) override
     {
-        root.position.x = -(renderer().windowWidth() / 2.F);
-        root.position.y = -(renderer().windowHeight() / 2.F);
+        m_root.position.x = -(renderer().windowWidth() / 2.F);
+        m_root.position.y = -(renderer().windowHeight() / 2.F);
         for (auto& sprite : m_sprites) {
             sprite.position += sprite.velocity * dt;
 
@@ -76,11 +75,12 @@ public:
             sprite.position.y = std::clamp(sprite.position.y, 0.F, (float)height);
         }
 
-        root.renderChildren(root.getMatrix(), renderer());
+        m_root.renderChildren(m_root.getMatrix(), renderer());
         return SDL_APP_CONTINUE;
     };
 
 private:
+    RenderItem m_root;
     std::array<BenchSprite, 9999> m_sprites;
 };
 

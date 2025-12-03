@@ -1,9 +1,4 @@
-set(
-    BENCHMARK_SRC
-    main.cpp
-)
-
-add_executable(spritebenchmark ${BENCHMARK_SRC})
+add_executable(spritebenchmark main.cpp)
 
 target_link_libraries(
     spritebenchmark
