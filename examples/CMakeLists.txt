@@ -19,3 +19,4 @@ install(
 
 add_subdirectory(flappy_bird)
 add_subdirectory(spritebenchmark)
+add_subdirectory(grid_demo)
