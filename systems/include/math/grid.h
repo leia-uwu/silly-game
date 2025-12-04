@@ -134,7 +134,7 @@ private:
     Cell& cellAt(GridSize_T x, GridSize_T y) const
     {
         size_t idx = (y * m_gridSize) + x;
-        assert(idx <= m_cellCount);
+        assert(idx < m_cellCount);
         return m_cells[idx];
     }
 
