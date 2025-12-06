@@ -83,8 +83,7 @@ public:
     void flushBatch();
 
 private:
-    static constexpr size_t MAX_BATCH_VERTICES = 1024;
-    static constexpr size_t VERTEX_BUFFER_SIZE = MAX_BATCH_VERTICES * 4;
+    static constexpr size_t MAX_BATCH_VERTICES = 4096;
     static constexpr size_t MAX_INDEX_SIZE = MAX_BATCH_VERTICES * 6;
 
     Shader m_spriteShader;
@@ -95,7 +94,7 @@ private:
     GLuint m_quadVBO;
     GLuint m_quadEBO;
 
-    Vertex m_vertices[VERTEX_BUFFER_SIZE];
+    Vertex m_vertices[MAX_BATCH_VERTICES];
     GLuint m_indices[MAX_INDEX_SIZE];
 
     size_t m_batchIndex = 0;
