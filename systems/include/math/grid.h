@@ -7,9 +7,14 @@
 #include <cfloat>
 #include <cmath>
 #include <cstdint>
+#include <type_traits>
 #include <vector>
 
 template<typename GridSize_T, typename EntityID_T>
+concept GridC = std::is_unsigned_v<GridSize_T> && std::is_unsigned_v<EntityID_T>;
+
+template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 class Grid
 {
 public:
@@ -162,6 +167,7 @@ private:
 };
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline Grid<GridSize_T, EntityID_T>::Grid(GridSize_T worldSize, GridSize_T cellSize, EntityID_T maxEntityID) :
     m_worldSize(worldSize),
     m_cellSize(cellSize),
@@ -176,6 +182,7 @@ inline Grid<GridSize_T, EntityID_T>::Grid(GridSize_T worldSize, GridSize_T cellS
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline Grid<GridSize_T, EntityID_T>::~Grid()
 {
     delete[] m_cells;
@@ -183,6 +190,7 @@ inline Grid<GridSize_T, EntityID_T>::~Grid()
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline void Grid<GridSize_T, EntityID_T>::insertEntity(EntityID_T entityID, Vec2F min, Vec2F max)
 {
     EntityGridData& entity = getEntityData(entityID);
@@ -235,6 +243,7 @@ inline void Grid<GridSize_T, EntityID_T>::insertEntity(EntityID_T entityID, Vec2
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline void Grid<GridSize_T, EntityID_T>::removeEntity(EntityID_T entityID)
 {
     EntityGridData& entity = getEntityData(entityID);
@@ -269,6 +278,7 @@ inline void Grid<GridSize_T, EntityID_T>::removeEntity(EntityID_T entityID)
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryAABB(Vec2F min, Vec2F max) const
 {
     GridAABB bounds = {
@@ -280,6 +290,7 @@ inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryAABB(Ve
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryPosition(Vec2F pos) const
 {
     GridPos gridPos = roundToGrid(pos);
@@ -287,6 +298,7 @@ inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryPositio
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryEntity(EntityID_T entityID) const
 {
     EntityGridData& entity = m_entityCache[entityID];
@@ -295,6 +307,7 @@ inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryEntity(
 }
 
 template<typename GridSize_T, typename EntityID_T>
+    requires(GridC<GridSize_T, EntityID_T>)
 inline const std::vector<EntityID_T>& Grid<GridSize_T, EntityID_T>::queryLine(Vec2F lineStart, Vec2F lineEnd) const
 {
     Vec2F diff = lineEnd - lineStart;
