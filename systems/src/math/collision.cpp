@@ -10,34 +10,34 @@
 template<typename T>
 static void projectVertices(
     const T& points,
-    const Vec2F& normal,
-    const Vec2F& center,
+    Vec2F normal,
+    Vec2F center,
 
-    float* out_min,
-    float* out_max
+    float* outMin,
+    float* outMax
 )
 {
     float min = std::numeric_limits<float>::max();
     float max = -min;
 
-    for (const Vec2F& point : points) {
+    for (Vec2F point : points) {
         float proj = normal * (center - point);
 
         min = std::min(proj, min);
         max = std::max(proj, max);
     }
 
-    *out_min = min;
-    *out_max = max;
+    *outMin = min;
+    *outMax = max;
 }
 
 static void projectCircle(
-    const Vec2F& center,
-    const float radius,
-    const Vec2F& normal,
+    Vec2F center,
+    float radius,
+    Vec2F normal,
 
-    float* out_min,
-    float* out_max
+    float* outMin,
+    float* outMax
 )
 {
     Vec2F scaled = normal * radius;
@@ -55,45 +55,47 @@ static void projectCircle(
         max = t;
     }
 
-    *out_min = min;
-    *out_max = max;
+    *outMin = min;
+    *outMax = max;
 }
 
 bool Collision::CircleCircle(
-    const Vec2F& posA,
-    const float radA,
+    Vec2F posA,
+    float radA,
 
-    const Vec2F& posB,
-    const float radB,
+    Vec2F posB,
+    float radB,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     Vec2F sub = posB - posA;
 
-    float distSqrt = sub.lengthSqr();
+    float distSqr = sub.lengthSqr();
     float rad = radA + radB;
 
-    if (distSqrt > (rad * rad)) {
+    if (distSqr > (rad * rad)) {
         return false;
     }
 
     if (res != nullptr) {
-        float dist = std::sqrt(distSqrt);
-        res->normal = dist > 0.000001 ? sub / dist : Vec2F(1, 0);
+        float dist = std::sqrt(distSqr);
+        res->normal = dist > std::numeric_limits<float>::min() // prevents division by 0
+            ? sub / dist
+            : Vec2F(1, 0);
         res->depth = rad - dist;
     }
     return true;
 }
 
 bool Collision::CircleRect(
-    const Vec2F& circlePos,
-    const float circleRad,
+    Vec2F circlePos,
+    float circleRad,
 
-    const Vec2F& rectMin,
-    const Vec2F& rectMax,
+    Vec2F rectMin,
+    Vec2F rectMax,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     if (
@@ -126,7 +128,7 @@ bool Collision::CircleRect(
         return true;
     }
 
-    Vec2F dir{
+    Vec2F dir = {
         std::clamp(circlePos.x, rectMin.x, rectMax.x) - circlePos.x,
         std::clamp(circlePos.y, rectMin.y, rectMax.y) - circlePos.y
     };
@@ -148,13 +150,13 @@ bool Collision::CircleRect(
 }
 
 bool Collision::RectRect(
-    const Vec2F& rectAMin,
-    const Vec2F& rectAMax,
+    Vec2F rectAMin,
+    Vec2F rectAMax,
 
-    const Vec2F& rectBMin,
-    const Vec2F& rectBMax,
+    Vec2F rectBMin,
+    Vec2F rectBMax,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     // if the caller doesn't want the intersection data
@@ -196,14 +198,14 @@ bool Collision::RectRect(
 }
 
 bool Collision::RectPolygon(
-    const Vec2F& rectMin,
-    const Vec2F& rectMax,
+    Vec2F rectMin,
+    Vec2F rectMax,
 
     const std::vector<Vec2F>& polyPoints,
     const std::vector<Vec2F>& polyNormals,
-    const Vec2F& polyCenter,
+    Vec2F polyCenter,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     assert(polyPoints.size() == polyNormals.size());
@@ -215,7 +217,7 @@ bool Collision::RectPolygon(
         {rectMax.x, rectMin.y}
     };
 
-    static const std::array<Vec2F, 4> rectNormals{
+    static const std::array rectNormals = {
         Vec2F{0, 1},
         Vec2F{-1, 0},
         Vec2F{0, -1},
@@ -281,14 +283,14 @@ bool Collision::RectPolygon(
 }
 
 bool Collision::CirclePolygon(
-    const Vec2F& circlePos,
+    Vec2F circlePos,
     float circleRad,
 
     const std::vector<Vec2F>& polyPoints,
     const std::vector<Vec2F>& polyNormals,
-    const Vec2F& polyCenter,
+    Vec2F polyCenter,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     assert(polyPoints.size() == polyNormals.size());
@@ -303,8 +305,8 @@ bool Collision::CirclePolygon(
     float resDepth = std::numeric_limits<float>::max();
 
     for (size_t i = 0; i < polyPoints.size(); i++) {
-        const Vec2F& normal = polyNormals[i];
-        const Vec2F& point = polyPoints[i];
+        Vec2F normal = polyNormals[i];
+        Vec2F point = polyPoints[i];
 
         float minA, maxA, minB, maxB;
         projectVertices(polyPoints, normal, polyCenter, &minA, &maxA);
@@ -354,10 +356,8 @@ bool Collision::CirclePolygon(
             resNormal.invert();
         }
 
-        if (res != nullptr) {
-            res->normal = resNormal;
-            res->depth = resDepth;
-        }
+        res->normal = resNormal;
+        res->depth = resDepth;
     }
 
     return true;
@@ -366,13 +366,13 @@ bool Collision::CirclePolygon(
 bool Collision::PolygonPolygon(
     const std::vector<Vec2F>& pointsA,
     const std::vector<Vec2F>& normalsA,
-    const Vec2F& centerA,
+    Vec2F centerA,
 
     const std::vector<Vec2F>& pointsB,
     const std::vector<Vec2F>& normalsB,
-    const Vec2F& centerB,
+    Vec2F centerB,
 
-    CollRes* res
+    Collision::Response* res
 )
 {
     assert(pointsA.size() == normalsA.size());
@@ -427,25 +427,23 @@ bool Collision::PolygonPolygon(
             resNormal.invert();
         }
 
-        if (res != nullptr) {
-            res->normal = resNormal;
-            res->depth = resDepth;
-        }
+        res->normal = resNormal;
+        res->depth = resDepth;
     }
     return true;
 }
 
-bool Collision::PointCircle(const Vec2F& point, const Vec2F& circlePos, float circleRad)
+bool Collision::PointCircle(Vec2F point, Vec2F circlePos, float circleRad)
 {
     return point.distanceTo(circlePos) <= circleRad;
 }
 
-bool Collision::PointRect(const Vec2F& point, const Vec2F& rectMin, const Vec2F& rectMax)
+bool Collision::PointRect(Vec2F point, Vec2F rectMin, Vec2F rectMax)
 {
     return point.x > rectMin.x && point.y > rectMin.y && point.x < rectMax.x && point.y < rectMax.y;
 }
 
-bool Collision::PointPolygon(const Vec2F& point, const std::vector<Vec2F>& points)
+bool Collision::PointPolygon(Vec2F point, const std::vector<Vec2F>& points)
 {
     // https://wrfranklin.org/Research/Short_Notes/pnpoly.html
     size_t count = points.size();
@@ -461,4 +459,4 @@ bool Collision::PointPolygon(const Vec2F& point, const std::vector<Vec2F>& point
     }
 
     return inside;
-};
+}

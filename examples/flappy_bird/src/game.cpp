@@ -48,7 +48,7 @@ SDL_AppResult Game::update(float dt)
         for (auto& pipe : m_pipes) {
             pipe.update(dt);
 
-            Collision::CollRes res;
+            Collision::Response res;
             if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
                 // m_player.hitbox.translate(res.normal * -res.depth);
                 m_player.sprite.tint = 0xff0000;
@@ -127,7 +127,7 @@ void Player::update(float dt)
     Vec2F step = vel * dt;
     hitbox.translate(step);
 
-    Collision::CollRes res;
+    Collision::Response res;
     if (hitbox.getCollision(GAME_FLOOR, &res)) {
         hitbox.translate(res.normal * -res.depth);
         vel.y = 0;

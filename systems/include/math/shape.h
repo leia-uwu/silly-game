@@ -3,10 +3,8 @@
 #include "math/collision.h"
 #include "math/vec2.h"
 
-#include <array>
 #include <cassert>
 #include <cstdint>
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -23,20 +21,52 @@ public:
     const Type type;
 
     [[nodiscard]] virtual std::string toString() const = 0;
-    [[nodiscard]] virtual bool pointInside(const Vec2F& point) const = 0;
+    [[nodiscard]] virtual bool pointInside(Vec2F point) const = 0;
 
     [[nodiscard]] virtual Vec2F center() const = 0;
 
-    virtual Shape& translate(const Vec2F& posToAdd) = 0;
+    virtual Shape& translate(Vec2F posToAdd) = 0;
     virtual Shape& scale(float scale) = 0;
+
+    [[nodiscard]] virtual std::pair<Vec2F, Vec2F> getAABB() const = 0;
 
     virtual ~Shape() = default;
 
-    [[nodiscard]] bool getCollision(const Shape& other, Collision::CollRes* res) const;
+    Shape& operator=(const Shape&) = delete;
+    Shape& operator=(Shape&&) noexcept = delete;
+
+    /**
+     * Check collision between this and another Shape.
+     *
+     * @return true if both shapes collide
+     *
+     * @param other The second shape
+     * @param res A collision response pointer, optional / can be nullptr
+     *
+     * @note The collision response will only be valid if this function returned true.
+     * @note The collision response normal will always be relative to this instance.
+     *
+     * @example
+     * ```
+     *   Rect rect({10, 10}, {20, 20});
+     *   Circle circle({10, 15}, 1);
+     *   Collision::Response res;
+     *   if (rect.getCollision(circle, &res)) {
+     *       // this will separate the circle from the rectangle
+     *       circle.translate(res.normal * res.depth);
+     *   }
+     * ```
+     */
+    [[nodiscard]] bool getCollision(const Shape& other, Collision::Response* res) const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Shape& shape)
+    {
+        os << shape.toString();
+        return os;
+    }
 
 protected:
-    Shape(Type type) :
-        type(type)
+    explicit Shape(Type type) : type(type)
     {
     }
 };
@@ -47,17 +77,24 @@ public:
     Vec2F pos;
     float rad;
 
+    Circle(const Circle& circ);
+    Circle(Circle&& circ) noexcept;
     Circle(Vec2F pos, float rad);
 
-    [[nodiscard]] std::string toString() const override;
+    Circle& operator=(Circle circ);
 
-    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
+    [[nodiscard]] std::string toString() const override;
+    [[nodiscard]] bool pointInside(Vec2F point) const override;
 
     [[nodiscard]] Vec2F center() const override;
 
-    Circle& translate(const Vec2F& posToAdd) override;
-
+    Circle& translate(Vec2F posToAdd) override;
     Circle& scale(float scale) override;
+
+    [[nodiscard]] std::pair<Vec2F, Vec2F> getAABB() const override;
+
+private:
+    static void swap(Circle& lhs, Circle& rhs) noexcept;
 };
 
 class Rect : public Shape
@@ -66,7 +103,11 @@ public:
     Vec2F min;
     Vec2F max;
 
+    Rect(const Rect&);
+    Rect(Rect&&) noexcept;
     Rect(Vec2F min, Vec2F max);
+
+    Rect& operator=(Rect rect);
 
     static Rect fromDims(float width, float height, Vec2F center = {0, 0});
 
@@ -80,36 +121,41 @@ public:
         return max.y - min.y;
     }
 
-    [[nodiscard]] Vec2F center() const override;
-
     [[nodiscard]] std::vector<Vec2F> getPoints() const;
 
     [[nodiscard]] std::string toString() const override;
+    [[nodiscard]] bool pointInside(Vec2F point) const override;
 
-    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
+    [[nodiscard]] Vec2F center() const override;
 
-    Rect& translate(const Vec2F& posToAdd) override;
-
+    Rect& translate(Vec2F posToAdd) override;
     Rect& scale(float scale) override;
+
+    [[nodiscard]] std::pair<Vec2F, Vec2F> getAABB() const override;
+
+private:
+    static void swap(Rect& lhs, Rect& rhs) noexcept;
 };
 
 class Polygon : public Shape
 {
 public:
+    /**
+     * Always specified in counter-clockwise order
+     */
     std::vector<Vec2F> points;
 
-private:
-    std::vector<Vec2F> m_normals;
-    Vec2F m_center;
+    explicit Polygon(std::vector<Vec2F> points);
+    Polygon(const Polygon&);
+    Polygon(Polygon&&) noexcept;
 
-public:
-    Polygon(const std::vector<Vec2F>& points);
+    Polygon& operator=(Polygon poly);
 
-    void calculate_normals();
+    static Polygon fromSides(size_t sides, Vec2F center, float radius);
 
-    void calculate_center();
+    void calculateNormals();
 
-    [[nodiscard]] Vec2F center() const override;
+    void calculateCenter();
 
     [[nodiscard]] const std::vector<Vec2F>& normals() const
     {
@@ -117,56 +163,26 @@ public:
     };
 
     [[nodiscard]] std::string toString() const override;
+    [[nodiscard]] bool pointInside(Vec2F point) const override;
 
-    [[nodiscard]] bool pointInside(const Vec2F& point) const override;
+    [[nodiscard]] Vec2F center() const override;
 
-    Polygon& translate(const Vec2F& posToAdd) override;
+    Polygon& translate(Vec2F posToAdd) override;
+    Polygon& scale(float scale) override;
 
     Polygon& rotate(float rotation);
 
-    Polygon& scale(float scale) override;
-};
+    [[nodiscard]] std::pair<Vec2F, Vec2F> getAABB() const override;
 
-using CollisionFn = std::function<bool(const Shape&, const Shape&, Collision::CollRes*)>;
+    [[nodiscard]] static bool isCounterClockwise(Vec2F a, Vec2F b, Vec2F c);
+    [[nodiscard]] static bool isConvex(const std::vector<Vec2F>& points);
 
-struct CollisionFnData
-{
-    CollisionFn fn;
-    bool reverse;
-};
-
-class CollisionFns
-{
 private:
-    std::array<std::array<CollisionFnData, Shape::COUNT>, Shape::COUNT> m_fns;
-
-    void registerFn(Shape::Type typeA, Shape::Type typeB, const CollisionFn& fn);
-
-public:
-    CollisionFns();
-
     /**
-     * Check collision between 2 shapes.
-     *
-     * @return true if both shapes collide.
-     *
-     * @param shapeA The first shape.
-     * @param shapeB The second shape.
-     * @param res A collision response pointer, optional / can be nullptr.
-     *
-     * @note The collision response will only be valid if this function returned true.
-     * @note The collision response normal will always be relative to the first parameter.
-     *
-     * @example
-     * ```
-     *  Rect rect({10, 10}, {20, 20});
-     *  Circle circle({10, 15}, 1);
-     *  Collision::CollRes res;
-     *  if (COLLISION_FNS.check(rect, circle, &res)) {
-     *      // this will separate the circle from the rectangle
-     *      circle.translate(res.normal * res.depth);
-     *  }
-     * ```
+     * `normals[i]` == normal of segment `points[i]` to `points[(i + 1) % size]`
      */
-    bool check(const Shape& shapeA, const Shape& shapeB, Collision::CollRes* res) const;
+    std::vector<Vec2F> m_normals;
+    Vec2F m_center;
+
+    static void swap(Polygon& lhs, Polygon& rhs) noexcept;
 };

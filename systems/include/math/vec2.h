@@ -5,6 +5,7 @@
 #include <format>
 #include <ostream>
 #include <string>
+#include <type_traits>
 
 #define VEC2_EPSILON 0.001F
 
@@ -27,6 +28,26 @@ public:
     {
     }
 
+    [[nodiscard]] static Vec2 left()
+    {
+        return {-1, 0};
+    }
+
+    [[nodiscard]] static Vec2 right()
+    {
+        return {1, 0};
+    }
+
+    [[nodiscard]] static Vec2 down()
+    {
+        return {0, -1};
+    }
+
+    [[nodiscard]] static Vec2 up()
+    {
+        return {0, 1};
+    }
+
     [[nodiscard]] Vec2 clone() const
     {
         return {x, y};
@@ -39,75 +60,12 @@ public:
     }
 
     [[nodiscard]] bool isValid() const
+        requires(std::is_floating_point_v<VecT>)
     {
         return std::isfinite(x) && std::isfinite(y);
-    };
-
-    Vec2& add(VecT value)
-    {
-        x += value;
-        y += value;
-
-        return *this;
     }
 
-    Vec2& add(const Vec2& a)
-    {
-        x += a.x;
-        y += a.y;
-
-        return *this;
-    }
-
-    Vec2& sub(VecT value)
-    {
-        x -= value;
-        y -= value;
-
-        return *this;
-    }
-
-    Vec2& sub(const Vec2& a)
-    {
-        x -= a.x;
-        y -= a.y;
-
-        return *this;
-    }
-
-    Vec2& scale(VecT scale)
-    {
-        x *= scale;
-        y *= scale;
-
-        return *this;
-    }
-
-    Vec2& scale(const Vec2& a)
-    {
-        x *= a.x;
-        y *= a.y;
-
-        return *this;
-    }
-
-    Vec2& div(VecT scale)
-    {
-        x /= scale;
-        y /= scale;
-
-        return *this;
-    }
-
-    Vec2& div(const Vec2& a)
-    {
-        x /= a.x;
-        y /= a.y;
-
-        return *this;
-    }
-
-    Vec2& rotate(VecT rad)
+    Vec2& rotate(float rad)
     {
         const VecT cosr = std::cos(rad);
         const VecT sinr = std::sin(rad);
@@ -155,7 +113,7 @@ public:
         return *this;
     }
 
-    Vec2& normalizeSafe(const Vec2& v = {1.0, 0.0})
+    Vec2& normalizeSafe(const Vec2& v = {1, 0})
     {
         const VecT len = length();
 
@@ -182,7 +140,7 @@ public:
 
     [[nodiscard]] VecT distanceTo(const Vec2& a) const
     {
-        return Vec2::sub(*this, a).length();
+        return (*this - a).length();
     }
 
     [[nodiscard]] VecT dot(const Vec2& a) const
@@ -206,8 +164,9 @@ public:
     }
 
     [[nodiscard]] bool equals(const Vec2& a, VecT epsilon) const
+        requires(std::is_floating_point_v<VecT>)
     {
-        return std::fabs(x - a.x) <= epsilon && std::fabs(y - a.y) <= epsilon;
+        return std::abs(x - a.x) <= epsilon && std::abs(y - a.y) <= epsilon;
     }
 
     bool operator==(const Vec2& a) const
@@ -220,12 +179,12 @@ public:
         return !equals(a);
     }
 
-    [[nodiscard]] VecT operator[](int index) const
+    [[nodiscard]] VecT operator[](uint8_t index) const
     {
         return (&x)[index];
     }
 
-    VecT& operator[](int index)
+    VecT& operator[](uint8_t index)
     {
         return (&x)[index];
     }
@@ -301,55 +260,22 @@ public:
     }
 
     [[nodiscard]] std::string toString() const
+        requires(std::is_floating_point_v<VecT>)
     {
         return std::format("X: {0:.4f}, Y: {1:.4f}", x, y);
-    };
-
-    [[nodiscard]] static Vec2 add(const Vec2& a, const Vec2& b)
-    {
-        return {a.x + b.x, a.y + b.y};
     }
 
-    [[nodiscard]] static Vec2 add(const Vec2& a, VecT value)
+    [[nodiscard]] std::string toString() const
+        requires(std::is_integral_v<VecT>)
     {
-        return {a.x + value, a.y + value};
-    }
-
-    [[nodiscard]] static Vec2 sub(const Vec2& a, const Vec2& b)
-    {
-        return {a.x - b.x, a.y - b.y};
-    }
-
-    [[nodiscard]] static Vec2 sub(const Vec2& a, VecT value)
-    {
-        return {a.x - value, a.y - value};
-    }
-
-    [[nodiscard]] static Vec2 mul(const Vec2& a, const Vec2& b)
-    {
-        return {a.x * b.x, a.y * b.y};
-    }
-
-    [[nodiscard]] static Vec2 mul(const Vec2& a, VecT scale)
-    {
-        return {a.x * scale, a.y * scale};
-    }
-
-    [[nodiscard]] static Vec2 div(const Vec2& a, const Vec2& b)
-    {
-        return {a.x / b.x, a.y / b.y};
-    }
-
-    [[nodiscard]] static Vec2 div(const Vec2& a, VecT scale)
-    {
-        return {a.x / scale, a.y / scale};
+        return std::format("X:    {}, Y:    {}", x, y);
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Vec2& vec)
     {
         os << vec.toString();
         return os;
-    };
+    }
 };
 
 using Vec2F = Vec2<float>;
