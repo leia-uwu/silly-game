@@ -1,22 +1,17 @@
-add_executable(ByteStreamTest bytestreamTest.cpp)
-target_link_libraries(ByteStreamTest net math)
+add_library(doctest SHARED docTest.cpp)
 
-add_test(
-    NAME ByteStreamTest
-    COMMAND ByteStreamTest
-)
+macro(AddTestFile test_name test_file)
+    add_executable(${test_name} ${test_file})
+    target_link_libraries(${test_name} PRIVATE doctest net math util)
 
-add_executable(GridTest gridTest.cpp)
-target_link_libraries(GridTest math)
+    add_test(
+        NAME ${test_name}
+        COMMAND ${test_name}
+    )
+endmacro()
 
-add_test(
-    NAME GridTest
-    COMMAND GridTest
-)
+AddTestFile(BytestreamTest bytestreamTest.cpp)
 
-add_executable(idPoolTest idPoolTest.cpp)
-target_link_libraries(idPoolTest util)
-add_test(
-    NAME IdPoolTest
-    COMMAND idPoolTest
-)
+AddTestFile(GridTest grid.test.cpp)
+
+AddTestFile(idPoolTest idPool.test.cpp)

@@ -28,7 +28,18 @@ public:
 
     void giveId(T id)
     {
+        if (id > m_maxId) {
+            throw std::out_of_range("giveId: ID out of range");
+        }
         m_freeList.push_front(id);
+    }
+
+    bool hasIdsLeft()
+    {
+        if (m_nextId > m_maxId) {
+            return !m_freeList.empty();
+        }
+        return true;
     }
 
 private:
