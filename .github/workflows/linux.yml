@@ -49,7 +49,7 @@ jobs:
           create-symlink: true
           variant: sccache
           update-package-index: false
-          key: ${{ runner.os }}-${{ runner.arch }}-sccache
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.c_compiler }}-sccache
 
       - name: Configure CMake
         run: >
