@@ -18,6 +18,7 @@ target_sources(
     FILES
         include/util/formatter.h
         include/util/ticker.h
+        include/util/idPool.h
 )
 
 #

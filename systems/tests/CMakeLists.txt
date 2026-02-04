@@ -13,3 +13,10 @@ add_test(
     NAME GridTest
     COMMAND GridTest
 )
+
+add_executable(idPoolTest idPoolTest.cpp)
+target_link_libraries(idPoolTest util)
+add_test(
+    NAME IdPoolTest
+    COMMAND idPoolTest
+)
