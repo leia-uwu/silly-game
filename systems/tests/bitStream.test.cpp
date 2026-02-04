@@ -22,13 +22,13 @@ TEST_CASE("BitStream tests")
 
         bs.setBitIndex(0);
 
-        REQUIRE(bs.readUint8() == 99);
-        REQUIRE(bs.readUint16() == 999);
-        REQUIRE(bs.readUint32() == 999999);
+        CHECK(bs.readUint8() == 99);
+        CHECK(bs.readUint16() == 999);
+        CHECK(bs.readUint32() == 999999);
 
-        REQUIRE(bs.readInt8() == -99);
-        REQUIRE(bs.readInt16() == -999);
-        REQUIRE(bs.readInt32() == -9999);
+        CHECK(bs.readInt8() == -99);
+        CHECK(bs.readInt16() == -999);
+        CHECK(bs.readInt32() == -9999);
     }
 
     SUBCASE("Byte unaligned integers")
@@ -40,10 +40,10 @@ TEST_CASE("BitStream tests")
 
         bs.setBitIndex(0);
 
-        REQUIRE(bs.readBits<uint8_t>(5) == 9);
-        REQUIRE(bs.readBits<uint16_t>(11) == 999);
-        REQUIRE(bs.readBits<int16_t>(13) == -99);
-        REQUIRE(bs.readBits<uint32_t>(20) == 99999);
+        CHECK(bs.readBits<uint8_t>(5) == 9);
+        CHECK(bs.readBits<uint16_t>(11) == 999);
+        CHECK(bs.readBits<int16_t>(13) == -99);
+        CHECK(bs.readBits<uint32_t>(20) == 99999);
     }
 
     SUBCASE("Floats and doubles")
@@ -56,11 +56,11 @@ TEST_CASE("BitStream tests")
 
         bs.setBitIndex(0);
 
-        REQUIRE(bs.readFloat32() == doctest::Approx(99.99));
-        REQUIRE(bs.readFloat32() == std::numbers::pi_v<float>);
-        REQUIRE(bs.readFloat32() == -std::numbers::pi_v<float>);
-        REQUIRE(bs.readFloat64() == std::numbers::pi_v<double>);
-        REQUIRE(bs.readFloat64() == -std::numbers::pi_v<double>);
+        CHECK(bs.readFloat32() == doctest::Approx(99.99));
+        CHECK(bs.readFloat32() == std::numbers::pi_v<float>);
+        CHECK(bs.readFloat32() == -std::numbers::pi_v<float>);
+        CHECK(bs.readFloat64() == std::numbers::pi_v<double>);
+        CHECK(bs.readFloat64() == -std::numbers::pi_v<double>);
     }
 
     SUBCASE("Clamped floats")
@@ -70,8 +70,8 @@ TEST_CASE("BitStream tests")
 
         bs.setBitIndex(0);
 
-        REQUIRE(bs.readFloat(8, 10, 16) == doctest::Approx(9.9).epsilon(0.1));
-        REQUIRE(bs.readFloat(-10, 1, 16) == doctest::Approx(-6.6).epsilon(0.1));
+        CHECK(bs.readFloat(8, 10, 16) == doctest::Approx(9.9).epsilon(0.1));
+        CHECK(bs.readFloat(-10, 1, 16) == doctest::Approx(-6.6).epsilon(0.1));
     }
 
     SUBCASE("Strings")
@@ -81,26 +81,26 @@ TEST_CASE("BitStream tests")
 
         bs.setBitIndex(0);
 
-        REQUIRE(bs.readString() == std::string("Deers are cool🦌"));
-        REQUIRE(bs.readString(9) == std::string("meow meow"));
+        CHECK(bs.readString() == std::string("Deers are cool🦌"));
+        CHECK(bs.readString(9) == std::string("meow meow"));
 
         bs.setBitIndex(0);
         bs.writeString("AAAAAAAAA", 5);
-        REQUIRE(bs.byteIndex() == 5); // check it didn't write past the string max size
+        CHECK(bs.byteIndex() == 5); // check it didn't write past the string max size
         bs.setBitIndex(0);
-        REQUIRE(bs.readString(5) == std::string("AAAAA"));
+        CHECK(bs.readString(5) == std::string("AAAAA"));
 
         bs.setBitIndex(0);
         bs.writeString("meow");
-        REQUIRE(bs.byteIndex() == 5); // string size + null terminator
+        CHECK(bs.byteIndex() == 5); // string size + null terminator
         bs.setBitIndex(0);
-        REQUIRE(bs.readString(5) == std::string("meow"));
+        CHECK(bs.readString(5) == std::string("meow"));
 
         bs.setBitIndex(0);
         bs.writeString("meow", 6);
-        REQUIRE(bs.byteIndex() == 5);
+        CHECK(bs.byteIndex() == 5);
         bs.setBitIndex(0);
-        REQUIRE(bs.readString(6) == std::string("meow"));
+        CHECK(bs.readString(6) == std::string("meow"));
     }
 
     SUBCASE("Exceptions")

@@ -9,12 +9,12 @@ TEST_CASE("Id Pool")
     {
         IdPool<uint16_t> pool{5};
 
-        REQUIRE(pool.getId() == 1);
-        REQUIRE(pool.getId() == 2);
-        REQUIRE(pool.getId() == 3);
-        REQUIRE(pool.getId() == 4);
-        REQUIRE(pool.getId() == 5);
-        REQUIRE_FALSE(pool.hasIdsLeft());
+        CHECK(pool.getId() == 1);
+        CHECK(pool.getId() == 2);
+        CHECK(pool.getId() == 3);
+        CHECK(pool.getId() == 4);
+        CHECK(pool.getId() == 5);
+        CHECK_FALSE(pool.hasIdsLeft());
     }
 
     SUBCASE("Should throw when out of IDs")
@@ -23,7 +23,7 @@ TEST_CASE("Id Pool")
 
         (void)pool.getId();
         (void)pool.getId();
-        REQUIRE_FALSE(pool.hasIdsLeft());
+        CHECK_FALSE(pool.hasIdsLeft());
         CHECK_THROWS_WITH_AS((void)pool.getId(), "Ran out of IDs!", std::runtime_error);
     }
 
@@ -33,10 +33,10 @@ TEST_CASE("Id Pool")
 
         (void)pool.getId();
         (void)pool.getId();
-        REQUIRE_FALSE(pool.hasIdsLeft());
+        CHECK_FALSE(pool.hasIdsLeft());
         pool.giveId(2);
-        REQUIRE(pool.hasIdsLeft());
-        REQUIRE(pool.getId() == 2);
+        CHECK(pool.hasIdsLeft());
+        CHECK(pool.getId() == 2);
     }
 
     SUBCASE("Should throw if Id is out of range")
