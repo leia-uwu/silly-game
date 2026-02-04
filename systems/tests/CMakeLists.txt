@@ -10,7 +10,7 @@ macro(AddTestFile test_name test_file)
     )
 endmacro()
 
-AddTestFile(BytestreamTest bytestreamTest.cpp)
+AddTestFile(BitStreamTest bitStream.test.cpp)
 
 AddTestFile(GridTest grid.test.cpp)
 

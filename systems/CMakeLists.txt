@@ -16,9 +16,10 @@ target_sources(
     TYPE HEADERS
     BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include"
     FILES
+        include/util/buffer.h
         include/util/formatter.h
-        include/util/ticker.h
         include/util/idPool.h
+        include/util/ticker.h
 )
 
 #
@@ -129,7 +130,7 @@ target_sources(
 add_library(
     net
     STATIC
-    src/net/bytestream.cpp
+    src/net/bitStream.cpp
 )
 
 target_sources(
@@ -139,7 +140,7 @@ target_sources(
     TYPE HEADERS
     BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include"
     FILES
-        include/net/bytestream.h
+        include/net/bitStream.h
 )
 
 if (BUILD_TESTING)
