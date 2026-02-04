@@ -24,18 +24,19 @@ jobs:
             c_compiler: clang
             cpp_compiler: clang++
     steps:
+      - name: Install Dependencies
+        run: |
+          brew update
+          brew install ccache sdl3
+
       - uses: actions/checkout@v4
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
           create-symlink: true
+          update-package-index: false
           key: ${{ runner.os }}-${{ runner.arch }}-ccache
-
-      - name: Install Dependencies
-        run: |
-          brew update
-          brew install sdl3
 
       - name: Configure CMake
         if: ${{ runner.os != 'linux' }}
