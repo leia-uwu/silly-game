@@ -8,9 +8,13 @@
 # I like KDE clang format defaults so i just copied it :)
 # did modify some stuff tho
 ---
+# yaml-language-server: $schema=https://www.schemastore.org/clang-format.json
+
 Language: JavaScript
 DisableFormat: true
 ---
+# yaml-language-server: $schema=https://www.schemastore.org/clang-format.json
+
 # Style for C++
 Language: Cpp
 Standard: c++20
@@ -26,13 +30,14 @@ TabWidth: 4
 ColumnLimit: 0
 
 # sort includes inside line separated groups
-SortIncludes: true
+SortIncludes:
+    Enabled: true
 
 # Braces are usually attached, but not after functions or class declarations.
 BreakBeforeBraces: Custom
 BraceWrapping:
     AfterClass: true
-    AfterControlStatement: false
+    AfterControlStatement: Never
     AfterEnum: false
     AfterFunction: true
     AfterNamespace: true
@@ -72,7 +77,7 @@ NamespaceIndentation: None
 SpaceAfterTemplateKeyword: false
 
 # Always break after template declaration
-AlwaysBreakTemplateDeclarations: true
+AlwaysBreakTemplateDeclarations: Yes
 
 # macros for which the opening brace stays attached.
 ForEachMacros: [foreach]
