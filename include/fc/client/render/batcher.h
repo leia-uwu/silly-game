@@ -14,6 +14,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <memory>
 
 class RenderBatcher
 {
@@ -33,9 +34,9 @@ public:
     class Batchable
     {
     public:
-        Texture texture;
+        Texture* texture;
 
-        Batchable(const Texture& texture);
+        Batchable(Texture* texture);
         [[nodiscard]] virtual size_t batchSize() const = 0;
         [[nodiscard]] virtual size_t indices() const = 0;
 
@@ -54,7 +55,7 @@ public:
         Vec2U frameOffset;
 
         TextureBatchable(
-            const Texture& texture,
+            Texture* texture,
             const Color& tint,
             const Matrix3x3& transform,
             const Vec2U& frameOffset
@@ -94,8 +95,6 @@ private:
 
     Shader m_spriteShader;
 
-    GLuint m_whiteTexture;
-
     bool m_initialized = false;
 
     GLuint m_quadVAO;
@@ -109,7 +108,8 @@ private:
     size_t m_indicesIndex = 0;
     size_t m_indicesOffset = 0;
 
-    Texture m_lastTexture;
+    Texture* m_lastTexture;
+    std::unique_ptr<Texture> m_whiteTexture;
 
     void addSprite(
         const Vec2F& pos,

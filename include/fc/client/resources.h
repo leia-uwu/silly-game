@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cassert>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -17,8 +18,8 @@ class ResourceManager
 public:
     void loadTexture(const char* id, const char* path);
 
-    [[nodiscard]] Texture getTexture(const std::string& id);
+    [[nodiscard]] Texture* getTexture(const std::string& id);
 
 private:
-    std::unordered_map<std::string, Texture> m_textures;
+    std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
 };

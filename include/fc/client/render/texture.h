@@ -26,10 +26,13 @@ public:
     GLuint filterMin;
     GLuint filterMax;
 
-    Texture(GLuint id);
-    Texture() = default;
+    Texture();
+    Texture(const Texture& other) = delete;
+    Texture operator=(const Texture& other) = delete;
 
     void generate(GLuint width, GLuint height, uint8_t* data);
 
     void bind() const;
+
+    ~Texture();
 };

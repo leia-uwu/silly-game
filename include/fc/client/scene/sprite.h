@@ -33,7 +33,7 @@ public:
 
     void render(const Matrix3x3& transform, Renderer& renderer) override
     {
-        const auto& texture = renderer.resources().getTexture(textureId);
+        auto* texture = renderer.resources().getTexture(textureId);
 
         renderer.batcher().addBatchable(RenderBatcher::TextureBatchable{
             texture,

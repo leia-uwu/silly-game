@@ -56,14 +56,16 @@ void RenderBatcher::init()
 
     m_spriteShader.compile(VERTEX_SHADER, FRAGMENT_SHADER, nullptr);
 
-    glGenTextures(GL_TEXTURE_2D, &m_whiteTexture);
-    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    m_whiteTexture = std::make_unique<Texture>();
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture->id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     uint32_t color = 0xffffffff;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+
+    m_lastTexture = m_whiteTexture.get();
 
     glGenVertexArrays(1, &m_quadVAO);
     glGenBuffers(1, &m_quadVBO);
@@ -107,7 +109,6 @@ void RenderBatcher::init()
 
 RenderBatcher::~RenderBatcher()
 {
-    glDeleteTextures(1, &m_whiteTexture);
     glDeleteVertexArrays(1, &m_quadVAO);
     glDeleteBuffers(1, &m_quadVBO);
     glDeleteBuffers(1, &m_quadEBO);
@@ -133,7 +134,7 @@ void RenderBatcher::flushBatch()
 
     // FIXME: more than 1 texture lol
     glActiveTexture(GL_TEXTURE0);
-    m_lastTexture.bind();
+    m_lastTexture->bind();
 
     m_spriteShader.use();
     m_spriteShader.setInt("u_texture", 0);
@@ -164,7 +165,7 @@ void RenderBatcher::addBatchable(const Batchable& batchable)
     size_t oldBatchIndex = m_batchIndex;
     size_t oldIndiceIndex = m_indicesIndex;
 
-    if (m_batchIndex + batchable.batchSize() >= MAX_BATCH_VERTICES || m_lastTexture.id != batchable.texture.id) {
+    if (m_batchIndex + batchable.batchSize() >= MAX_BATCH_VERTICES || m_lastTexture->id != batchable.texture->id) {
         flushBatch();
         beginBatch();
         oldBatchIndex = 0;
@@ -179,7 +180,7 @@ void RenderBatcher::addBatchable(const Batchable& batchable)
     assert(m_indicesIndex == (oldIndiceIndex + batchable.indices()));
 }
 
-RenderBatcher::Batchable::Batchable(const Texture& texture) : texture(texture)
+RenderBatcher::Batchable::Batchable(Texture* texture) : texture(texture)
 {
 }
 
