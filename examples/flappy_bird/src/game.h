@@ -7,12 +7,15 @@
 #pragma once
 
 #include "fc/client/app.h"
-#include "fc/client/scene/renderItem.h"
+#include "fc/client/scene/container.h"
+#include "fc/client/scene/sprite.h"
+
 #include "fc/core/collision/shape.h"
 #include "fc/core/math/vec2.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
+#include <memory>
 
 static const float GAME_WIDTH = 1024;
 static const float GAME_HEIGHT = 512;
@@ -36,11 +39,11 @@ public:
 
     Polygon hitbox;
 
-    Player();
+    Player(Container& root);
 
     void update(float dt);
 
-    void render(RenderItem& root);
+    void render();
 };
 
 class Pipe
@@ -55,12 +58,13 @@ public:
     Pipe(
         Vec2F pos,
         float width,
-        float height
+        float height,
+        Container& root
     );
 
     void update(float dt);
 
-    void render(RenderItem& root);
+    void render();
 };
 
 class Game : public GameApp
@@ -78,12 +82,12 @@ public:
 
     SDL_AppResult init(int argc, char** argv) override;
 
-    RenderItem root;
+    Container root;
     SDL_AppResult update(float dt) override;
 
 private:
-    Player m_player;
-    std::vector<Pipe> m_pipes;
+    Player m_player{root};
+    std::vector<std::unique_ptr<Pipe>> m_pipes;
     float m_lastPipeDistance = 0;
 
     void addPipe();

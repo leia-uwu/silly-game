@@ -11,6 +11,7 @@ add_library(
     ./render/shader.cpp
     ./render/texture.cpp
     ./resources.cpp
+    ./scene/container.cpp
 )
 
 target_link_libraries(fc_client fc::core SDL3::SDL3)
@@ -33,5 +34,6 @@ target_sources(
         ${FIRECAT_INCLUDE_DIR}/client/render/shader.h
         ${FIRECAT_INCLUDE_DIR}/client/render/texture.h
         ${FIRECAT_INCLUDE_DIR}/client/resources.h
+        ${FIRECAT_INCLUDE_DIR}/client/scene/container.h
 )
 add_library(fc::client ALIAS fc_client)

@@ -10,7 +10,7 @@
 #include <SDL3/SDL_main.h>
 
 #include "fc/client/app.h"
-#include "fc/client/scene/renderItem.h"
+#include "fc/client/scene/sprite.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -86,7 +86,7 @@ public:
     };
 
 private:
-    RenderItem m_root;
+    Container m_root;
     std::array<BenchSprite, 9999> m_sprites;
 };
 

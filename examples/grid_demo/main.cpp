@@ -5,7 +5,7 @@
 */
 
 #include "fc/client/app.h"
-#include "fc/client/scene/renderItem.h"
+#include "fc/client/scene/sprite.h"
 #include "fc/core/collision/grid.h"
 #include "fc/core/collision/shape.h"
 
@@ -107,7 +107,7 @@ public:
     };
 
 private:
-    RenderItem m_root;
+    Container m_root;
 
     bool m_queryLine = true;
 

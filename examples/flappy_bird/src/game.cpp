@@ -11,7 +11,6 @@
 
 #include <cstdlib>
 
-#include "fc/client/scene/renderItem.h"
 #include "fc/core/collision/collision.h"
 #include "fc/core/collision/shape.h"
 
@@ -52,10 +51,10 @@ SDL_AppResult Game::update(float dt)
         m_player.sprite.tint = 0xaa55ff;
 
         for (auto& pipe : m_pipes) {
-            pipe.update(dt);
+            pipe->update(dt);
 
             Collision::Response res;
-            if (m_player.hitbox.getCollision(pipe.hitbox, &res)) {
+            if (m_player.hitbox.getCollision(pipe->hitbox, &res)) {
                 // m_player.hitbox.translate(res.normal * -res.depth);
                 m_player.sprite.tint = 0xff0000;
             }
@@ -65,16 +64,14 @@ SDL_AppResult Game::update(float dt)
     // RENDER
     //
 
-    root.clear();
-
     root.position.x = -renderer().windowWidth() / 2.F;
     root.position.y = -renderer().windowHeight() / 2.F;
 
     for (auto& pipe : m_pipes) {
-        pipe.render(root);
+        pipe->render();
     }
 
-    m_player.render(root);
+    m_player.render();
     root.renderChildren(root.getMatrix(), renderer());
 
     return SDL_APP_CONTINUE;
@@ -91,18 +88,18 @@ void Game::addPipe()
     const float gapYEnd = gapYStart + PIPE_GAP;
 
     auto findPipe = [this](Vec2F pos, float width, float height) {
-        for (Pipe& pipe : m_pipes) {
-            if (pipe.hitbox.max.x < 0) {
+        for (auto& pipe : m_pipes) {
+            if (pipe->hitbox.max.x < 0) {
 
                 Rect r = Rect::fromDims(width, height, pos);
-                pipe.hitbox.min = r.min;
-                pipe.hitbox.max = r.max;
+                pipe->hitbox.min = r.min;
+                pipe->hitbox.max = r.max;
 
                 return;
             }
         }
 
-        m_pipes.emplace_back(pos, width, height);
+        m_pipes.emplace_back(new Pipe(pos, width, height, root));
     };
 
     findPipe(
@@ -118,12 +115,14 @@ void Game::addPipe()
     );
 }
 
-Player::Player() :
+Player::Player(Container& root) :
     hitbox(Rect::fromDims(PLAYER_SIZE, PLAYER_SIZE, {PLAYER_SIZE, PLAYER_SIZE}).getPoints())
 {
     sprite.width = PLAYER_SIZE;
     sprite.height = PLAYER_SIZE;
     sprite.setTexture("bird");
+    sprite.setZIndex(1);
+    root.addChild(&sprite);
 }
 
 void Player::update(float dt)
@@ -143,21 +142,22 @@ void Player::update(float dt)
     sprite.rotation += dt;
 }
 
-void Player::render(RenderItem& root)
+void Player::render()
 {
     sprite.position = hitbox.center();
-    root.addChild(&sprite);
 }
 
 Pipe::Pipe(
     Vec2F pos,
     float width,
-    float height
+    float height,
+    Container& root
 ) :
     hitbox(Rect::fromDims(width, height, pos))
 {
     sprite.setTexture("pipe");
     sprite.tint = 0x00ff00;
+    root.addChild(&sprite);
 }
 
 void Pipe::update(float dt)
@@ -166,11 +166,9 @@ void Pipe::update(float dt)
     hitbox.translate(step);
 }
 
-void Pipe::render(RenderItem& root)
+void Pipe::render()
 {
     sprite.position = hitbox.center();
     sprite.width = hitbox.width();
     sprite.height = hitbox.height();
-
-    root.addChild(&sprite);
 }
