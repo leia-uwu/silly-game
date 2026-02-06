@@ -14,6 +14,6 @@ install(TARGETS spritebenchmark DESTINATION examples)
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
         spritebenchmark
-        PROPERTIES LINK_FLAGS "-sENVIRONMENT=web -sMODULARIZE=instance -sFULL_ES3"
+        PROPERTIES LINK_FLAGS ${EXAMPLES_LINK_FLAGS}
     )
 endif()

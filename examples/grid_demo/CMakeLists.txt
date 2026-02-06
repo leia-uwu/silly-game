@@ -14,6 +14,6 @@ install(TARGETS grid_demo DESTINATION examples)
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
         grid_demo
-        PROPERTIES LINK_FLAGS "-sENVIRONMENT=web -sMODULARIZE=instance -sFULL_ES3"
+        PROPERTIES LINK_FLAGS ${EXAMPLES_LINK_FLAGS}
     )
 endif()

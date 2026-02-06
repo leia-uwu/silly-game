@@ -20,6 +20,6 @@ install(TARGETS flappy_bird DESTINATION examples)
 if (DEFINED EMSCRIPTEN)
     set_target_properties(
         flappy_bird
-        PROPERTIES LINK_FLAGS "-sENVIRONMENT=web -sMODULARIZE=instance -sFULL_ES3"
+        PROPERTIES LINK_FLAGS ${EXAMPLES_LINK_FLAGS}
     )
 endif()
