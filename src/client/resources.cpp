@@ -53,17 +53,21 @@ void ResourceManager::loadTexture(const char* id, const char* path)
 
     std::cout << "Loading " << filePath << "\n";
 
-    int width;
-    int height;
-    int nrChannels;
+    int width = 0;
+    int height = 0;
+    int nrChannels = 0;
     uint8_t* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
 
-    GLuint format = getFormat(nrChannels);
+    if (data == nullptr) {
+        std::cout << "Failed to load texture " << stbi_failure_reason() << '\n';
+    } else {
+        GLuint format = getFormat(nrChannels);
 
-    texture.imageFormat = format;
-    texture.generate(width, height, data);
+        texture.imageFormat = format;
+        texture.generate(width, height, data);
 
-    stbi_image_free(data);
+        stbi_image_free(data);
+    }
 
     m_textures[id] = texture;
 }
