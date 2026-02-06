@@ -1,10 +1,16 @@
+/*
+    This file is part of the firecat2d project.
+    SPDX-License-Identifier: LGPL-3.0-only
+    SPDX-FileCopyrightText: 2026 firecat2d developers
+*/
+
 #define SDL_MAIN_USE_CALLBACKS
 
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
 
-#include "app/app.h"
-#include "render/renderItem.h"
+#include "fc/client/app.h"
+#include "fc/client/scene/renderItem.h"
 
 #include <algorithm>
 #include <cstdlib>

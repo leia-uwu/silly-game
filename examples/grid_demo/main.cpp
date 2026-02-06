@@ -1,12 +1,18 @@
-#include "math/grid.h"
-#include "math/shape.h"
+/*
+    This file is part of the firecat2d project.
+    SPDX-License-Identifier: LGPL-3.0-only
+    SPDX-FileCopyrightText: 2026 firecat2d developers
+*/
+
+#include "fc/client/app.h"
+#include "fc/client/scene/renderItem.h"
+#include "fc/core/collision/grid.h"
+#include "fc/core/collision/shape.h"
+
 #define SDL_MAIN_USE_CALLBACKS
 
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
-
-#include "app/app.h"
-#include "render/renderItem.h"
 
 #include <cstdlib>
 

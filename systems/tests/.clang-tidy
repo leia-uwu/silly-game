@@ -1,6 +1,0 @@
-# yaml-language-server: $schema=https://www.schemastore.org/clang-tidy.json
-
-InheritParentConfig: true
-
-# tests have really big functions :)
-Checks: -readability-function-cognitive-complexity

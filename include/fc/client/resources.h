@@ -1,0 +1,24 @@
+/*
+    This file is part of the firecat2d project.
+    SPDX-License-Identifier: LGPL-3.0-only
+    SPDX-FileCopyrightText: 2026 firecat2d developers
+*/
+
+#pragma once
+
+#include <cassert>
+#include <string>
+#include <unordered_map>
+
+#include "fc/client/render/texture.h"
+
+class ResourceManager
+{
+public:
+    void loadTexture(const char* id, const char* path);
+
+    [[nodiscard]] Texture getTexture(const std::string& id);
+
+private:
+    std::unordered_map<std::string, Texture> m_textures;
+};

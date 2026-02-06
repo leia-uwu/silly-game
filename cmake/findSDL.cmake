@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 firecat2d developers
+
 function(findSDL)
     find_package(SDL3 QUIET CONFIG COMPONENTS SDL3-shared)
     if (NOT SDL3_FOUND)

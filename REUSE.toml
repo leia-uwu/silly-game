@@ -1,0 +1,24 @@
+version = 1
+
+[[annotations]]
+path = "examples/public/assets/*"
+SPDX-FileCopyrightText = "2026 firecat2d developers"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "**/*.json"
+SPDX-FileCopyrightText = "2026 firecat2d developers"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "examples/pnpm-lock.yaml"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "lib/include/doctest/doctest.h"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "lib/include/stb/stb_image.h"
+SPDX-License-Identifier = "MIT"

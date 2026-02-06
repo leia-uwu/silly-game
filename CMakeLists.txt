@@ -1,6 +1,9 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 firecat2d developers
+
 cmake_minimum_required(VERSION 3.24)
 
-project(silly-game C CXX)
+project(firecat2d C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
@@ -34,9 +37,13 @@ if (NOT DEFINED EMSCRIPTEN)
 endif()
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/include")
-add_subdirectory(systems)
+add_subdirectory(src)
 
 option(BUILD_EXAMPLES "Build example games" ON)
 if (BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if (BUILD_TESTING)
+    add_subdirectory(tests)
 endif()

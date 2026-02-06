@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 firecat2d developers
+
 if (DEFINED EMSCRIPTEN)
     # output the client wasm and js bundles into a consistent directory vite can find
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/wasm-build/")

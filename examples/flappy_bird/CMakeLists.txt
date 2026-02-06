@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 firecat2d developers
+
 set(
     FLAPPY_SRC
     src/main.cpp
@@ -9,7 +12,7 @@ add_executable(flappy_bird ${FLAPPY_SRC})
 target_link_libraries(
     flappy_bird
     PRIVATE SDL3::SDL3
-    util math input render app
+    fc::client
 )
 
 install(TARGETS flappy_bird DESTINATION examples)

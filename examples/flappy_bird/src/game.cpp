@@ -1,3 +1,9 @@
+/*
+    This file is part of the firecat2d project.
+    SPDX-License-Identifier: LGPL-3.0-only
+    SPDX-FileCopyrightText: 2026 firecat2d developers
+*/
+
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -5,9 +11,9 @@
 
 #include <cstdlib>
 
-#include "math/collision.h"
-#include "math/shape.h"
-#include "render/renderItem.h"
+#include "fc/client/scene/renderItem.h"
+#include "fc/core/collision/collision.h"
+#include "fc/core/collision/shape.h"
 
 #include "game.h"
 

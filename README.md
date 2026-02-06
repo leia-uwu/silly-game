@@ -1,1 +1,9 @@
-WIP C++ 2D "engine" but not really (its more like a collection of helpers and systems to make games than an engine)
+<!--
+SPDX-FileCopyrightText: 2026 firecat2d developers
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
+WIP C++ 2D game "engine" / framework / library
+
+Will edit this readme once its more ready

@@ -1,9 +1,12 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 firecat2d developers
+
 add_executable(spritebenchmark main.cpp)
 
 target_link_libraries(
     spritebenchmark
     PRIVATE SDL3::SDL3
-    util math input render app
+    fc::client
 )
 
 install(TARGETS spritebenchmark DESTINATION examples)
