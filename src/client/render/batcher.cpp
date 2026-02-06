@@ -56,6 +56,15 @@ void RenderBatcher::init()
 
     m_spriteShader.compile(VERTEX_SHADER, FRAGMENT_SHADER, nullptr);
 
+    glGenTextures(GL_TEXTURE_2D, &m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    uint32_t color = 0xffffffff;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+
     glGenVertexArrays(1, &m_quadVAO);
     glGenBuffers(1, &m_quadVBO);
     glGenBuffers(1, &m_quadEBO);
@@ -98,6 +107,7 @@ void RenderBatcher::init()
 
 RenderBatcher::~RenderBatcher()
 {
+    glDeleteTextures(1, &m_whiteTexture);
     glDeleteVertexArrays(1, &m_quadVAO);
     glDeleteBuffers(1, &m_quadVBO);
     glDeleteBuffers(1, &m_quadEBO);

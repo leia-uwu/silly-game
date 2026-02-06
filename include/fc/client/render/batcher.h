@@ -94,6 +94,8 @@ private:
 
     Shader m_spriteShader;
 
+    GLuint m_whiteTexture;
+
     bool m_initialized = false;
 
     GLuint m_quadVAO;
